@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             GenreSeeder::class,
             DirectorSeeder::class,
+            MovieSeeder::class,
         ]);
     }
 }
