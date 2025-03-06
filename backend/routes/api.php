@@ -8,6 +8,7 @@ use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ScreeningController;
 use App\Http\Controllers\SeatController;
+use App\Http\Controllers\TicketController;
 
 // Ruta que requiere autenticación con Sanctum
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -27,3 +28,4 @@ Route::prefix('screenings/{screening}')->group(function () {
 
 // Rutes per a una butaca específica
 Route::apiResource('seats', SeatController::class)->except(['index', 'store']);
+Route::apiResource('tickets', TicketController::class);
