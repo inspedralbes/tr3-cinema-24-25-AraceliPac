@@ -18,6 +18,8 @@ return new class extends Migration
             $table->year('release_year')->nullable();
             $table->string('rating', 10)->nullable();
             $table->integer('duration')->nullable();
+            $table->string(('image'))->nullable();
+            $table->string('trailer')->nullable();
             $table->unsignedBigInteger('genre_id');
             $table->unsignedBigInteger('director_id');
             $table->timestamps();
