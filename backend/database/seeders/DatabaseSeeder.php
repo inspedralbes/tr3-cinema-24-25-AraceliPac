@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             ScreeningSeeder::class,
             SeatSeeder::class,
             TicketSeeder::class,
+            ActorSeeder::class,
+            MovieActorSeeder::class,
         ]);
     }
 }
