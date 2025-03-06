@@ -45,4 +45,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+    // Relació un-a-molts amb tickets (un usuari pot tenir molts tickets)
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }
