@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +19,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        
         'name',
+        'last_name',
         'email',
         'password',
+        'role_id',
+        'image',
     ];
 
     /**
@@ -49,6 +54,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+    
     // Relació un-a-molts amb tickets (un usuari pot tenir molts tickets)
     public function tickets()
     {
