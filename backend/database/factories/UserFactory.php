@@ -29,6 +29,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'phone' => fake()->phoneNumber,
             'remember_token' => Str::random(10),
             'role_id' => 1,
             'image' => 'https://robohash.org/' . fake()->uuid . '.png?size=640x480&set=set4',

@@ -19,11 +19,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        
+
         'name',
         'last_name',
         'email',
         'password',
+        'phone',
         'role_id',
         'image',
     ];
@@ -54,7 +55,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
-    
+
     // Relació un-a-molts amb tickets (un usuari pot tenir molts tickets)
     public function tickets()
     {
