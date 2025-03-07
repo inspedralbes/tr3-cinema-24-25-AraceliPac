@@ -1,11 +1,8 @@
 <!-- pages/index.vue -->
 <template>
+   <Nav />
     <div class="cinema-home">
-      <header class="page-header">
-        <h1>Cinema Pedralbes</h1>
-        <p class="subtitle">Properes Sessions</p>
-      </header>
-  
+    
       <!-- Sección de sesiones -->
       <section class="sessions-section">
         <div v-if="loading" class="loading">

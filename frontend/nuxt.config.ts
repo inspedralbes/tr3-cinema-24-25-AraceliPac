@@ -1,10 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01', // Esto es específico de Cloudflare Pages, no necesario para Pinia
-  devtools: { enabled: true }, // Habilita las herramientas de desarrollo de Nuxt
+import { defineNuxtConfig } from 'nuxt/config'
 
-  // Añade el módulo de Pinia
-  modules: [
-    '@pinia/nuxt', // Integra Pinia en Nuxt
-  ],
+export default defineNuxtConfig({
+  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxt/image"],
+  devtools: { enabled: true },
+  ssr: true,
+  vite: {
+    define: {
+      global: 'globalThis'
+    },
+    resolve: {
+      alias: {
+        stream: 'stream-browserify'
+      }
+    }
+  }
 });
