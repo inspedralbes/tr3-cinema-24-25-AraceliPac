@@ -1,5 +1,5 @@
 <template>
     <NavBar />
-    <h1>perfil</h1>
+    <h1>CONTACTE</h1>
     <Footer />
 </template>

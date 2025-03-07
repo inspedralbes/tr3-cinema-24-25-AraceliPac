@@ -1,6 +1,6 @@
 <!-- pages/movies.vue -->
 <template>
-  <Nav />
+  <NavBar />
     <div class="movies-page">
       <header class="page-header">
         <h1>Pel·lícules</h1>
@@ -94,6 +94,7 @@
         <button @click="reloadMovies" class="debug-button">Recargar películas</button>
       </div>
     </div>
+    <Footer />
   </template>
   
   <script setup>

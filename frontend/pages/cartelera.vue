@@ -1,9 +1,10 @@
 <template>
     <div>
-      <Nav />
+      <NavBar />
       <h1>Cartelera</h1>
       <p>Películas en cartelera.</p>
     </div>
+    <Footer />
   </template>
   
   <script setup>

@@ -1,6 +1,6 @@
 <!-- pages/index.vue -->
 <template>
-   <Nav />
+   <NavBar />
     <div class="cinema-home">
     
       <!-- Sección de sesiones -->
@@ -35,6 +35,7 @@
   
     
     </div>
+    <Footer />
   </template>
   
   <script setup>
