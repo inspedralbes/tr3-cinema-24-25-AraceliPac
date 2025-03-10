@@ -97,8 +97,8 @@ const route = useRoute()
 const isMenuOpen = ref(false)
 
 const navItems = [
-  { name: 'Inici', path: '/' },
-  { name: 'Cartelera', path: '/cartelera' },
+  { name: 'Inici', path: '/home' },
+  { name: 'Cartelera', path: '/pelicules/cartelera' },
   { name: 'Sessions', path: '/sessions' },
   { name: 'Preus', path: '/preus' }
 ]

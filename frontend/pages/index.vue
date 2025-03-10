@@ -1,241 +1,234 @@
-<!-- pages/index.vue -->
 <template>
-   <NavBar />
-    <div class="cinema-home">
+  <div class="cinema-landing">
+    <!-- NavBar -->
+    <NavBar />
     
-      <!-- Sección de sesiones -->
-      <section class="sessions-section">
-        <div v-if="loading" class="loading">
-          <p>Carregant sessions...</p>
-        </div>
-        <div v-else-if="error" class="error-message">
-          <p>{{ error }}</p>
-        </div>
-        <div v-else-if="upcomingSessions.length === 0" class="no-sessions">
-          <p>No hi ha sessions programades</p>
-        </div>
-        <div v-else class="sessions-grid">
-          <div v-for="session in upcomingSessions" :key="session.id" class="session-card">
-            <img :src="session.movie.image" :alt="session.movie.title" class="movie-image">
-            <div class="session-details">
-              <h2 class="movie-title">{{ session.movie.title }}</h2>
-              <p class="session-date">{{ session.formattedDate }}</p>
-              <p class="session-time">Hora: {{ session.formattedTime }}</p>
-              <p class="session-info">
-                <span class="year">{{ session.movie.release_year }}</span>
-                <span class="duration">{{ formatDuration(session.movie.duration) }}</span>
-                <span v-if="session.isSpecialDay" class="special-day">Dia Espectador</span>
-              </p>
-              <p class="description">{{ session.movie.description }}</p>
-              <button class="view-button">Veure detalls</button>
-            </div>
+    <main class="main">
+      
+      <!-- Secció Hero -->
+      <section class="hero">
+        <div class="hero-image-container">
+          <img 
+            :src="hallImage.image" 
+            :alt="hallImage.alt" 
+            class="hero-image"
+          />
+          <div class="overlay">
+            <h2 class="hero-title">Benvinguts al millor cinema</h2>
+            <p class="hero-subtitle">Descobreix la màgia del setè art</p>
           </div>
         </div>
       </section>
-  
+      
+      <!-- Secció CTA -->
+      <section class="cta">
+        <h2 class="cta-title">No t'ho perdis!</h2>
+        <p class="cta-text">Consulta la nostra cartellera i no et perdis cap estrena</p>
+        <NuxtLink to="/pelicules/cartelera" class="cta-button">Veure cartellera</NuxtLink>
+      </section>
+    </main>
     
-    </div>
+    <!-- Footer -->
     <Footer />
-  </template>
-  
-  <script setup>
-  import { ref, computed, onMounted } from 'vue';
-  import { useSessionsStore } from '~/stores/sessions';
-  
-  // Store
-  const sessionsStore = useSessionsStore();
-  
-  // Refs
-  const loading = ref(true);
-  const error = ref(null);
-  
-  // Computed
-  const upcomingSessions = computed(() => sessionsStore.formattedUpcomingSessions);
-  
-  // Methods
-  const formatDuration = (minutes) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}min`;
-  };
-  
-  const fetchSessions = async () => {
-    try {
-      loading.value = true;
-      error.value = null;
-      await sessionsStore.fetchUpcomingSessions();
-      loading.value = false;
-    } catch (err) {
-      loading.value = false;
-      error.value = 'Error al carregar les sessions. Si us plau, torna-ho a provar més tard.';
-      console.error('Error fetching sessions:', err);
+  </div>
+</template>
+
+<script>
+import NavBar from '~/components/NavBar.vue';
+import Footer from '~/components/Footer.vue';
+
+export default {
+  name: 'CinemaLanding',
+  components: {
+    NavBar,
+    Footer
+  },
+  data() {
+    return {
+      hallImage: { 
+        image: '/images/instalacions/cine2.jpg', 
+        alt: 'Hall d\'entrada', 
+        description: 'Hall d\'entrada' 
+      }
     }
-  };
-  
-  // Lifecycle
-  onMounted(() => {
-    fetchSessions();
-  });
-  </script>
-  
-  <style scoped>
-  .cinema-home {
-    font-family: 'Montserrat', sans-serif;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  }
+}
+</script>
+
+<style scoped>
+/* Estils generals i mobile-first */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  line-height: 1.6;
+}
+
+.cinema-landing {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Secció Hero */
+.hero {
+  position: relative;
+  width: 100%;
+  max-height: 70vh;
+  overflow: hidden;
+}
+
+.hero-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+  color: white;
+}
+
+.hero-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Secció Features */
+.features {
+  padding: 3rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  background-color: white;
+}
+
+.feature {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: #1a1a2e;
+}
+
+.feature-text {
+  color: #666;
+}
+
+/* Secció CTA */
+.cta {
+  background-color: #800040; /* Color burdeos */
+  color: white;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.cta-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.cta-text {
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: white;
+  color: #800040; /* Color burdeos */
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.cta-button:hover {
+  background-color: #f8f8f8;
+  transform: scale(1.05);
+}
+
+/* Media Queries per a tablet i desktop */
+@media (min-width: 768px) {
+  .features {
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .page-header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  
-  .page-header h1 {
+  .hero-title {
     font-size: 2.5rem;
-    color: #e50914;
-    margin-bottom: 10px;
   }
   
-  .subtitle {
+  .hero-subtitle {
     font-size: 1.5rem;
-    color: #333;
+  }
+}
+
+@media (min-width: 1024px) {
+  .features {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 4rem 2rem;
   }
   
-  .sessions-section {
-    margin-bottom: 40px;
+  .hero-title {
+    font-size: 3rem;
   }
   
-  .loading, .error-message, .no-sessions {
-    text-align: center;
-    padding: 40px;
-    font-size: 1.2rem;
-    background-color: #f5f5f5;
-    border-radius: 8px;
+  .hero {
+    max-height: 80vh;
   }
   
-  .error-message {
-    color: #e50914;
-  }
-  
-  .sessions-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  
-  .session-card {
-    display: flex;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .movie-image {
-    width: 200px;
-    height: 300px;
+  .hero-image {
+    height: 80vh;
     object-fit: cover;
   }
-  
-  .session-details {
-    padding: 20px;
-    flex: 1;
-  }
-  
-  .movie-title {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .session-date, .session-time {
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
-  .session-info {
-    display: flex;
-    gap: 15px;
-    margin: 10px 0;
-  }
-  
-  .year, .duration {
-    background-color: #f0f0f0;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-  
-  .special-day {
-    background-color: #ffe5e5;
-    color: #e50914;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    font-weight: bold;
-  }
-  
-  .description {
-    margin: 15px 0;
-    color: #666;
-    line-height: 1.5;
-  }
-  
-  .view-button {
-    background-color: #e50914;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .view-button:hover {
-    background-color: #c4070f;
-  }
-  
-  .debug-info {
-    margin-top: 50px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  }
-  
-  .debug-info h3 {
-    margin-bottom: 15px;
-  }
-  
-  .debug-button {
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    cursor: pointer;
-  }
-  
-  .debug-info pre {
-    background-color: #f0f0f0;
-    padding: 15px;
-    border-radius: 4px;
-    overflow-x: auto;
-    font-size: 0.8rem;
-  }
-  
-  /* Responsive */
-  @media (max-width: 700px) {
-    .session-card {
-      flex-direction: column;
-    }
-    
-    .movie-image {
-      width: 100%;
-      height: 200px;
-    }
-  }
-  </style>
+}
+</style>
