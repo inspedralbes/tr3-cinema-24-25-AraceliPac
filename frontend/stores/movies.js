@@ -11,7 +11,9 @@ export const useMoviesStore = defineStore('movies', {
         filters: {
             genre: null,
             search: ''
-        }
+        },
+        // Cache de actores por película
+        movieActors: {}
     }),
 
     getters: {
@@ -56,6 +58,11 @@ export const useMoviesStore = defineStore('movies', {
             });
 
             return Array.from(uniqueGenres.values());
+        },
+
+        // Obtiene los actores de una película específica del cache
+        getActorsByMovieId: (state) => (movieId) => {
+            return state.movieActors[movieId] || [];
         }
     },
 
@@ -112,12 +119,52 @@ export const useMoviesStore = defineStore('movies', {
                 if (response.status === 200) {
                     const data = await response.json();
                     this.currentMovie = data;
+
+                    // Si la película ya tiene actores básicos en la respuesta, los guardamos
+                    if (data.actors && Array.isArray(data.actors)) {
+                        this.movieActors[movieId] = data.actors;
+                    }
                 } else {
-                    throw new Error('Pel·lícula no trobada');
+                    throw new Error('Película no encontrada');
                 }
             } catch (error) {
                 this.error = error.message || 'Error desconocido';
                 console.error('Error en fetchMovieById:', error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        // Obtiene actores de una película específica usando el endpoint específico
+        async fetchMovieActors(movieId) {
+            // Si ya tenemos los actores en cache, no hacemos la petición
+            if (this.movieActors[movieId] && this.movieActors[movieId].length > 0) {
+                return this.movieActors[movieId];
+            }
+
+            this.isLoading = true;
+
+            try {
+                const response = await fetch(`http://localhost:8000/api/movies/${movieId}/actors`);
+
+                if (response.status === 200) {
+                    const data = await response.json();
+
+                    // Guardamos en el cache
+                    this.movieActors[movieId] = data;
+
+                    // Si tenemos la película actual cargada y es la misma, actualizamos sus actores
+                    if (this.currentMovie && this.currentMovie.id === movieId) {
+                        this.currentMovie.actors = data;
+                    }
+
+                    return data;
+                } else {
+                    throw new Error('Error obteniendo actores de la película');
+                }
+            } catch (error) {
+                console.error('Error en fetchMovieActors:', error);
+                return [];
             } finally {
                 this.isLoading = false;
             }
@@ -129,13 +176,22 @@ export const useMoviesStore = defineStore('movies', {
             this.error = null;
 
             try {
-                // Podemos usar el endpoint de búsqueda si tu API lo proporciona
-                // o alternativamente filtrar las películas ya descargadas
-                const response = await fetch(`http://localhost:8000/api/movies?search=${encodeURIComponent(searchTerm)}`);
+                // Podemos implementar la búsqueda en el frontend para evitar peticiones
+                // si ya tenemos todas las películas cargadas
+                if (this.hasMovies && searchTerm) {
+                    const searchTermLower = searchTerm.toLowerCase().trim();
+                    const results = this.movies.filter(movie =>
+                        movie.title.toLowerCase().includes(searchTermLower) ||
+                        movie.description.toLowerCase().includes(searchTermLower)
+                    );
+                    return results;
+                }
+
+                // Si no tenemos las películas o el término está vacío, hacemos una búsqueda general
+                const response = await fetch(`http://localhost:8000/api/movies`);
 
                 if (response.status === 200) {
                     const data = await response.json();
-                    // No sobrescribimos todas las películas, solo establecemos el resultado de búsqueda
                     return data;
                 } else {
                     throw new Error('Error en la búsqueda de películas');
@@ -151,16 +207,27 @@ export const useMoviesStore = defineStore('movies', {
 
         // Obtiene películas por género
         async fetchMoviesByGenre(genreId) {
+            // Podemos filtrar localmente si ya tenemos todas las películas
+            if (this.hasMovies && genreId) {
+                return this.movies.filter(movie => movie.genre_id === genreId);
+            }
+
             this.isLoading = true;
             this.error = null;
 
             try {
-                // Podemos usar un endpoint específico si tu API lo proporciona
-                const response = await fetch(`http://localhost:8000/api/genres/${genreId}/movies`);
+                // Como no tienes un endpoint específico para filtrar por género,
+                // obtenemos todas y filtramos en el frontend
+                const response = await fetch(`http://localhost:8000/api/movies`);
 
                 if (response.status === 200) {
                     const data = await response.json();
-                    return data;
+
+                    // Actualizamos nuestro estado con todas las películas
+                    this.movies = data;
+
+                    // Devolvemos solo las del género solicitado
+                    return data.filter(movie => movie.genre_id === genreId);
                 } else {
                     throw new Error('Error obteniendo películas por género');
                 }
@@ -173,32 +240,21 @@ export const useMoviesStore = defineStore('movies', {
             }
         },
 
-        // Obtiene las películas recientes o destacadas para mostrar en inicio
+        // Obtiene las películas destacadas
         async fetchFeaturedMovies() {
-            this.isLoading = true;
-            this.error = null;
-
-            try {
-                // Si tu API tiene un endpoint específico para películas destacadas o recientes, úsalo aquí
-                const response = await fetch('http://localhost:8000/api/movies?featured=1');
-
-                if (response.status === 200) {
-                    const data = await response.json();
-                    this.featuredMovies = data;
-                } else {
-                    throw new Error('Error obteniendo películas destacadas');
-                }
-            } catch (error) {
-                this.error = error.message || 'Error desconocido';
-                console.error('Error en fetchFeaturedMovies:', error);
-
-                // Si falla, intentamos usar las películas ya cargadas
-                if (this.movies.length > 0) {
-                    this.featuredMovies = this.movies.slice(0, 3);
-                }
-            } finally {
-                this.isLoading = false;
+            // Si ya tenemos películas, podemos seleccionar algunas como destacadas
+            if (this.hasMovies) {
+                // Por ejemplo, las 3 primeras o podríamos implementar alguna lógica de selección
+                this.featuredMovies = this.movies.slice(0, 3);
+                return this.featuredMovies;
             }
+
+            // Si no tenemos películas, las cargamos primero
+            await this.fetchMovies();
+
+            // Seleccionamos algunas como destacadas
+            this.featuredMovies = this.movies.slice(0, 3);
+            return this.featuredMovies;
         }
     }
 });

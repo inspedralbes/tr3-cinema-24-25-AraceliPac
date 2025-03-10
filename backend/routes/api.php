@@ -19,9 +19,15 @@ Route::apiResource('users', UserController::class); //temporal nomes fins posar 
 //rutes
 Route::apiResource('genres', GenreController::class);
 Route::apiResource('directors', DirectorController::class);
-Route::apiResource('movies', MovieController::class);
+// Route::apiResource('movies', MovieController::class);
 Route::apiResource('screenings', ScreeningController::class);
 Route::apiResource('actors', ActorController::class);
+Route::get('/movies', [MovieController::class, 'index']);
+Route::get('/movies/{id}', [MovieController::class, 'show']);
+Route::get('/movies/{id}/actors', [MovieController::class, 'getActors']);
+Route::post('/movies', [MovieController::class, 'store']);
+Route::put('/movies/{id}', [MovieController::class, 'update']);
+Route::delete('/movies/{id}', [MovieController::class, 'destroy']);
 // Rutes per a les butaques d'una sessió
 Route::prefix('screenings/{screening}')->group(function () {
     Route::get('/seats', [SeatController::class, 'index']); // Llistar butaques

@@ -9,7 +9,7 @@ class Movie extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'release_year', 'rating', 'duration','image', 'trailer', 'genre_id', 'director_id'];
+    protected $fillable = ['title', 'description', 'release_year', 'rating', 'duration', 'image', 'trailer', 'genre_id', 'director_id'];
 
     public function director()
     {
@@ -22,7 +22,8 @@ class Movie extends Model
     //relació muchos a muchos 
     public function actors()
     {
-        return $this->belongsToMany(Actor::class);
+        return $this->belongsToMany(Actor::class, 'movie_actor', 'movie_id', 'actor_id')
+            ->select('actors.id', 'actors.name', 'actors.lastname');
     }
     public function genre()
     {

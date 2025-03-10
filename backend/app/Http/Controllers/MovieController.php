@@ -1,43 +1,65 @@
 <?php
 
-// app/Http/Controllers/MovieController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
-use App\Models\Genre;
-use App\Models\Director;
+use App\Models\Actor;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
     /**
-     * Mostra una llista de totes les pel·lícules.
+     * Listar todas las películas con información básica de actores.
      */
     public function index()
     {
-        $movies = Movie::with(['genre', 'director'])->get(); // Obté totes les pel·lícules amb les relacions
-        return response()->json($movies); // Retorna la llista de pel·lícules en format JSON
+        // Obtener todas las películas con información básica de actores (id, nombre, apellido)
+        $movies = Movie::with(['genre', 'director', 'actors' => function ($query) {
+            $query->select('actors.id', 'actors.name', 'actors.lastname'); // Especifica las columnas de la tabla actors
+        }])->get();
+
+        return response()->json($movies);
     }
 
     /**
-     * Mostra una pel·lícula específica.
+     * Obtener una película específica con todos los detalles de los actores.
      */
     public function show($id)
     {
-        $movie = Movie::with(['genre', 'director'])->find($id); // Busca la pel·lícula per ID amb les relacions
+        // Obtener la película con todos los detalles de los actores
+        $movie = Movie::with(['genre', 'director', 'actors'])->find($id);
+
         if (!$movie) {
-            return response()->json(['message' => 'Pel·lícula no trobada'], 404); // Retorna error si no es troba
+            return response()->json(['message' => 'Película no encontrada'], 404);
         }
-        return response()->json($movie); // Retorna la pel·lícula en format JSON
+
+        return response()->json($movie);
     }
 
     /**
-     * Crea una nova pel·lícula.
+     * Obtener solo los actores de una película específica.
+     */
+    public function getActors($id)
+    {
+        // Buscar la película
+        $movie = Movie::find($id);
+
+        if (!$movie) {
+            return response()->json(['message' => 'Película no encontrada'], 404);
+        }
+
+        // Obtener los actores de la película con columnas específicas
+        $actors = $movie->actors()->select('actors.id', 'actors.name', 'actors.lastname')->get();
+
+        return response()->json($actors);
+    }
+
+    /**
+     * Crear una nueva película.
      */
     public function store(Request $request)
     {
-        // Valida les dades de la sol·licitud
+        // Validar los datos de la solicitud
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -48,9 +70,11 @@ class MovieController extends Controller
             'trailer' => 'nullable|string',
             'genre_id' => 'required|exists:genres,id',
             'director_id' => 'required|exists:directors,id',
+            'actor_ids' => 'nullable|array', // Lista de IDs de actores
+            'actor_ids.*' => 'exists:actors,id', // Cada ID debe existir en la tabla actors
         ]);
 
-        // Crea la pel·lícula
+        // Crear la película
         $movie = Movie::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -63,20 +87,26 @@ class MovieController extends Controller
             'director_id' => $request->director_id,
         ]);
 
-        return response()->json($movie, 201); // Retorna la pel·lícula creada en format JSON
+        // Asociar los actores a la película
+        if ($request->has('actor_ids')) {
+            $movie->actors()->attach($request->actor_ids);
+        }
+
+        return response()->json($movie, 201);
     }
 
     /**
-     * Actualitza una pel·lícula existent.
+     * Actualizar una película existente.
      */
     public function update(Request $request, $id)
     {
-        $movie = Movie::find($id); // Busca la pel·lícula per ID
+        $movie = Movie::find($id);
+
         if (!$movie) {
-            return response()->json(['message' => 'Pel·lícula no trobada'], 404); // Retorna error si no es troba
+            return response()->json(['message' => 'Película no encontrada'], 404);
         }
 
-        // Valida les dades de la sol·licitud
+        // Validar los datos de la solicitud
         $request->validate([
             'title' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
@@ -87,52 +117,44 @@ class MovieController extends Controller
             'trailer' => 'nullable|string',
             'genre_id' => 'sometimes|exists:genres,id',
             'director_id' => 'sometimes|exists:directors,id',
+            'actor_ids' => 'nullable|array', // Lista de IDs de actores
+            'actor_ids.*' => 'exists:actors,id', // Cada ID debe existir en la tabla actors
         ]);
 
-        // Actualitza la pel·lícula
-        if ($request->has('title')) {
-            $movie->title = $request->title;
-        }
-        if ($request->has('description')) {
-            $movie->description = $request->description;
-        }
-        if ($request->has('release_year')) {
-            $movie->release_year = $request->release_year;
-        }
-        if ($request->has('rating')) {
-            $movie->rating = $request->rating;
-        }
-        if ($request->has('duration')) {
-            $movie->duration = $request->duration;
-        }
-        if ($request->has('image')) {
-            $movie->image = $request->image;
-        }
-        if ($request->has('trailer')) {
-            $movie->trailer = $request->trailer;
-        }
-        if ($request->has('genre_id')) {
-            $movie->genre_id = $request->genre_id;
-        }
-        if ($request->has('director_id')) {
-            $movie->director_id = $request->director_id;
-        }
+        // Actualizar los campos de la película
+        $movie->fill($request->only([
+            'title',
+            'description',
+            'release_year',
+            'rating',
+            'duration',
+            'image',
+            'trailer',
+            'genre_id',
+            'director_id'
+        ]));
         $movie->save();
 
-        return response()->json($movie); // Retorna la pel·lícula actualitzada en format JSON
+        // Sincronizar los actores asociados a la película
+        if ($request->has('actor_ids')) {
+            $movie->actors()->sync($request->actor_ids);
+        }
+
+        return response()->json($movie);
     }
 
     /**
-     * Elimina una pel·lícula.
+     * Eliminar una película.
      */
     public function destroy($id)
     {
-        $movie = Movie::find($id); // Busca la pel·lícula per ID
+        $movie = Movie::find($id);
+
         if (!$movie) {
-            return response()->json(['message' => 'Pel·lícula no trobada'], 404); // Retorna error si no es troba
+            return response()->json(['message' => 'Película no encontrada'], 404);
         }
 
-        $movie->delete(); // Elimina la pel·lícula
-        return response()->json(['message' => 'Pel·lícula eliminada correctament']); // Retorna missatge d'èxit
+        $movie->delete();
+        return response()->json(['message' => 'Película eliminada correctamente']);
     }
 }
