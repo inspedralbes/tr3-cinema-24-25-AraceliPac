@@ -72,10 +72,7 @@
   });
   
   const goToMovieDetail = () => {
-    router.push({ 
-      name: 'pelicules/movie-details', 
-      params: { id: props.movie.id } 
-    });
+    router.push(`/pelicules/movie-details/${props.movie.id}`);
   };
   </script>
   
