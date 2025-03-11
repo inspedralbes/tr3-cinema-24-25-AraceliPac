@@ -7,37 +7,39 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Seat;
 use App\Models\Screening;
-use Carbon\Carbon;
 
 class SeatSeeder extends Seeder
 {
     /**
-     * Executa el seeder.
+     * Ejecuta el seeder.
      */
     public function run()
     {
-        // Obté una sessió existent (o crea'n una si no existeix)
-        $screening = Screening::firstOrCreate([
-            'movie_id' => 1, // ID de la pel·lícula
-            'screening_date' => Carbon::today()->toDateString(), // Avui
-            'screening_time' => '16:00',
-            'is_special_day' => false,
-        ]);
+        // Obtenemos todas las sesiones de la base de datos
+        $screenings = Screening::all();
 
-        // Defineix les files (A-L) i les butaques (1-10)
+        // Define las filas (A-L) y los números de asiento (1-10)
         $rows = range('A', 'L');
         $numbers = range(1, 10);
 
-        // Crea les butaques per a la sessió
-        foreach ($rows as $row) {
-            foreach ($numbers as $number) {
-                Seat::create([
-                    'screening_id' => $screening->id,
-                    'row' => $row,
-                    'number' => $number,
-                    'is_vip' => ($row === 'F'), // Fila F és VIP
-                    'is_occupied' => false, // Per defecte, no ocupada
-                ]);
+        // Para cada sesión, crea los asientos correspondientes
+        foreach ($screenings as $screening) {
+            // Opcional: Si ya existen asientos para esta sesión, se puede saltar para evitar duplicados
+            if ($screening->seats()->count() > 0) {
+                continue;
+            }
+
+            foreach ($rows as $row) {
+                foreach ($numbers as $number) {
+                    Seat::create([
+                        'screening_id' => $screening->id,
+                        'row' => $row,
+                        'number' => $number,
+                        // Se considera VIP si la fila es 'F'
+                        'is_vip' => ($row === 'F'),
+                        'is_occupied' => false, // Por defecto, el asiento no está ocupado
+                    ]);
+                }
             }
         }
     }

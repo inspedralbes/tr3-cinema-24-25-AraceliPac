@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('screening_date'); // Data de la sessió
             $table->time('screening_time'); // Hora de la sessió (16:00, 18:00, 20:00)
             $table->boolean('is_special_day')->default(false); // És un dia de l'espectador?
+            $table->boolean('is_full')->default(false); // Està ple?
             $table->timestamps();
         });
     }

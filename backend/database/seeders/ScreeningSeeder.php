@@ -1,7 +1,6 @@
 <?php
 
 // database/seeders/ScreeningSeeder.php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -12,47 +11,34 @@ use Carbon\Carbon;
 class ScreeningSeeder extends Seeder
 {
     /**
-     * Executa el seeder.
+     * Ejecuta el seeder.
      */
     public function run()
     {
-        // Defineix les sessions inicials
-        $screenings = [
-            [
-                'movie_id' => Movie::where('title', 'Capitán América: Brave New World')->first()->id,
-                'screening_date' => Carbon::today()->addDays(1)->toDateString(), // Demà
-                'screening_time' => '16:00',
-                'is_special_day' => false,
-            ],
-            [
-                'movie_id' => Movie::where('title', 'Bridget Jones: Loca per ell')->first()->id,
-                'screening_date' => Carbon::today()->addDays(1)->toDateString(), // Demà
-                'screening_time' => '18:00',
-                'is_special_day' => false,
-            ],
-            [
-                'movie_id' => Movie::where('title', 'Paddington: Aventura en la selva')->first()->id,
-                'screening_date' => Carbon::today()->addDays(2)->toDateString(), // Demà passat
-                'screening_time' => '20:00',
-                'is_special_day' => true, // Dia de l'espectador
-            ],
-            [
-                'movie_id' => Movie::where('title', 'El secret del orfebre')->first()->id,
-                'screening_date' => Carbon::today()->addDays(3)->toDateString(), // 3 dies
-                'screening_time' => '16:00',
-                'is_special_day' => false,
-            ],
-            [
-                'movie_id' => Movie::where('title', 'The Monkey')->first()->id,
-                'screening_date' => Carbon::today()->addDays(3)->toDateString(), // 3 dies
-                'screening_time' => '18:00',
-                'is_special_day' => false,
-            ],
-        ];
+        // Define los horarios de sesión
+        $screeningTimes = ['16:00', '18:00', '20:00'];
+        // Define para cuántos días (a partir de mañana) se quiere crear las sesiones.
+        $days = [1, 2, 3];
 
-        // Insereix les sessions a la base de dades
-        foreach ($screenings as $screening) {
-            Screening::create($screening);
+        // Obtiene todas las películas de la base de datos
+        $movies = Movie::all();
+
+        // Para cada película y para cada día, crea las 3 sesiones
+        foreach ($movies as $movie) {
+            foreach ($days as $dayOffset) {
+                // Calcula la fecha de la sesión a partir de hoy (como instancia Carbon)
+                $screeningDate = Carbon::today()->addDays($dayOffset);
+                
+                foreach ($screeningTimes as $time) {
+                    Screening::create([
+                        'movie_id'       => $movie->id,
+                        'screening_date' => $screeningDate->toDateString(),
+                        'screening_time' => $time,
+                        // Si la fecha es miércoles se marca como día especial
+                        'is_special_day' => $screeningDate->isWednesday(),
+                    ]);
+                }
+            }
         }
     }
 }

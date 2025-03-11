@@ -101,7 +101,7 @@ const isMenuOpen = ref(false)
 const navItems = [
   { name: 'Inici', path: '/home' },
   { name: 'Cartelera', path: '/pelicules/cartelera' },
-  { name: 'Sessions', path: '/sessions' },
+  { name: 'Sessions', path: '/screenings' },
   { name: 'Preus', path: '/preus' }
 ]
 

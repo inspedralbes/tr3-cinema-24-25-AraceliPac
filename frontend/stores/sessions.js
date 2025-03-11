@@ -1,16 +1,19 @@
-// stores/sessions.js
 import { defineStore } from 'pinia';
 
 export const useSessionsStore = defineStore('sessions', {
   state: () => ({
-    upcomingSessions: [],
-    currentSession: null,
-    isLoading: false,
-    error: null
+    upcomingSessions: [], // Sesiones próximas
+    currentSession: null, // Sesión actual seleccionada
+    sessionSeats: [], // Asientos de la sesión actual
+    isLoading: false, // Estado de carga
+    error: null, // Mensaje de error
   }),
-  
+
   getters: {
+    // Verifica si hay sesiones próximas
     hasUpcomingSessions: (state) => state.upcomingSessions.length > 0,
+
+    // Formatea las sesiones próximas con fechas y horas legibles
     formattedUpcomingSessions: (state) => {
       return state.upcomingSessions.map(session => {
         const sessionDate = new Date(session.screening_date);
@@ -19,34 +22,101 @@ export const useSessionsStore = defineStore('sessions', {
           formattedDate: sessionDate.toLocaleDateString('ca-ES', {
             weekday: 'long',
             day: 'numeric',
-            month: 'long'
+            month: 'long',
           }),
-          formattedTime: session.screening_time.substring(0, 5), // Quitamos los segundos de HH:MM:SS
-          isSpecialDay: session.is_special_day === 1
+          formattedTime: session.screening_time.substring(0, 5), // Formato HH:MM
+          isSpecialDay: session.is_special_day === 1, // Día especial
         };
       });
     },
-    availableSeats: (state) => {
-      if (!state.currentSession) return 0;
-      const totalSeats = 120; // 12 filas x 10 butaques
-      return totalSeats - (state.currentSession.occupiedSeats || []).length;
-    }
+
+    // Calcula los asientos disponibles para la sesión actual
+
+    availableSeatsMap: (state) => {
+      const seatsMap = {
+        rows: {},
+        totalAvailable: 0,
+        totalOccupied: 0,
+        vipAvailable: 0,
+        normalAvailable: 0,
+      };
+
+      // Debug
+      console.log("sessionSeats en getter:", state.sessionSeats);
+
+      // Verificación adicional
+      if (!state.sessionSeats || !Array.isArray(state.sessionSeats) || state.sessionSeats.length === 0) {
+        console.warn("No hay asientos disponibles o format incorrecto:", state.sessionSeats);
+        return seatsMap;
+      }
+
+      // Procesar los asientos
+      state.sessionSeats.forEach(seat => {
+        // Verificar que el asiento es válido
+        if (!seat || typeof seat !== 'object' || !seat.row) {
+          console.warn("Asiento inválido:", seat);
+          return; // Saltar este asiento
+        }
+
+        if (!seatsMap.rows[seat.row]) {
+          seatsMap.rows[seat.row] = [];
+        }
+
+        seatsMap.rows[seat.row].push(seat);
+
+        // Contabilizar asientos - convertir a números para comparaciones
+        const isOccupied = seat.is_occupied == 1 || seat.is_occupied === true;
+        const isVip = seat.is_vip == 1 || seat.is_vip === true;
+
+        if (!isOccupied) {
+          seatsMap.totalAvailable++;
+          if (isVip) {
+            seatsMap.vipAvailable++;
+          } else {
+            seatsMap.normalAvailable++;
+          }
+        } else {
+          seatsMap.totalOccupied++;
+        }
+      });
+
+      // Ordenar las filas alfabéticamente y los asientos por número
+      Object.keys(seatsMap.rows).forEach(row => {
+        seatsMap.rows[row].sort((a, b) => a.number - b.number);
+      });
+
+      return seatsMap;
+    },
+    // Busca una sesión por su ID
+    sessionById: (state) => (id) => {
+      return state.upcomingSessions.find(session => session.id === id);
+    },
+
+    // Filtra sesiones por día (formato "YYYY-MM-DD")
+    sessionsByDay: (state) => (date) => {
+      return state.upcomingSessions.filter(session => session.screening_date === date);
+    },
+
+    // Filtra sesiones por hora (formato "HH:MM")
+    sessionsByHour: (state) => (time) => {
+      return state.upcomingSessions.filter(session => session.screening_time.startsWith(time));
+    },
   },
-  
+
   actions: {
+    // Obtiene las sesiones próximas desde la API
     async fetchUpcomingSessions() {
       this.isLoading = true;
       this.error = null;
-      
+
       try {
-        // Llamada a la API real
         const response = await fetch('http://localhost:8000/api/screenings');
-        
         if (response.status === 200) {
           const data = await response.json();
           this.upcomingSessions = data;
         } else {
-          throw new Error('Error obteniendo las sesiones');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Error obteniendo las sesiones');
         }
       } catch (error) {
         this.error = error.message || 'Error desconocido';
@@ -55,39 +125,23 @@ export const useSessionsStore = defineStore('sessions', {
         this.isLoading = false;
       }
     },
-    
+
+    // Obtiene una sesión específica por su ID
     async fetchSessionById(sessionId) {
       this.isLoading = true;
       this.error = null;
-      
+    
       try {
-        // En un entorno real, aquí harías una llamada a la API
-        // Ejemplo: const response = await fetch(`/api/sessions/${sessionId}`);
-        
-        // Simulamos la respuesta para el ejemplo
-        const response = await new Promise(resolve => {
-          setTimeout(() => {
-            const foundSession = this.upcomingSessions.find(session => session.id == sessionId);
-            if (foundSession) {
-              resolve({
-                status: 200,
-                json: () => Promise.resolve({ session: foundSession })
-              });
-            } else {
-              resolve({
-                status: 404,
-                json: () => Promise.resolve({ error: 'Sessió no trobada' })
-              });
-            }
-          }, 500);
-        });
+        const response = await fetch(`http://localhost:8000/api/screenings/${sessionId}`);
         
         if (response.status === 200) {
           const data = await response.json();
-          this.currentSession = data.session;
+          console.log("Session API response:", data);
+          
+          // La API devuelve directamente el objeto de sesión
+          this.currentSession = data;
         } else {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Error obteniendo la sesión');
+          throw new Error('Error obteniendo la sesión');
         }
       } catch (error) {
         this.error = error.message || 'Error desconocido';
@@ -96,77 +150,103 @@ export const useSessionsStore = defineStore('sessions', {
         this.isLoading = false;
       }
     },
-    
-    async bookSeats(sessionId, seats, userData) {
+
+    // Obtiene los asientos de una sesión específica
+    async fetchSessionSeats(sessionId) {
       this.isLoading = true;
       this.error = null;
-      
+
       try {
-        // En un entorno real, aquí harías una llamada a la API
-        // Ejemplo: const response = await fetch('/api/bookings', {
-        //   method: 'POST',
-        //   body: JSON.stringify({ sessionId, seats, userData }),
-        // });
-        
-        // Simulamos la respuesta para el ejemplo
-        const response = await new Promise(resolve => {
-          setTimeout(() => {
-            // Verificar si el usuario ya tiene entradas para esta sesión
-            const hasExistingBooking = Math.random() > 0.8; // Simulación
-            
-            if (hasExistingBooking) {
-              resolve({
-                status: 400,
-                json: () => Promise.resolve({ 
-                  error: 'Ja tens entrades per a aquesta sessió',
-                  existingBooking: {
-                    seats: ['C3', 'C4'],
-                    date: '2025-03-08',
-                    time: '16:00'
-                  }
-                })
-              });
-            } else {
-              resolve({
-                status: 200,
-                json: () => Promise.resolve({ 
-                  success: true,
-                  bookingReference: 'REF-' + Math.floor(Math.random() * 1000000),
-                  seats
-                })
-              });
-            }
-          }, 1000);
+        const response = await fetch(`http://localhost:8000/api/screenings/${sessionId}/seats`);
+        if (response.status === 200) {
+          console.log('API Response:', response);
+          // Asegurémonos de que los datos se procesen correctamente
+          const data = await response.json();
+          console.log('API Data:', data);
+
+          // Si los datos vienen directamente como un array, asignarlo directamente
+          if (Array.isArray(data)) {
+            this.sessionSeats = data;
+          } else if (data.data && Array.isArray(data.data)) {
+            // Si los datos vienen dentro de una propiedad "data"
+            this.sessionSeats = data.data;
+          } else {
+            // Si no está claro cómo vienen los datos, logeamos y usamos lo que tenemos
+            console.warn('Estructura de datos no reconocida:', data);
+            this.sessionSeats = data;
+          }
+
+          console.log('Session Seats después de asignar:', this.sessionSeats);
+        } else {
+          throw new Error('Error obteniendo los asientos de la sesión');
+        }
+      } catch (error) {
+        this.error = error.message || 'Error desconocido';
+        console.error('Error en fetchSessionSeats:', error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    // Calcula el precio de un asiento
+    getSeatPrice(seat, isSpecialDay = false) {
+      if (!seat) throw new Error('Asiento no válido');
+
+      const isVip = seat.is_vip === 1 || seat.is_vip === true;
+
+      if (isSpecialDay) {
+        return isVip ? 6 : 4; // Día del espectador
+      } else {
+        return isVip ? 8 : 6; // Precio normal
+      }
+    },
+
+    // Reserva asientos para una sesión
+    async bookSeats(sessionId, seatIds, userData) {
+      this.isLoading = true;
+      this.error = null;
+
+      try {
+        const bookingData = {
+          sessionId,
+          seatIds,
+          userData,
+        };
+
+        const response = await fetch('http://localhost:8000/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(bookingData),
         });
-        
+
         if (response.status === 200) {
           const data = await response.json();
-          // Actualizamos el estado si es necesario
-          if (this.currentSession && this.currentSession.id == sessionId) {
-            const updatedOccupiedSeats = [
-              ...(this.currentSession.occupiedSeats || []),
-              ...seats
-            ];
-            this.currentSession = {
-              ...this.currentSession,
-              occupiedSeats: updatedOccupiedSeats
-            };
+          // Actualiza los asientos como ocupados
+          if (this.sessionSeats && this.sessionSeats.length > 0) {
+            this.sessionSeats = this.sessionSeats.map(seat => {
+              if (seatIds.includes(seat.id)) {
+                return { ...seat, is_occupied: 1 };
+              }
+              return seat;
+            });
           }
           return data;
         } else {
           const errorData = await response.json();
           throw {
             message: errorData.error || 'Error realizando la reserva',
-            existingBooking: errorData.existingBooking
+            details: errorData.details,
           };
         }
       } catch (error) {
         this.error = error.message || 'Error desconocido';
         console.error('Error en bookSeats:', error);
-        throw error; // Re-lanzamos el error para manejarlo en el componente
+        throw error;
       } finally {
         this.isLoading = false;
       }
-    }
-  }
+    },
+  },
 });
