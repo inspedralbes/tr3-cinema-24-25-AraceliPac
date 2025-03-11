@@ -56,15 +56,23 @@
                   <span class="availability-label">Total Disponibles</span>
                 </div>
               </div>
+
+              <!-- Información de asientos seleccionados y total a pagar -->
+              <div class="selected-seats-info">
+                <h3>Butaques Seleccionades: {{ selectedSeats.length }}</h3>
+                <h3>Total a Pagar: {{ totalPrice }}€</h3>
+                <button 
+                  @click="buyTickets" 
+                  class="select-seats-button"
+                  :disabled="selectedSeats.length === 0 || selectedSeats.length > 10"
+                >
+                  Comprar entrades
+                </button>
+                <p v-if="selectedSeats.length > 10" class="error-message">
+                  Has arribat al límit de 10 entrades per usuari.
+                </p>
+              </div>
             </div>
-            
-            <button 
-              @click="goToSeatSelection" 
-              class="select-seats-button"
-              :disabled="!seatsMap.totalAvailable"
-            >
-              Seleccionar butaques
-            </button>
           </div>
         </div>
         
@@ -88,8 +96,10 @@
                   :key="`${seat.row}-${seat.number}`" 
                   :class="['seat', { 
                     'seat-vip': seat.is_vip == 1, 
-                    'seat-occupied': seat.is_occupied == 1 
+                    'seat-occupied': seat.is_occupied == 1,
+                    'seat-selected': selectedSeats.some(s => s.row === seat.row && s.number === seat.number)
                   }]"
+                  @click="handleSeatSelection(seat)"
                 >
                   {{ seat.number }}
                 </div>
@@ -101,7 +111,7 @@
           
           <div class="seat-legend">
             <div class="legend-item">
-              <div class="legend-seat"></div>
+              <div class="legend-seat seat-available"></div>
               <span>Disponible</span>
             </div>
             <div class="legend-item">
@@ -111,6 +121,10 @@
             <div class="legend-item">
               <div class="legend-seat seat-occupied"></div>
               <span>Ocupada</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-seat seat-selected"></div>
+              <span>Seleccionada</span>
             </div>
           </div>
         </div>
@@ -135,6 +149,8 @@ const error = ref(null);
 const loadingSeats = ref(false);
 const session = ref(null);
 const seatsLoaded = ref(false);
+const selectedSeats = ref([]);
+const totalPrice = ref(0);
 
 // Session ID de la ruta
 const sessionId = computed(() => route.params.id);
@@ -151,7 +167,7 @@ const loadSessionData = async () => {
     
     // Verificar si se cargó la sesión
     if (!sessionsStore.currentSession) {
-      throw new Error('No se pudo cargar la información de la sesión');
+      throw new Error('No es va poder carregar la informació de la sessió');
     }
     
     // Formatear la sesión
@@ -171,23 +187,23 @@ const loadSessionData = async () => {
     loadingSeats.value = true;
     await sessionsStore.fetchSessionSeats(sessionId.value);
     seatsLoaded.value = true;
-    console.log("Seats loaded:", sessionsStore.sessionSeats);
+    console.log("Butaques carregades:", sessionsStore.sessionSeats);
   } catch (err) {
     error.value = 'Error al carregar les dades de la sessió';
-    console.error('Error loading session data:', err);
+    console.error('Error carregant dades de la sessió:', err);
   } finally {
     loading.value = false;
     loadingSeats.value = false;
   }
 };
+
 // Mapa de asientos disponibles
-// En el computed property de seatsMap
 const seatsMap = computed(() => {
   const map = sessionsStore.availableSeatsMap;
-  console.log("Computed seatsMap:", map);
+  console.log("Mapa de butaques:", map);
   // Comprobar si tenemos datos válidos
   if (!map || typeof map !== 'object') {
-    console.warn('seatsMap no es un objeto válido:', map);
+    console.warn('El mapa de butaques no és un objecte vàlid:', map);
     return {
       rows: {},
       totalAvailable: 0,
@@ -210,9 +226,35 @@ const rowLabels = computed(() => {
   return rows.sort();
 });
 
-// Ir a la selección de asientos
-const goToSeatSelection = () => {
-  router.push(`/sessions/${sessionId.value}/seats`);
+// Manejar la selección de asientos
+const handleSeatSelection = (seat) => {
+  if (seat.is_occupied) return; // No permitir seleccionar asientos ocupados
+
+  const seatIndex = selectedSeats.value.findIndex(s => s.row === seat.row && s.number === seat.number);
+
+  if (seatIndex === -1) {
+    // Si el asiento no está seleccionado, lo añadimos (si no se ha alcanzado el límite de 10)
+    if (selectedSeats.value.length < 10) {
+      selectedSeats.value.push(seat);
+      totalPrice.value += session.value.isSpecialDay ? (seat.is_vip ? 6 : 4) : (seat.is_vip ? 8 : 6);
+    }
+  } else {
+    // Si el asiento ya está seleccionado, lo eliminamos
+    selectedSeats.value.splice(seatIndex, 1);
+    totalPrice.value -= session.value.isSpecialDay ? (seat.is_vip ? 6 : 4) : (seat.is_vip ? 8 : 6);
+  }
+};
+
+// Función para comprar entradas
+const buyTickets = () => {
+  if (selectedSeats.value.length === 0 || selectedSeats.value.length > 10) return;
+
+  // Aquí podrías enviar los asientos seleccionados al servidor
+  console.log("Asientos seleccionados:", selectedSeats.value);
+  console.log("Total a pagar:", totalPrice.value);
+
+  // Redirigir a la página de confirmación
+  router.push(`/sessions/${sessionId.value}/confirmation`);
 };
 
 // Cargar datos al montar el componente
@@ -405,20 +447,28 @@ watch(() => sessionId.value, () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e6e6e6;
-  border: 1px solid #ccc;
+  background-color: #008f4c; /* Verde para butaques disponibles */
+  border: 1px solid #008f4c;
   border-radius: 4px;
   font-size: 0.8rem;
+  color: white;
+  cursor: pointer;
 }
 
 .seat-vip {
-  background-color: #f2e6eb;
-  border: 1px dashed #800040;
+  background-color: #D4AF37; /* Amarillo para butaques VIP */
+  border: 1px solid #FFC107;
 }
 
 .seat-occupied {
-  background-color: #ccc;
-  color: #888;
+  background-color: #a2231d; /* Rojo para butaques ocupades */
+  border: 1px solid #a2231d;
+  cursor: not-allowed;
+}
+
+.seat-selected {
+  background-color: #800040; /* Morado para asientos seleccionados */
+  border: 1px solid #800040;
 }
 
 .seat-legend {
@@ -437,9 +487,43 @@ watch(() => sessionId.value, () => {
 .legend-seat {
   width: 20px;
   height: 20px;
-  background-color: #e6e6e6;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.legend-seat.seat-available {
+  background-color: #008f4c; /* Verde para disponible */
+}
+
+.legend-seat.seat-vip {
+  background-color: #D4AF37; /* Amarillo para VIP */
+}
+
+.legend-seat.seat-occupied {
+  background-color: #a2231d; /* Rojo para ocupada */
+}
+
+.legend-seat.seat-selected {
+  background-color: #800040; /* Morado para seleccionada */
+}
+
+/* Información de asientos seleccionados */
+.selected-seats-info {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.selected-seats-info h3 {
+  margin-bottom: 10px;
+  color: #800040;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 
 /* Media queries para responsividad */
@@ -457,6 +541,24 @@ watch(() => sessionId.value, () => {
   .availability-stats {
     flex-direction: column;
     gap: 10px;
+  }
+
+  .seating-grid {
+    gap: 5px;
+  }
+
+  .seat {
+    width: 25px;
+    height: 25px;
+    font-size: 0.7rem;
+  }
+
+  .selected-seats-info {
+    padding: 10px;
+  }
+
+  .selected-seats-info h3 {
+    font-size: 1rem;
   }
 }
 </style>
