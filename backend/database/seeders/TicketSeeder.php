@@ -18,6 +18,7 @@ class TicketSeeder extends Seeder
         // Obtenemos el primer usuario y la primera sesión disponibles
         $user = User::first();
         $screening = Screening::find(6);
+        $rows = range('A', 'L');
 
         // Si no existe un usuario o una sesión, lanzamos una excepción
         if (!$user || !$screening) {
@@ -31,7 +32,9 @@ class TicketSeeder extends Seeder
         if (!$seat) {
             $seat = Seat::create([
                 'screening_id' => $screening->id,
-                'is_vip' => false, // Puedes modificar esto según tu lógica (true/false)
+                'row' => $rows[array_rand($rows)],
+                'number' => rand(1, 10), // Añadimos el número de asiento
+                'is_vip' => false,
             ]);
         }
 

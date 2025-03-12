@@ -33,6 +33,7 @@ Route::prefix('screenings/{screening}')->group(function () {
     Route::get('/seats', [SeatController::class, 'index']); // Llistar butaques
     Route::post('/seats', [SeatController::class, 'store']); // Crear butaca
 });
+// routes/api.php
 
 // Rutes per a una butaca específica
 Route::apiResource('seats', SeatController::class)->except(['index', 'store']);

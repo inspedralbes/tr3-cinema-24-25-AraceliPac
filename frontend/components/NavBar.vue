@@ -2,14 +2,16 @@
   <nav class="bg-[#800040] shadow-md w-full">
     <div class="container mx-auto px-4">
       <div class="flex justify-between items-center py-3">
-        <!-- Logo -->
+        <!-- Logo y título como enlaces a la ruta principal -->
         <div class="flex items-center">
-          <nuxt-img 
-            src="../public/images/cine.svg" 
-            alt="Cine Pedralbes" 
-            class="h-20 md:h-24"
-          />
-          <h1 class="ml-2 text-[#D4AF37] text-xxxl md:text-3xl hidden sm:block retro-text">Cine Pedralbes</h1>
+          <NuxtLink to="/" class="flex items-center">
+            <nuxt-img 
+              src="../public/images/cine.svg" 
+              alt="Cine Pedralbes" 
+              class="h-20 md:h-24"
+            />
+            <h1 class="ml-2 text-[#D4AF37] text-xxxl md:text-3xl hidden sm:block retro-text">Cine Pedralbes</h1>
+          </NuxtLink>
         </div>
 
         <!-- Navegació mòbil (hamburger) -->
@@ -99,7 +101,7 @@ const isMenuOpen = ref(false)
 const navItems = [
   { name: 'Inici', path: '/home' },
   { name: 'Cartelera', path: '/pelicules/cartelera' },
-  { name: 'Sessions', path: '/sessions' },
+  { name: 'Sessions', path: '/screenings' },
   { name: 'Preus', path: '/preus' }
 ]
 
