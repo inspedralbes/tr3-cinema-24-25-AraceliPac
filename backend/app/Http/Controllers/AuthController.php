@@ -24,6 +24,8 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
+            'phone' => 'nullable|string|max:255',
+            'role_id' => 'nullable|integer|exists:roles,id',
         ]);
 
         // Comprobar si el usuario ya existe (opcional, ya lo valida unique)
@@ -37,6 +39,8 @@ class AuthController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'role_id' => $request->role_id,
         ]);
 
         // Generar token de autenticación (si lo usas)
@@ -126,6 +130,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
+                'phone' => $user->phone,
             ]);
         } else {
             return response()->json(['message' => 'Usuario no autenticado'], 401);

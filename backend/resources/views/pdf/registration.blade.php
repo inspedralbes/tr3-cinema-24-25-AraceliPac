@@ -116,13 +116,13 @@
         </div>
         
         <div class="subheader">
-            Cinema {{ config('app.name') }} - La millor experiència cinematogràfica
+             {{ config('app.name') }} - La millor experiència cinematogràfica
         </div>
         
         <div class="content">
             <div class="info">
                 <span class="info-label">Nom:</span>
-                <span class="info-value">{{ $user->name }}</span>
+                <span class="info-value">{{ $user->name }} {{ $user->last_name }}  </span>
             </div>
             
             <div class="info">
