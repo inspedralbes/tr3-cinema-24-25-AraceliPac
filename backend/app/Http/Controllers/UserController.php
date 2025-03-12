@@ -32,6 +32,7 @@ class UserController extends Controller
         // Valida les dades de la sol·licitud
         $request->validate([
             'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
@@ -39,6 +40,7 @@ class UserController extends Controller
         // Crea l'usuari
         $user = User::create([
             'name' => $request->name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => bcrypt($request->password), // Xifra la contrasenya
         ]);
@@ -80,6 +82,7 @@ class UserController extends Controller
         // Valida les dades de la sol·licitud
         $request->validate([
             'name' => 'sometimes|string|max:255',
+            'last_name' => 'sometimes|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:8',
         ]);
@@ -87,6 +90,9 @@ class UserController extends Controller
         // Actualitza l'usuari
         if ($request->has('name')) {
             $user->name = $request->name;
+        }
+        if ($request->has('last_name')) {
+            $user->last_name = $request->last_name;
         }
         if ($request->has('email')) {
             $user->email = $request->email;

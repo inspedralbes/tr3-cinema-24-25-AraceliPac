@@ -10,11 +10,17 @@ use App\Http\Controllers\ScreeningController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ActorController;
+use App\Http\Controllers\AuthController;
 
 // Ruta que requiere autenticación con Sanctum
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+Route::post('/login', [AuthController::class, 'login']);  
+Route::post('/register', [AuthController::class, 'register']);
 Route::apiResource('users', UserController::class); //temporal nomes fins posar el middleware
 //rutes
 Route::apiResource('genres', GenreController::class);
