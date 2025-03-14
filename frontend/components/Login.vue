@@ -247,7 +247,7 @@ async function iniciarSessio() {
     }
     
     // Inicialització correcta - Guardem al store d'autenticació
-    console.log('Resposta login:', data); // Log para depuración
+    // console.log('Resposta login:', data); // Log para depuración
     
     // Verificamos que la respuesta contenga la información del usuario
     if (data.token) {
