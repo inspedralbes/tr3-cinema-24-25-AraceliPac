@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers;
-
 
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -86,10 +84,20 @@ class AuthController extends Controller
             ], 500);
         }
 
-        // Respuesta exitosa
-        return response()->json(['message' => 'Usuario registrado', 'token' => $token], 200);
+        // Respuesta exitosa - incluir los datos del usuario
+        return response()->json([
+            'message' => 'Usuario registrado', 
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role_id' => $user->role_id,
+            ]
+        ], 200);
     }
-
 
     public function login(Request $request)
     {
@@ -99,27 +107,31 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-
         // Intentar encontrar al usuario
         $user = User::where('email', $request->email)->first();
-
 
         // Verificar que el usuario existe y que la contraseña es correcta
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
-
         // Generar el token de autenticación
         $token = $user->createToken('authToken')->plainTextToken;
 
-
-        // Retornar el token y un mensaje de éxito
-        return response()->json(['message' => 'Login correcto', 'token' => $token], 200);
+        // Retornar el token, los datos del usuario y un mensaje de éxito
+        return response()->json([
+            'message' => 'Login correcto', 
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role_id' => $user->role_id,
+            ]
+        ], 200);
     }
-
-
-
 
     public function user(Request $request)
     {
@@ -127,16 +139,17 @@ class AuthController extends Controller
         //rescatar datos del usuario logueado
         if ($user) {
             return response()->json([
+                'id' => $user->id,
                 'name' => $user->name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
                 'phone' => $user->phone,
+                'role_id' => $user->role_id,
             ]);
         } else {
             return response()->json(['message' => 'Usuario no autenticado'], 401);
         }
     }
-
 
     public function logout(Request $request)
     {

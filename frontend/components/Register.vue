@@ -258,14 +258,26 @@
           </div>
         </div>
         
+        <!-- Missatge d'error general -->
+        <div v-if="errorMessage" class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-circle text-red-500"></i>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-red-700">{{ errorMessage }}</p>
+            </div>
+          </div>
+        </div>
+        
         <!-- Botó Registrar-se -->
         <div class="pt-4">
           <button 
             type="submit" 
-            :disabled="loading || !totesLesDadesValides"
+            :disabled="isLoading || !totesLesDadesValides"
             class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-lg shadow-lg text-white bg-gradient-to-r from-[#800040] to-[#9A0040] hover:from-[#9A0040] hover:to-[#B00040] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -281,13 +293,13 @@
           <p class="text-center text-[#800040] font-medium mb-4">
             Ja tens compte a Cinema Pedralbes?
           </p>
-            <button 
-            @click="goLogin" 
+          <NuxtLink
+            to="/login" 
             class="w-full flex justify-center items-center py-3 px-4 border-2 border-[#800040] rounded-lg shadow-md bg-white hover:bg-[#f8f9f9] transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] font-semibold text-[#800040] text-base"
-            >
+          >
             <i class="fas fa-sign-in-alt mr-2"></i>
             Iniciar sessió
-            </button>
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -295,14 +307,21 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-  
-const route = useRoute();
-  const router = useRouter();
-const goLogin = () => {
-    router.push(`/usuari/iniciSessio`);
-  };
+import { ref, reactive, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+
+// Store i router
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Comprova si l'usuari ja està autenticat
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    router.push('/');
+  }
+});
+
 // Dades del formulari
 const formData = reactive({
   name: '',
@@ -317,10 +336,11 @@ const formData = reactive({
 });
 
 // Estat del component
-const loading = ref(false);
+const isLoading = ref(false);
 const mostrarPassword = ref(false);
 const mostrarPasswordConfirmacio = ref(false);
 const errors = ref({});
+const errorMessage = ref('');
 const enviado = ref(false);
 
 // Validacions de la contrasenya
@@ -352,9 +372,10 @@ const totesLesDadesValides = computed(() =>
   formData.privacy_policy
 );
 
-// Funció per registrar l'usuari
+  // Funció per registrar l'usuari
 async function registrarUsuari() {
   enviado.value = true;
+  errorMessage.value = '';
   
   if (!totesLesDadesValides.value) {
     // Mostrar missatges d'error
@@ -365,7 +386,7 @@ async function registrarUsuari() {
   errors.value = {};
   
   // Activem l'estat de càrrega
-  loading.value = true;
+  isLoading.value = true;
   
   try {
     // Enviar les dades a l'API
@@ -385,35 +406,77 @@ async function registrarUsuari() {
         // Errors de validació
         errors.value = data.errors || {};
         
-        // Alert per errors de validació
-        alert("Error de validació: " + JSON.stringify(data.errors));
+        // Missatge d'error general
+        errorMessage.value = 'Hi ha errors en el formulari. Revisa els camps marcats.';
       } else {
         // Altres errors
         console.error('Error en el registre:', data);
-        
-        // Alert per altres errors
-        alert("Error en el registre: " + (data.message || 'Error desconegut'));
+        errorMessage.value = data.message || 'S\'ha produït un error en el registre. Torna-ho a provar més tard.';
       }
       return;
     }
     
-    // Mostrem un alert de confirmació quan el registre és exitós
-    alert("Registre completat correctament!");
+    console.log('Resposta registre:', data); // Log para depuración
     
-    // Guardem el token si existeix
+    // Si el registre és correcte i rebem token
     if (data.token) {
-      localStorage.setItem('authToken', data.token);
+      // Si la respuesta ya incluye los datos del usuario
+      if (data.user) {
+        authStore.setAuth(data.token, data.user);
+      } else {
+        try {
+          // Intentar obtener los datos del usuario con el token recibido
+          const userResponse = await fetch('http://localhost:8000/api/user', {
+            headers: {
+              'Authorization': `Bearer ${data.token}`,
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
+            console.log('Datos de usuario obtenidos:', userData);
+            authStore.setAuth(data.token, userData);
+          } else {
+            // Si no podemos obtener el usuario, usamos los datos del formulario
+            const userData = {
+              name: formData.name,
+              last_name: formData.last_name,
+              email: formData.email,
+              phone: formData.phone || '',
+              role_id: formData.role_id
+            };
+            authStore.setAuth(data.token, userData);
+          }
+        } catch (error) {
+          console.error('Error al obtener datos del usuario:', error);
+          // Usar los datos del formulario como respaldo
+          authStore.setAuth(data.token, {
+            name: formData.name,
+            last_name: formData.last_name,
+            email: formData.email,
+            phone: formData.phone || '',
+            role_id: formData.role_id
+          });
+        }
+      }
+      
+      // Redireccionem a la pàgina principal
+      router.push('/');
+    } else {
+      // Si no rebem token però el registre és correcte
+      errorMessage.value = 'Registre completat, però no s\'ha pogut iniciar sessió automàticament. Si us plau, inicia sessió.';
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
     }
-    
-    // Redireccionem a la pàgina principal o dashboard
-    navigateTo('/');
     
   } catch (error) {
     console.error('Error en fer la petició:', error);
-    alert("Error en la connexió amb l'API: " + (error.message || 'Error desconegut'));
+    errorMessage.value = 'Error de connexió amb el servidor. Comprova la teva connexió a internet i torna-ho a provar.';
   } finally {
     // Desactivem l'estat de càrrega
-    loading.value = false;
+    isLoading.value = false;
   }
 }
 </script>

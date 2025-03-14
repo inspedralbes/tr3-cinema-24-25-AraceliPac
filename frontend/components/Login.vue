@@ -31,7 +31,7 @@
               <input 
                 type="email" 
                 id="email" 
-                v-model="email" 
+                v-model="formData.email" 
                 required 
                 placeholder="El teu correu electrònic"
                 class="block w-full pl-10 pr-3 py-3.5 border-2 border-gray-200 rounded-lg bg-white text-[#800040] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#800040] transition-all shadow-sm hover:border-[#800040] placeholder-[#800040]/50"
@@ -52,7 +52,7 @@
               <input 
                 :type="mostrarPassword ? 'text' : 'password'" 
                 id="password" 
-                v-model="password" 
+                v-model="formData.password" 
                 required 
                 placeholder="La teva contrasenya"
                 class="block w-full pl-10 pr-10 py-3.5 border-2 border-gray-200 rounded-lg bg-white text-[#800040] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#800040] transition-all shadow-sm hover:border-[#800040] placeholder-[#800040]/50"
@@ -78,7 +78,7 @@
               id="remember-me" 
               name="remember-me" 
               type="checkbox" 
-              v-model="recordarMe"
+              v-model="formData.recordarMe"
               class="h-5 w-5 text-[#800040] focus:ring-[#D4AF37] border-gray-300 rounded-md"
             />
             <label for="remember-me" class="ml-3 block text-sm font-medium text-[#800040]">
@@ -92,14 +92,26 @@
           </div>
         </div>
         
+        <!-- Missatge d'error general -->
+        <div v-if="errorMessage" class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-circle text-red-500"></i>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-red-700">{{ errorMessage }}</p>
+            </div>
+          </div>
+        </div>
+        
         <!-- Botó Iniciar sessió -->
         <div class="pt-4">
           <button 
             type="submit" 
-            :disabled="loading"
+            :disabled="isLoading"
             class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-lg shadow-lg text-white bg-gradient-to-r from-[#800040] to-[#9A0040] hover:from-[#9A0040] hover:to-[#B00040] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -115,13 +127,13 @@
           <p class="text-center text-[#800040] font-medium mb-4">
             Encara no tens compte a Cinema Pedralbes?
           </p>
-          <router-link 
-            to="/usuari/registre" 
+          <NuxtLink 
+            to="/registre" 
             class="w-full flex justify-center items-center py-3 px-4 border-2 border-[#800040] rounded-lg shadow-md bg-white hover:bg-[#f8f9f9] transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] font-semibold text-[#800040] text-base"
           >
             <i class="fas fa-user-plus mr-2"></i>
             Registra't ara
-          </router-link>
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -129,82 +141,49 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
-const email = ref('');
-const password = ref('');
-const recordarMe = ref(false);
+// Store i router
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Dades del formulari
+const formData = reactive({
+  email: '',
+  password: '',
+  recordarMe: false
+});
+
+// Variables d'estat
 const mostrarPassword = ref(false);
-const loading = ref(false);
+const isLoading = ref(false);
+const errorMessage = ref('');
 const errors = ref({
   email: '',
   password: ''
 });
 
+// Comprova si l'usuari ja està autenticat
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    router.push('/');
+  }
+});
+
+
+// Funció per iniciar sessió
 async function iniciarSessio() {
   // Reiniciem els errors
-  errors.value = {
-    email: '',
-    password: ''
-  };
+  errors.value = { email: '', password: '' };
+  errorMessage.value = '';
   
   // Activem l'estat de càrrega
-  loading.value = true;
+  isLoading.value = true;
   
   try {
-    // Crida a l'API
-    const response = await loginApi();
-    
-    // Mostrem un alert de confirmació quan la connexió és exitosa
-    alert("Connexió amb l'API correcta! Token rebut: " + response.token);
-    
-    // Processament de la resposta
-    if (response.success) {
-      // Guardem el token a localStorage si "recordarMe" està actiu
-      if (recordarMe.value) {
-        localStorage.setItem('authToken', response.token);
-      } else {
-        sessionStorage.setItem('authToken', response.token);
-      }
-      
-      // Redireccionem a la pàgina principal o dashboard
-      navigateTo('/');
-    }
-  } catch (error) {
-    // Gestionem diferents tipus d'errors
-    if (error.response && error.response.status === 422) {
-      // Errors de validació
-      const validationErrors = error.response.data.errors;
-      if (validationErrors.email) errors.value.email = validationErrors.email[0];
-      if (validationErrors.password) errors.value.password = validationErrors.password[0];
-      
-      // Alert per errors de validació
-      alert("Error de validació: " + JSON.stringify(validationErrors));
-    } else if (error.response && error.response.status === 401) {
-      // Error d'autenticació
-      errors.value.email = 'Credencials incorrectes';
-      
-      // Alert per error d'autenticació
-      alert("Error d'autenticació: Credencials incorrectes");
-    } else {
-      // Altres errors
-      console.error('Error d\'inici de sessió:', error);
-      
-      // Alert per altres errors
-      alert("Error en la connexió amb l'API: " + (error.message || 'Error desconegut'));
-    }
-  } finally {
-    // Desactivem l'estat de càrrega
-    loading.value = false;
-  }
-}
-
-// Funció per connectar amb l'API real
-async function loginApi() {
-  try {
-    console.log('Intentant connexió amb l\'API...');
-    console.log('Dades enviades:', { email: email.value, password: password.value });
-    
+    // Fem la petició a l'API
     const response = await fetch('http://localhost:8000/api/login', {
       method: 'POST',
       headers: {
@@ -212,34 +191,56 @@ async function loginApi() {
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        email: email.value,
-        password: password.value
+        email: formData.email,
+        password: formData.password
       })
     });
     
-    console.log('Resposta rebuda de l\'API, status:', response.status);
-    
     const data = await response.json();
-    console.log('Dades rebudes:', data);
     
+    // Si hi ha error en la resposta
     if (!response.ok) {
-      console.error('Resposta no OK:', response.status, data);
-      throw {
-        response: {
-          status: response.status,
-          data: data
-        }
-      };
+      // Gestionem errors de validació
+      if (response.status === 422 && data.errors) {
+        if (data.errors.email) errors.value.email = data.errors.email[0];
+        if (data.errors.password) errors.value.password = data.errors.password[0];
+      } 
+      // Error d'autenticació
+      else if (response.status === 401) {
+        errorMessage.value = 'Credencials incorrectes. Si us plau, verifica el teu correu i contrasenya.';
+      } 
+      // Altres errors
+      else {
+        errorMessage.value = data.message || 'Error en iniciar sessió. Torna-ho a provar més tard.';
+      }
+      return;
     }
     
-    return {
-      success: true,
-      token: data.token,
-      user: data.user || { email: email.value }
-    };
+    // Inicialització correcta - Guardem al store d'autenticació
+    console.log('Resposta login:', data); // Log para depuración
+    
+    // Verificamos que la respuesta contenga la información del usuario
+    if (data.token) {
+      // Si el usuario no viene en la respuesta, creamos un objeto básico
+      const userData = data.user || {
+        email: formData.email,
+        // Podemos añadir más datos básicos si es necesario
+      };
+      
+      // Guardar en el store
+      authStore.setAuth(data.token, userData);
+      
+      // Redireccionem a la pàgina principal o a la pàgina anterior
+      router.push('/');
+    } else {
+      errorMessage.value = 'Error al processar la resposta del servidor. No s\'ha pogut obtenir el token.';
+    }
+    
   } catch (error) {
-    console.error('Error al connectar amb l\'API:', error);
-    throw error;
+    console.error('Error en la connexió amb l\'API:', error);
+    errorMessage.value = 'Error de connexió amb el servidor. Si us plau, comprova la teva connexió i torna-ho a provar.';
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
