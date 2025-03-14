@@ -157,7 +157,7 @@
             Encara no tens compte a Cinema Pedralbes?
           </p>
           <NuxtLink 
-            to="/registre" 
+            to="/usuari/registre" 
             class="w-full flex justify-center items-center py-3 px-4 border-2 border-[#800040] rounded-lg shadow-md bg-white hover:bg-[#f8f9f9] transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] font-semibold text-[#800040] text-base"
           >
             <i class="fas fa-user-plus mr-2"></i>
