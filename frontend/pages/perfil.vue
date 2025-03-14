@@ -97,8 +97,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import NavBar from '@/components/NavBar.vue'
-import Footer from '@/components/Footer.vue'
 import usuarioInformacio from '@/components/usuari/Informacio.vue'
 
 // Inicializar store y router

@@ -1,5 +1,28 @@
 <template>
   <div class="bg-white rounded-lg shadow p-4">
+    <!-- Animación de cierre de sesión -->
+    <div v-if="logoutInProgress" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 animate-logout">
+        <div class="text-center">
+          <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+            <ClientOnly>
+              <Icon name="mdi:check-circle" class="h-10 w-10 text-green-600" />
+            </ClientOnly>
+          </div>
+          <h3 class="text-xl font-medium text-gray-900 mb-2">Sessió tancada correctament</h3>
+          <p class="text-gray-500 mb-6">
+            Gràcies per visitar Cinema Pedralbes. Esperem veure't aviat!
+          </p>
+          <p class="text-sm text-[#800040] mb-6">
+            Aquesta finestra es tancarà automàticament...
+          </p>
+          <div class="flex justify-center">
+            <div class="animate-spin h-8 w-8 border-t-4 border-b-4 border-[#800040] rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Loading state -->
     <div v-if="isLoading" class="py-8 text-center">
       <div class="inline-block w-8 h-8 border-4 border-[#800040] border-t-transparent rounded-full animate-spin"></div>
@@ -125,20 +148,42 @@ const router = useRouter()
 const usuari = ref({})
 const isLoading = ref(true)
 const error = ref(null)
+const logoutInProgress = ref(false) // Nueva variable para controlar la animación
 
-// Función para cerrar sesión
+// Función para cerrar sesión con animación
 const tancarSessio = async () => {
   try {
-    await authStore.logout()
-    // La redirección a login ya está incluida en el método logout del store
-  } catch (error) {
-    console.error('Error al cerrar sesión:', error)
-    // Si hay un error, intentamos limpiar manualmente
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
+    // Mostrar confirmación
+    const confirmar = confirm('Estàs segur que vols tancar la sessió?');
+    
+    if (confirmar) {
+      // Activar la animación de cierre de sesión
+      logoutInProgress.value = true;
+      
+      // Esperar un tiempo muy extenso para que se aprecie bien la animación
+      setTimeout(async () => {
+        try {
+          await authStore.logout();
+          // No redirigimos inmediatamente, dejamos que se vea la animación
+          setTimeout(() => {
+            // La redirección a login
+            router.push('/usuari/iniciSessio');
+          }, 5000); // 5 segundos adicionales después del logout para ver bien la animación
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+          // Si hay un error, intentamos limpiar manualmente
+          if (typeof localStorage !== 'undefined') {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+          setTimeout(() => {
+            router.push('/usuari/iniciSessio');
+          }, 5000);
+        }
+      }, 4000); // 4 segundos para ver la animación antes de cerrar sesión
     }
-    router.push('/usuari/iniciSessio')
+  } catch (error) {
+    console.error('Error al procesar cierre de sesión:', error);
   }
 }
 
@@ -177,3 +222,30 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+/* Animación para el mensaje de cierre de sesión */
+.animate-logout {
+  animation: logoutAnimation 2s ease-out;
+}
+
+@keyframes logoutAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-30px);
+  }
+  40% {
+    transform: scale(1.05) translateY(0);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>

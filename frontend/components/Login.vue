@@ -20,7 +20,7 @@
           <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg w-full animate-bounce-once">
             <div class="flex">
               <div class="flex-shrink-0">
-                <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                <Icon name="mdi:check-circle" class="text-green-500 text-2xl" />
               </div>
               <div class="ml-3">
                 <p class="text-green-700 font-medium">Inici de sessió correcte!</p>
@@ -53,7 +53,7 @@
               </label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-envelope text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                  <Icon name="mdi:email" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                 </div>
                 <input 
                   type="email" 
@@ -74,7 +74,7 @@
               </label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-lock text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                  <Icon name="mdi:lock" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                 </div>
                 <input 
                   :type="mostrarPassword ? 'text' : 'password'" 
@@ -90,7 +90,10 @@
                     @click="mostrarPassword = !mostrarPassword"
                     class="text-[#D4AF37] hover:text-[#800040] focus:outline-none transition-colors"
                   >
-                    <i :class="mostrarPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <Icon 
+                      :name="mostrarPassword ? 'mdi:eye-off' : 'mdi:eye'" 
+                      class="w-5 h-5 transition-all"
+                    />
                   </button>
                 </div>
               </div>
@@ -123,7 +126,7 @@
           <div v-if="errorMessage" class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
             <div class="flex">
               <div class="flex-shrink-0">
-                <i class="fas fa-exclamation-circle text-red-500"></i>
+                <Icon name="mdi:alert-circle" class="text-red-500" />
               </div>
               <div class="ml-3">
                 <p class="text-sm text-red-700">{{ errorMessage }}</p>
@@ -142,7 +145,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <i class="fas fa-sign-in-alt mr-2"></i>
+              <Icon name="mdi:login" class="mr-2" />
               <span>Iniciar sessió</span>
             </button>
           </div>
@@ -160,7 +163,7 @@
             to="/usuari/registre" 
             class="w-full flex justify-center items-center py-3 px-4 border-2 border-[#800040] rounded-lg shadow-md bg-white hover:bg-[#f8f9f9] transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] font-semibold text-[#800040] text-base"
           >
-            <i class="fas fa-user-plus mr-2"></i>
+            <Icon name="mdi:account-plus" class="mr-2" />
             Registra't ara
           </NuxtLink>
         </div>
@@ -266,7 +269,7 @@ async function iniciarSessio() {
       // Esperamos un poco para que se vea la animación antes de redirigir
       setTimeout(() => {
         // Redireccionem a la pàgina principal o a la pàgina anterior
-        router.push('/');
+        router.push('/perfil');
       }, 2000); // 2 segundos para la animación
     } else {
       errorMessage.value = 'Error al processar la resposta del servidor. No s\'ha pogut obtenir el token.';

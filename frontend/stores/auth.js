@@ -90,7 +90,7 @@ export const useAuthStore = defineStore("auth", {
           localStorage.removeItem("user");
         }
         
-        navigateTo('/');
+        navigateTo('/perfil');
       }
     },
   },

@@ -63,10 +63,11 @@
           </p>
           <button
             class="bg-[#D4AF37] text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium hover:bg-[#800040] transition-colors text-sm md:text-base"
-          >
+            @click="$router.push('/screenings')"
+            >
             <Icon name="mdi:shopping-cart" class="inline-block mr-1" />
             Comprar entrades
-          </button>
+            </button>
         </div>
       </div>
     </div>
