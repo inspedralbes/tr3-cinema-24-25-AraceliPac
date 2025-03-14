@@ -191,8 +191,8 @@ const tancarSessio = async () => {
 const obtindreNomRol = (roleId) => {
   const rols = {
     1: 'Administrador',
-    2: 'Usuari Premium',
-    3: 'Usuari Estàndard'
+    2: 'Treballador',
+    3: 'Client'
   }
   return rols[roleId] || 'Usuari'
 }
