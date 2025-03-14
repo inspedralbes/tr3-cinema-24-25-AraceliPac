@@ -19,7 +19,7 @@
           <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg w-full animate-bounce-once">
             <div class="flex">
               <div class="flex-shrink-0">
-                <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                <Icon name="mdi:check-circle" class="text-green-500 text-2xl" />
               </div>
               <div class="ml-3">
                 <p class="text-green-700 font-medium">Registre completat correctament!</p>
@@ -52,7 +52,7 @@
                 </label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-user text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                    <Icon name="mdi:account" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                   </div>
                   <input 
                     type="text" 
@@ -73,7 +73,7 @@
                 </label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-user text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                    <Icon name="mdi:account" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                   </div>
                   <input 
                     type="text" 
@@ -102,7 +102,7 @@
               </label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-envelope text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                  <Icon name="mdi:email" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                 </div>
                 <input 
                   type="email" 
@@ -123,7 +123,7 @@
               </label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-phone text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                  <Icon name="mdi:phone" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                 </div>
                 <input 
                   type="tel" 
@@ -150,7 +150,7 @@
               </label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-lock text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                  <Icon name="mdi:lock" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                 </div>
                 <input 
                   :type="mostrarPassword ? 'text' : 'password'" 
@@ -166,7 +166,10 @@
                     @click="mostrarPassword = !mostrarPassword"
                     class="text-[#D4AF37] hover:text-[#800040] focus:outline-none transition-colors"
                   >
-                    <i :class="mostrarPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <Icon 
+                      :name="mostrarPassword ? 'mdi:eye-off' : 'mdi:eye'" 
+                      class="w-5 h-5 transition-all"
+                    />
                   </button>
                 </div>
               </div>
@@ -180,7 +183,7 @@
               </label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="fas fa-lock text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                  <Icon name="mdi:lock" class="text-[#D4AF37] group-focus-within:text-[#800040] transition-colors" />
                 </div>
                 <input 
                   :type="mostrarPasswordConfirmacio ? 'text' : 'password'" 
@@ -196,40 +199,43 @@
                     @click="mostrarPasswordConfirmacio = !mostrarPasswordConfirmacio"
                     class="text-[#D4AF37] hover:text-[#800040] focus:outline-none transition-colors"
                   >
-                    <i :class="mostrarPasswordConfirmacio ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <Icon 
+                      :name="mostrarPasswordConfirmacio ? 'mdi:eye-off' : 'mdi:eye'" 
+                      class="w-5 h-5 transition-all"
+                    />
                   </button>
                 </div>
               </div>
               <div v-if="!coincideixenContrasenyes && formData.password_confirmation" class="flex items-center mt-2 text-red-500 text-xs">
-                <i class="fas fa-exclamation-circle mr-1"></i>
+                <Icon name="mdi:alert-circle" class="mr-1 text-red-500" />
                 <p>Les contrasenyes no coincideixen</p>
               </div>
               
               <!-- Requisits de contrasenya -->
               <div class="mt-4 bg-gray-50 p-4 rounded-lg border border-[#D4AF37]/30">
                 <p class="text-[#800040] text-sm font-medium mb-2 flex items-center">
-                  <i class="fas fa-shield-alt text-[#D4AF37] mr-2"></i>
+                  <Icon name="mdi:shield" class="text-[#D4AF37] mr-2" />
                   Requisits de seguretat de la contrasenya:
                 </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
                   <div class="flex items-center text-xs" :class="validarMajuscula ? 'text-green-600' : 'text-gray-500'">
-                    <i class="fas mr-2" :class="validarMajuscula ? 'fa-check-circle' : 'fa-circle'"></i>
+                    <Icon :name="validarMajuscula ? 'mdi:check-circle' : 'mdi:circle-outline'" class="mr-2" />
                     <span>Una majúscula</span>
                   </div>
                   <div class="flex items-center text-xs" :class="validarMinuscula ? 'text-green-600' : 'text-gray-500'">
-                    <i class="fas mr-2" :class="validarMinuscula ? 'fa-check-circle' : 'fa-circle'"></i>
+                    <Icon :name="validarMinuscula ? 'mdi:check-circle' : 'mdi:circle-outline'" class="mr-2" />
                     <span>Una minúscula</span>
                   </div>
                   <div class="flex items-center text-xs" :class="validarNumero ? 'text-green-600' : 'text-gray-500'">
-                    <i class="fas mr-2" :class="validarNumero ? 'fa-check-circle' : 'fa-circle'"></i>
+                    <Icon :name="validarNumero ? 'mdi:check-circle' : 'mdi:circle-outline'" class="mr-2" />
                     <span>Un número</span>
                   </div>
                   <div class="flex items-center text-xs" :class="validarEspecial ? 'text-green-600' : 'text-gray-500'">
-                    <i class="fas mr-2" :class="validarEspecial ? 'fa-check-circle' : 'fa-circle'"></i>
+                    <Icon :name="validarEspecial ? 'mdi:check-circle' : 'mdi:circle-outline'" class="mr-2" />
                     <span>Un caràcter especial</span>
                   </div>
                   <div class="flex items-center text-xs sm:col-span-2" :class="validarLlargada ? 'text-green-600' : 'text-gray-500'">
-                    <i class="fas mr-2" :class="validarLlargada ? 'fa-check-circle' : 'fa-circle'"></i>
+                    <Icon :name="validarLlargada ? 'mdi:check-circle' : 'mdi:circle-outline'" class="mr-2" />
                     <span>Mínim 10 caràcters</span>
                   </div>
                 </div>
@@ -258,27 +264,37 @@
             
             <div class="flex items-start">
               <div class="flex items-center h-5">
-                <input
-                  id="privacy_policy"
-                  type="checkbox"
-                  v-model="formData.privacy_policy"
-                  required
-                  class="h-5 w-5 text-[#800040] focus:ring-[#D4AF37] border-gray-300 rounded-md"
-                />
+              <input
+                id="privacy_policy"
+                type="checkbox"
+                v-model="formData.privacy_policy"
+                required
+                class="h-5 w-5 text-[#800040] focus:ring-[#D4AF37] border-gray-300 rounded-md"
+              />
               </div>
               <div class="ml-3 text-sm">
-                <label for="privacy_policy" class="font-medium text-[#800040]">
-                  He llegit i accepto la <a href="#" class="text-[#D4AF37] underline hover:text-[#800040] font-semibold transition-colors">política de privacitat</a> <span class="text-red-500">*</span>
-                </label>
+              <label for="privacy_policy" class="font-medium text-[#800040]">
+                He llegit i accepto la 
+                <a 
+                href="#" 
+                @click.prevent="router.push('/politiques-privacitat')" 
+                class="text-[#D4AF37] underline hover:text-[#800040] font-semibold transition-colors"
+                >
+                política de privacitat
+                </a> 
+                <span class="text-red-500">*</span>
+              </label>
               </div>
             </div>
             
             <div v-if="(!formData.major_edat || !formData.privacy_policy) && enviado" class="mt-2 bg-red-50 p-3 rounded-lg border border-red-200">
               <p v-if="!formData.major_edat && enviado" class="text-red-500 text-xs flex items-center">
-                <i class="fas fa-exclamation-triangle mr-1"></i> Has de confirmar que ets major de 14 anys
+                <Icon name="mdi:alert" class="mr-1 text-red-500" />
+                Has de confirmar que ets major de 14 anys
               </p>
               <p v-if="!formData.privacy_policy && enviado" class="text-red-500 text-xs flex items-center">
-                <i class="fas fa-exclamation-triangle mr-1"></i> Has d'acceptar la política de privacitat
+                <Icon name="mdi:alert" class="mr-1 text-red-500" />
+                Has d'acceptar la política de privacitat
               </p>
             </div>
           </div>
@@ -287,7 +303,7 @@
           <div v-if="errorMessage" class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
             <div class="flex">
               <div class="flex-shrink-0">
-                <i class="fas fa-exclamation-circle text-red-500"></i>
+                <Icon name="mdi:alert-circle" class="text-red-500" />
               </div>
               <div class="ml-3">
                 <p class="text-sm text-red-700">{{ errorMessage }}</p>
@@ -306,7 +322,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <i class="fas fa-user-plus mr-2"></i>
+              <Icon name="mdi:account-plus" class="mr-2" />
               <span>Registrar-me</span>
             </button>
           </div>
@@ -320,10 +336,10 @@
             Ja tens compte a Cinema Pedralbes?
           </p>
           <NuxtLink
-            to="/login" 
+            to="/usuari/iniciSessio" 
             class="w-full flex justify-center items-center py-3 px-4 border-2 border-[#800040] rounded-lg shadow-md bg-white hover:bg-[#f8f9f9] transition-all transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] font-semibold text-[#800040] text-base"
           >
-            <i class="fas fa-sign-in-alt mr-2"></i>
+            <Icon name="mdi:login" class="mr-2" />
             Iniciar sessió
           </NuxtLink>
         </div>
@@ -344,7 +360,7 @@ const router = useRouter();
 // Comprova si l'usuari ja està autenticat
 onMounted(() => {
   if (authStore.isAuthenticated) {
-    router.push('/');
+    router.push('/perfil');
   }
 });
 
