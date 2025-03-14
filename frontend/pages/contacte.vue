@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <!-- Navbar - Asegurándonos de que se importa correctamente -->
+    <!-- Navbar -->
     <NavBar />
 
     <!-- Hero Section -->
@@ -14,13 +14,11 @@
       </div>
     </div>
 
-    <!-- Contingut Principal -->
+    <!-- Contingut Principal - Estructura en grid 2x2 -->
     <div class="container mx-auto px-4 py-12 md:py-16 flex-grow">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-        <!-- Información de contacto y resto del contenido se mantiene igual -->
-        <!-- ... -->
-
-        <!-- Informació de Contacte -->
+      <!-- Grid principal 2x2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Fila 1, Columna 1: Informació de Contacte -->
         <div
           class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#D4AF37] transform hover:translate-y-[-5px] transition-transform duration-300"
         >
@@ -105,7 +103,7 @@
           </div>
         </div>
 
-        <!-- Formulari de Contacte -->
+        <!-- Fila 1, Columna 2: Formulari de Contacte -->
         <div
           class="bg-white rounded-lg shadow-md p-8 border-t-4 border-[#800040] transform hover:translate-y-[-5px] transition-transform duration-300"
         >
@@ -229,65 +227,65 @@
             </div>
           </form>
         </div>
-      </div>
 
-      <!-- Sobre Nosaltres -->
-      <div
-        class="mt-16 bg-white rounded-lg shadow-md p-8 border-l-4 border-[#D4AF37] transform hover:translate-y-[-5px] transition-transform duration-300"
-      >
-        <h2
-          class="text-2xl md:text-3xl font-semibold text-[#800040] mb-8 pb-4 border-b border-gray-200"
+        <!-- Fila 2, Columna 1: Sobre Nosaltres -->
+        <div
+          class="bg-white rounded-lg shadow-md p-8 border-l-4 border-[#D4AF37] transform hover:translate-y-[-5px] transition-transform duration-300"
         >
-          Sobre Cinema Pedralbes
-        </h2>
+          <h2
+            class="text-2xl md:text-3xl font-semibold text-[#800040] mb-8 pb-4 border-b border-gray-200"
+          >
+            Sobre Cinema Pedralbes
+          </h2>
 
-        <div class="prose max-w-none text-lg">
-          <p>
-            Cinema Pedralbes és un referent cultural a Catalunya des de fa més de 30 anys. Situat al
-            cor de Les Corts, el nostre cinema combina l'elegància d'una sala clàssica amb les
-            tecnologies més avançades per oferir la millor experiència cinematogràfica.
-          </p>
+          <div class="prose max-w-none text-lg">
+            <p>
+              Cinema Pedralbes és un referent cultural a Catalunya des de fa més de 30 anys. Situat al
+              cor de Les Corts, el nostre cinema combina l'elegància d'una sala clàssica amb les
+              tecnologies més avançades per oferir la millor experiència cinematogràfica.
+            </p>
 
-          <p>
-            El nostre compromís amb el cinema de qualitat ens ha portat a ser un dels espais més
-            reconeguts per la projecció tant de grans estrenes internacionals com de pel·lícules del
-            cinema independent i català.
-          </p>
+            <p>
+              El nostre compromís amb el cinema de qualitat ens ha portat a ser un dels espais més
+              reconeguts per la projecció tant de grans estrenes internacionals com de pel·lícules del
+              cinema independent i català.
+            </p>
 
-          <p>
-            Disposem de 5 sales equipades amb la darrera tecnologia en so i imatge, butaques d'alta
-            comoditat i una acurada selecció gastronòmica al nostre bar. A més, tenim espais
-            adaptats per a persones amb mobilitat reduïda i sistemes d'audiodescripció.
-          </p>
+            <p>
+              Disposem de 5 sales equipades amb la darrera tecnologia en so i imatge, butaques d'alta
+              comoditat i una acurada selecció gastronòmica al nostre bar. A més, tenim espais
+              adaptats per a persones amb mobilitat reduïda i sistemes d'audiodescripció.
+            </p>
 
-          <p>
-            A Cinema Pedralbes no només oferim projeccions, sinó que també organitzem esdeveniments
-            especials, cicles temàtics, col·loquis amb directors i actors, i activitats per a
-            escoles i famílies. El nostre objectiu és apropar el cinema de qualitat a tots els
-            públics i ser un espai de trobada per als amants del setè art.
-          </p>
+            <p>
+              A Cinema Pedralbes no només oferim projeccions, sinó que també organitzem esdeveniments
+              especials, cicles temàtics, col·loquis amb directors i actors, i activitats per a
+              escoles i famílies. El nostre objectiu és apropar el cinema de qualitat a tots els
+              públics i ser un espai de trobada per als amants del setè art.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <!-- Mapa -->
-      <div
-        class="mt-16 mb-16 bg-white rounded-lg shadow-md overflow-hidden border-b-4 border-[#800040] transform hover:translate-y-[-5px] transition-transform duration-300"
-      >
-        <h2
-          class="text-2xl md:text-3xl font-semibold text-[#800040] p-8 pb-4 border-b border-gray-200"
+        <!-- Fila 2, Columna 2: Mapa -->
+        <div
+          class="bg-white rounded-lg shadow-md overflow-hidden border-b-4 border-[#800040] transform hover:translate-y-[-5px] transition-transform duration-300"
         >
-          Com Arribar
-        </h2>
-        <div class="aspect-w-16 aspect-h-9">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.099539309797!2d2.1111373!3d41.3871251!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a498503bd07693%3A0x8cf6ba7c7300b55f!2sAv.%20d&#39;Esplugues%2C%2040%2C%2008034%20Barcelona!5e0!3m2!1ses!2ses!4v1653345678901!5m2!1ses!2ses"
-            width="100%"
-            height="100%"
-            style="border: 0"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+          <h2
+            class="text-2xl md:text-3xl font-semibold text-[#800040] p-8 pb-4 border-b border-gray-200"
+          >
+            Com Arribar
+          </h2>
+          <div class="aspect-w-16 aspect-h-9">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.099539309797!2d2.1111373!3d41.3871251!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a498503bd07693%3A0x8cf6ba7c7300b55f!2sAv.%20d&#39;Esplugues%2C%2040%2C%2008034%20Barcelona!5e0!3m2!1ses!2ses!4v1653345678901!5m2!1ses!2ses"
+              width="100%"
+              height="450"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </div>
       </div>
     </div>
@@ -417,5 +415,38 @@ textarea:focus {
 
 .container {
   animation: fadeIn 0.5s ease-out;
+}
+
+/* Asegurar que todos los cuadrantes del grid tengan la misma altura */
+@media (min-width: 768px) {
+  .grid > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .grid > div > .prose {
+    flex-grow: 1;
+  }
+
+  /* Asegurar que el grid sea 2x2 en escritorio */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 2rem;
+  }
+
+  /* Primera fila: Informació de Contacte y Envia'ns un Missatge */
+  .grid > div:nth-child(1),
+  .grid > div:nth-child(2) {
+    grid-row: 1;
+  }
+
+  /* Segunda fila: Sobre Cinema Pedralbes y Com Arribar-Mapa */
+  .grid > div:nth-child(3),
+  .grid > div:nth-child(4) {
+    grid-row: 2;
+  }
 }
 </style>
