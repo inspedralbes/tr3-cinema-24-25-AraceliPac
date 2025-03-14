@@ -12,117 +12,146 @@
         </p>
       </div>
       
-      <form @submit.prevent="iniciarSessio" class="p-8 space-y-6">
-        <!-- Secció Credencials -->
-        <div class="space-y-4">
-          <h2 class="text-[#800040] text-xl font-semibold pb-2">
-            Credencials d'Accés
-          </h2>
-          
-          <!-- Camp Email -->
-          <div class="space-y-2">
-            <label for="email" class="block text-[#800040] text-sm font-semibold">
-              Correu electrònic <span class="text-red-500">*</span>
-            </label>
-            <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-envelope text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+      <!-- Contenedor principal con animaciones CSS en lugar de auto-animate -->
+      <div>
+        <!-- Mensaje de éxito (mostrado solo cuando loginSuccess es true) -->
+        <div v-if="loginSuccess" 
+             class="p-8 flex flex-col items-center justify-center space-y-6 animate-fadeIn">
+          <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg w-full animate-bounce-once">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-check-circle text-green-500 text-2xl"></i>
               </div>
-              <input 
-                type="email" 
-                id="email" 
-                v-model="formData.email" 
-                required 
-                placeholder="El teu correu electrònic"
-                class="block w-full pl-10 pr-3 py-3.5 border-2 border-gray-200 rounded-lg bg-white text-[#800040] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#800040] transition-all shadow-sm hover:border-[#800040] placeholder-[#800040]/50"
-              />
+              <div class="ml-3">
+                <p class="text-green-700 font-medium">Inici de sessió correcte!</p>
+                <p class="text-green-600 text-sm mt-1">Redirigint a la pàgina principal...</p>
+              </div>
             </div>
-            <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
           </div>
           
-          <!-- Camp Contrasenya -->
-          <div class="space-y-2">
-            <label for="password" class="block text-[#800040] text-sm font-semibold">
-              Contrasenya <span class="text-red-500">*</span>
-            </label>
-            <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-lock text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
-              </div>
-              <input 
-                :type="mostrarPassword ? 'text' : 'password'" 
-                id="password" 
-                v-model="formData.password" 
-                required 
-                placeholder="La teva contrasenya"
-                class="block w-full pl-10 pr-10 py-3.5 border-2 border-gray-200 rounded-lg bg-white text-[#800040] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#800040] transition-all shadow-sm hover:border-[#800040] placeholder-[#800040]/50"
-              />
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <button 
-                  type="button" 
-                  @click="mostrarPassword = !mostrarPassword"
-                  class="text-[#D4AF37] hover:text-[#800040] focus:outline-none transition-colors"
-                >
-                  <i :class="mostrarPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                </button>
-              </div>
-            </div>
-            <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
-          </div>
-        </div>
-        
-        <!-- Opcions "Recordar-me" i "Contrasenya oblidada" -->
-        <div class="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:items-center sm:justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <div class="flex items-center">
-            <input 
-              id="remember-me" 
-              name="remember-me" 
-              type="checkbox" 
-              v-model="formData.recordarMe"
-              class="h-5 w-5 text-[#800040] focus:ring-[#D4AF37] border-gray-300 rounded-md"
-            />
-            <label for="remember-me" class="ml-3 block text-sm font-medium text-[#800040]">
-              Recordar-me
-            </label>
-          </div>
-          <div class="text-sm">
-            <a href="#" class="font-medium text-[#D4AF37] hover:text-[#800040] transition-colors">
-              Has oblidat la contrasenya?
-            </a>
-          </div>
-        </div>
-        
-        <!-- Missatge d'error general -->
-        <div v-if="errorMessage" class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <i class="fas fa-exclamation-circle text-red-500"></i>
-            </div>
-            <div class="ml-3">
-              <p class="text-sm text-red-700">{{ errorMessage }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Botó Iniciar sessió -->
-        <div class="pt-4">
-          <button 
-            type="submit" 
-            :disabled="isLoading"
-            class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-lg shadow-lg text-white bg-gradient-to-r from-[#800040] to-[#9A0040] hover:from-[#9A0040] hover:to-[#B00040] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <div class="flex justify-center">
+            <svg class="animate-spin h-12 w-12 text-[#800040]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <i class="fas fa-sign-in-alt mr-2"></i>
-            <span>Iniciar sessió</span>
-          </button>
+          </div>
         </div>
-      </form>
+        
+        <!-- Formulario (oculto cuando loginSuccess es true con transición) -->
+        <form v-else @submit.prevent="iniciarSessio" 
+              class="p-8 space-y-6">
+          <!-- Secció Credencials -->
+          <div class="space-y-4">
+            <h2 class="text-[#800040] text-xl font-semibold pb-2">
+              Credencials d'Accés
+            </h2>
+            
+            <!-- Camp Email -->
+            <div class="space-y-2">
+              <label for="email" class="block text-[#800040] text-sm font-semibold">
+                Correu electrònic <span class="text-red-500">*</span>
+              </label>
+              <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-envelope text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                </div>
+                <input 
+                  type="email" 
+                  id="email" 
+                  v-model="formData.email" 
+                  required 
+                  placeholder="El teu correu electrònic"
+                  class="block w-full pl-10 pr-3 py-3.5 border-2 border-gray-200 rounded-lg bg-white text-[#800040] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#800040] transition-all shadow-sm hover:border-[#800040] placeholder-[#800040]/50"
+                />
+              </div>
+              <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
+            </div>
+            
+            <!-- Camp Contrasenya -->
+            <div class="space-y-2">
+              <label for="password" class="block text-[#800040] text-sm font-semibold">
+                Contrasenya <span class="text-red-500">*</span>
+              </label>
+              <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-lock text-[#D4AF37] group-focus-within:text-[#800040] transition-colors"></i>
+                </div>
+                <input 
+                  :type="mostrarPassword ? 'text' : 'password'" 
+                  id="password" 
+                  v-model="formData.password" 
+                  required 
+                  placeholder="La teva contrasenya"
+                  class="block w-full pl-10 pr-10 py-3.5 border-2 border-gray-200 rounded-lg bg-white text-[#800040] focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#800040] transition-all shadow-sm hover:border-[#800040] placeholder-[#800040]/50"
+                />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button 
+                    type="button" 
+                    @click="mostrarPassword = !mostrarPassword"
+                    class="text-[#D4AF37] hover:text-[#800040] focus:outline-none transition-colors"
+                  >
+                    <i :class="mostrarPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  </button>
+                </div>
+              </div>
+              <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
+            </div>
+          </div>
+          
+          <!-- Opcions "Recordar-me" i "Contrasenya oblidada" -->
+          <div class="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:items-center sm:justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div class="flex items-center">
+              <input 
+                id="remember-me" 
+                name="remember-me" 
+                type="checkbox" 
+                v-model="formData.recordarMe"
+                class="h-5 w-5 text-[#800040] focus:ring-[#D4AF37] border-gray-300 rounded-md"
+              />
+              <label for="remember-me" class="ml-3 block text-sm font-medium text-[#800040]">
+                Recordar-me
+              </label>
+            </div>
+            <div class="text-sm">
+              <a href="#" class="font-medium text-[#D4AF37] hover:text-[#800040] transition-colors">
+                Has oblidat la contrasenya?
+              </a>
+            </div>
+          </div>
+          
+          <!-- Missatge d'error general -->
+          <div v-if="errorMessage" class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-circle text-red-500"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-red-700">{{ errorMessage }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Botó Iniciar sessió -->
+          <div class="pt-4">
+            <button 
+              type="submit" 
+              :disabled="isLoading"
+              class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-lg shadow-lg text-white bg-gradient-to-r from-[#800040] to-[#9A0040] hover:from-[#9A0040] hover:to-[#B00040] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <i class="fas fa-sign-in-alt mr-2"></i>
+              <span>Iniciar sessió</span>
+            </button>
+          </div>
+        </form>
+      </div>
       
-      <!-- Secció de registre -->
-      <div class="py-6 px-8 bg-gradient-to-r from-[#800040] to-[#f1948a] border-t-2 border-[#800040]">
+      <!-- Secció de registre (solo visible cuando no hay éxito de login) -->
+      <div v-if="!loginSuccess" 
+           class="py-6 px-8 bg-gradient-to-r from-[#800040] to-[#f1948a] border-t-2 border-[#800040]">
         <div class="bg-white p-4 rounded-lg shadow-md">
           <p class="text-center text-[#800040] font-medium mb-4">
             Encara no tens compte a Cinema Pedralbes?
@@ -164,6 +193,8 @@ const errors = ref({
   email: '',
   password: ''
 });
+// Variable para controlar la animación de éxito
+const loginSuccess = ref(false);
 
 // Comprova si l'usuari ja està autenticat
 onMounted(() => {
@@ -172,8 +203,7 @@ onMounted(() => {
   }
 });
 
-
-// Funció per iniciar sessió
+// Funció per iniciar sessió amb animacions CSS
 async function iniciarSessio() {
   // Reiniciem els errors
   errors.value = { email: '', password: '' };
@@ -230,8 +260,14 @@ async function iniciarSessio() {
       // Guardar en el store
       authStore.setAuth(data.token, userData);
       
-      // Redireccionem a la pàgina principal o a la pàgina anterior
-      router.push('/');
+      // Activamos el estado de éxito para mostrar la animación
+      loginSuccess.value = true;
+      
+      // Esperamos un poco para que se vea la animación antes de redirigir
+      setTimeout(() => {
+        // Redireccionem a la pàgina principal o a la pàgina anterior
+        router.push('/');
+      }, 2000); // 2 segundos para la animación
     } else {
       errorMessage.value = 'Error al processar la resposta del servidor. No s\'ha pogut obtenir el token.';
     }
@@ -244,3 +280,37 @@ async function iniciarSessio() {
   }
 }
 </script>
+
+<style scoped>
+/* Animaciones personalizadas */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-bounce-once {
+  animation: bounceOnce 1s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceOnce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+</style>
