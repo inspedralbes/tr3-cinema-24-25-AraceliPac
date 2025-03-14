@@ -250,7 +250,6 @@ async function iniciarSessio() {
     }
     
     // Inicialització correcta - Guardem al store d'autenticació
-    // console.log('Resposta login:', data); // Log para depuración
     
     // Verificamos que la respuesta contenga la información del usuario
     if (data.token) {
@@ -266,10 +265,21 @@ async function iniciarSessio() {
       // Activamos el estado de éxito para mostrar la animación
       loginSuccess.value = true;
       
+      // Comprobamos si hay una compra pendiente
+      const pendingPurchase = localStorage.getItem('pendingPurchase');
+      
       // Esperamos un poco para que se vea la animación antes de redirigir
       setTimeout(() => {
-        // Redireccionem a la pàgina principal o a la pàgina anterior
-        router.push('/perfil');
+        if (pendingPurchase) {
+          // Si hay una compra pendiente, extraemos el ID de la sesión
+          const { sessionId } = JSON.parse(pendingPurchase);
+          
+          // Redirigimos a la página de la sesión
+          router.push(`/sessions/${sessionId}`);
+        } else {
+          // Si no hay compra pendiente, redireccionamos a la página de perfil
+          router.push('/perfil');
+        }
       }, 2000); // 2 segundos para la animación
     } else {
       errorMessage.value = 'Error al processar la resposta del servidor. No s\'ha pogut obtenir el token.';

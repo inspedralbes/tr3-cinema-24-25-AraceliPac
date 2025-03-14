@@ -276,7 +276,7 @@
   
   const selectSession = (session) => {
     selectedSession.value = session;
-    document.body.style.overflow = 'hidden';
+    // document.body.style.overflow = 'hidden';
   };
   
   const showMovieDetails = (movie) => {

@@ -93,10 +93,12 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSessionsStore } from '~/stores/sessions'; 
+import { useAuthStore } from '~/stores/auth';
 
 const route = useRoute();
 const router = useRouter();
 const sessionsStore = useSessionsStore();
+const authStore = useAuthStore()
 
 const loading = ref(true);
 const error = ref(null);
@@ -192,23 +194,71 @@ const handleSeatSelection = (seat) => {
 const buyTickets = () => {
   if (selectedSeats.value.length === 0 || selectedSeats.value.length > 10) return;
 
-  // Aquí podrías enviar los asientos seleccionados al servidor
+  // Verificar si el usuario está autenticado
+  if (!authStore.isAuthenticated || !authStore.token) {
+    // Guardar la información de la sesión y asientos seleccionados en localStorage
+    // para poder recuperarla después del inicio de sesión
+    localStorage.setItem('pendingPurchase', JSON.stringify({
+      sessionId: sessionId.value,
+      selectedSeats: selectedSeats.value,
+      totalPrice: totalPrice.value
+    }));
+    
+    // Redirigir a la página de inicio de sesión
+    router.push('/usuari/iniciSessio');
+    return;
+  }
+  const purchaseInfo = {
+    sessionId: sessionId.value,
+    seats: selectedSeats.value,
+    totalPrice: totalPrice.value
+  };
+  // Si está
+  //   // Codificar la información para pasarla como parámetro de URL
+  const encodedInfo = encodeURIComponent(JSON.stringify(purchaseInfo)); 
   console.log("Asientos seleccionados:", selectedSeats.value);
   console.log("Total a pagar:", totalPrice.value);
 
   // Redirigir a la página de confirmación
-  router.push(`/sessions/${sessionId.value}/confirmation`);
+  router.push(`/sessions/confirmation?info=${encodedInfo}`);
+};
+// Añade esta función en el componente de detalles de la sesión dentro del script setup
+// justo después de la función loadSessionData
+
+// Función para recuperar una compra pendiente
+const recoverPendingPurchase = () => {
+  if (process.client) {
+    const pendingPurchase = localStorage.getItem('pendingPurchase');
+    if (pendingPurchase) {
+      try {
+        const purchaseData = JSON.parse(pendingPurchase);
+        
+        // Verificar que la pendingPurchase corresponde a esta sesión
+        if (purchaseData.sessionId === sessionId.value) {
+          // Restaurar los asientos seleccionados
+          selectedSeats.value = purchaseData.selectedSeats || [];
+          totalPrice.value = purchaseData.totalPrice || 0;
+          
+          // Limpiar el localStorage una vez recuperada la información
+          localStorage.removeItem('pendingPurchase');
+          
+          // Opcional: mostrar un mensaje al usuario
+          // alert('Hemos recuperado tus asientos seleccionados. Puedes continuar con la compra.');
+        }
+      } catch (error) {
+        console.error('Error al recuperar la compra pendiente:', error);
+        localStorage.removeItem('pendingPurchase');
+      }
+    }
+  }
 };
 
-// Cargar datos al montar el componente
+// Y añade esta llamada al final de la función onMounted
 onMounted(() => {
   loadSessionData();
-});
-
-// Recargar cuando cambie el ID de la sesión
-watch(() => sessionId.value, () => {
-  if (sessionId.value) {
-    loadSessionData();
+  // Si el usuario está autenticado, verificar si hay una compra pendiente
+  if (authStore.isAuthenticated) {
+    recoverPendingPurchase();
   }
 });
 </script>

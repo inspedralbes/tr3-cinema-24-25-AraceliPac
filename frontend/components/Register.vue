@@ -3,7 +3,7 @@
     <div class="bg-gradient-to-b from-gray-50 to-gray-100 shadow-2xl rounded-lg border-t-4 border-[#D4AF37] overflow-hidden">
       <!-- Cabecera con imagen de fondo -->
       <div class="relative py-8 px-6 bg-[#800040] bg-opacity-90 border-b-2 border-[#D4AF37]">
-        <div class="absolute inset-0 opacity-10 bg-[url('/assets/cinema-pattern.png')]"></div>
+        <div class="absolute inset-0 opacity-10 "></div>
         <h1 class="text-[#D4AF37] text-center text-3xl font-bold relative z-10">
           REGISTRAT A CINEMA PEDRALBES
         </h1>
