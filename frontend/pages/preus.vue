@@ -8,8 +8,8 @@
         <img
           src="/public/images/serveis/servei1.webp"
           alt="Serveis de Cinema Pedralbes"
-          class="w-full h-full object-cover object-center"
-          style="object-position: center 30%"
+          class="w-full object-cover object-center"
+          style="height: 600px;"
         />
       </div>
       <div class="bg-[#800040]/90 py-3 border-t border-[#D4AF37]/30">

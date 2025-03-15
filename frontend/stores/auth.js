@@ -1,14 +1,11 @@
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
-  state: () => {
-    // Comprobamos si estamos en el navegador antes de acceder a localStorage
-    const hasLocalStorage = typeof localStorage !== 'undefined';
-    
+  state: () => {    
     return {
-      token: hasLocalStorage ? localStorage.getItem("token") || null : null,
-      user: hasLocalStorage ? JSON.parse(localStorage.getItem("user") || "null") : null,
-      isAuthenticated: hasLocalStorage ? !!localStorage.getItem("token") : false,
+      token: null,
+      user:  null,
+      isAuthenticated: false,
     };
   },
   
@@ -27,10 +24,6 @@ export const useAuthStore = defineStore("auth", {
         
         if (response.user) {
           this.user = response.user;
-          // Guardar en localStorage solo si estamos en el navegador
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem("user", JSON.stringify(response.user));
-          }
         }
       } catch (error) {
         this.logout();
@@ -47,22 +40,22 @@ export const useAuthStore = defineStore("auth", {
       this.isAuthenticated = true;
       
       // Guardar en localStorage solo si estamos en el navegador
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem("token", token);
+      // if (typeof localStorage !== 'undefined') {
+      //   localStorage.setItem("token", token);
         
-        // Asegurarnos de que user sea una cadena JSON válida antes de guardar
-        if (user) {
-          try {
-            // Si es un objeto, lo convertimos a string
-            const userStr = typeof user === 'object' ? JSON.stringify(user) : user;
-            localStorage.setItem("user", userStr);
-          } catch (error) {
-            console.error('Error al guardar datos de usuario:', error);
-            // En caso de error, guardamos un objeto vacío
-            localStorage.setItem("user", JSON.stringify({email: 'usuario@ejemplo.com'}));
-          }
-        }
-      }
+      //   // Asegurarnos de que user sea una cadena JSON válida antes de guardar
+      //   if (user) {
+      //     try {
+      //       // Si es un objeto, lo convertimos a string
+      //       const userStr = typeof user === 'object' ? JSON.stringify(user) : user;
+      //       localStorage.setItem("user", userStr);
+      //     } catch (error) {
+      //       console.error('Error al guardar datos de usuario:', error);
+      //       // En caso de error, guardamos un objeto vacío
+      //       localStorage.setItem("user", JSON.stringify({email: 'usuario@ejemplo.com'}));
+      //     }
+      //   }
+      // }
     },
     
     // Cerrar sesión
@@ -84,14 +77,10 @@ export const useAuthStore = defineStore("auth", {
         this.user = null;
         this.isAuthenticated = false;
         
-        // Eliminar de localStorage solo si estamos en el navegador
-        if (typeof localStorage !== 'undefined') {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-        }
-        
         navigateTo('/perfil');
       }
     },
   },
-});
+  persist: true
+},
+);
