@@ -18,7 +18,7 @@ class ScreeningSeeder extends Seeder
         // Define los horarios de sesión
         $screeningTimes = ['16:00', '18:00', '20:00'];
         // Define para cuántos días (a partir de mañana) se quiere crear las sesiones.
-        $days = [1, 2, 3];
+        $days = [0, 1, 2];
 
         // Obtiene todas las películas de la base de datos
         $movies = Movie::all();
