@@ -42,7 +42,7 @@ export const useSessionsStore = defineStore('sessions', {
       };
 
       // Debug
-      console.log("sessionSeats en getter:", state.sessionSeats);
+      // console.log("sessionSeats en getter:", state.sessionSeats);
 
       // Verificación adicional
       if (!state.sessionSeats || !Array.isArray(state.sessionSeats) || state.sessionSeats.length === 0) {
@@ -136,7 +136,7 @@ export const useSessionsStore = defineStore('sessions', {
         
         if (response.status === 200) {
           const data = await response.json();
-          console.log("Session API response:", data);
+          // console.log("Session API response:", data);
           
           // La API devuelve directamente el objeto de sesión
           this.currentSession = data;
@@ -159,10 +159,8 @@ export const useSessionsStore = defineStore('sessions', {
       try {
         const response = await fetch(`http://localhost:8000/api/screenings/${sessionId}/seats`);
         if (response.status === 200) {
-          console.log('API Response:', response);
           // Asegurémonos de que los datos se procesen correctamente
           const data = await response.json();
-          console.log('API Data:', data);
 
           // Si los datos vienen directamente como un array, asignarlo directamente
           if (Array.isArray(data)) {
@@ -176,7 +174,7 @@ export const useSessionsStore = defineStore('sessions', {
             this.sessionSeats = data;
           }
 
-          console.log('Session Seats después de asignar:', this.sessionSeats);
+          // console.log('Session Seats después de asignar:', this.sessionSeats);
         } else {
           throw new Error('Error obteniendo los asientos de la sesión');
         }

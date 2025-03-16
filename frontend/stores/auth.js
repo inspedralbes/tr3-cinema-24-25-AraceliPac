@@ -32,8 +32,8 @@ export const useAuthStore = defineStore("auth", {
     
     // Establecer autenticación
     setAuth(token, user) {
-      console.log('Setting auth - Token:', token);
-      console.log('Setting auth - User:', user);
+      // console.log('Setting auth - Token:', token);
+      // console.log('Setting auth - User:', user);
       
       this.token = token;
       this.user = user;

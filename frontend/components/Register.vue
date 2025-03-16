@@ -460,7 +460,7 @@ async function registrarUsuari() {
       return;
     }
     
-    console.log('Resposta registre:', data); // Log para depuración
+    // console.log('Resposta registre:', data); // Log para depuración
     
     // Si el registre és correcte i rebem token
     if (data.token) {

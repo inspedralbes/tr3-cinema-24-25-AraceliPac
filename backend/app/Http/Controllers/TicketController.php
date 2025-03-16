@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Screening;
 use App\Models\Seat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TicketController extends Controller
 {
@@ -59,7 +61,7 @@ class TicketController extends Controller
 
         // Crea l'entrada
         $ticket = Ticket::create([
-            'user_id' => $request->user_id,
+            'user_id' => Auth::id(),
             'screening_id' => $request->screening_id,
             'seat_id' => $request->seat_id,
             'price' => $price,
@@ -133,5 +135,27 @@ class TicketController extends Controller
             return $seat->is_vip ? 6.00 : 4.00; // Preu reduït en dia de l'espectador
         }
         return $basePrice;
+    }
+    public function availableSeats($screeningId)
+    {
+        $screening = Screening::findOrFail($screeningId);
+
+        // Obtener todos los asientos de la sala
+        $allSeats = Seat::where('room_id', $screening->room_id)->get();
+
+        // Obtener los asientos ya ocupados para esta proyección
+        $occupiedSeatIds = Ticket::where('screening_id', $screeningId)
+            ->pluck('seat_id')
+            ->toArray();
+
+        // Marcar cada asiento como disponible o no
+        $seats = $allSeats->map(function ($seat) use ($occupiedSeatIds) {
+            $seat->is_available = !in_array($seat->id, $occupiedSeatIds);
+            return $seat;
+        });
+
+        return response()->json([
+            'seats' => $seats
+        ]);
     }
 }
