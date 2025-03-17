@@ -41,15 +41,15 @@ export const useTicketStore = defineStore("ticket", {
     async purchaseTicket(ticketData) {
       const authStore = useAuthStore();
       if (!authStore.token) return null;
-    
+
       this.loading = true;
       this.error = null;
-    
+
       try {
         // Asegurarse de que el precio esté en el formato correcto (string con dos decimales)
-        const priceFormatted = 
+        const priceFormatted =
           typeof ticketData.price === "number" ? ticketData.price.toFixed(2) : ticketData.price;
-    
+
         // Crear el objeto de datos en el formato esperado por la API
         const ticketPayload = {
           user_id: authStore.user?.id, // Usar optional chaining para evitar errores
@@ -57,9 +57,9 @@ export const useTicketStore = defineStore("ticket", {
           seat_id: ticketData.seat_id,
           price: priceFormatted,
         };
-    
+
         console.log("Enviando datos de ticket:", ticketPayload);
-    
+
         // Realizar la solicitud al backend
         try {
           const response = await $fetch("http://localhost:8000/api/tickets", {
@@ -71,16 +71,16 @@ export const useTicketStore = defineStore("ticket", {
               "Content-Type": "application/json",
             },
           });
-    
+
           console.log("Respuesta exitosa del servidor:", response);
-    
+
           // Agregar el nuevo ticket a la lista local si está disponible
           if (response.ticket) {
             this.tickets.push(response.ticket);
             this.currentTicket = response.ticket;
             return response.ticket;
-          } 
-          
+          }
+
           // Si no hay ticket pero la respuesta es exitosa, devolver un objeto que indique éxito
           // Esto permitirá que el frontend sepa que la compra fue exitosa
           if (response.message && response.message.includes("éxito")) {
@@ -92,37 +92,37 @@ export const useTicketStore = defineStore("ticket", {
               price: priceFormatted,
               _dummy: true // Marcar como simulado
             };
-            
+
             // Opcional: añadir a la lista local para consistencia
             this.tickets.push(dummyTicket);
-            
+
             return dummyTicket; // Devolver ticket simulado
           }
-          
+
           // Incluso si no recibimos un ticket o mensaje de éxito específico
           // pero la solicitud fue exitosa (no lanzó excepción), consideramos éxito
           return { success: true, _simulated: true };
-          
+
         } catch (fetchError) {
           // Capturar errores específicos de la solicitud fetch
           console.error("Error en la solicitud al servidor:", fetchError);
-          
+
           // Intentar extraer información detallada del error
           if (fetchError.response) {
             const errorResponse = await fetchError.response.json().catch(() => ({}));
             console.error("Detalles del error:", errorResponse);
-            
+
             // Si el asiento ya está ocupado, esto es un error de negocio esperado
             if (errorResponse.message && errorResponse.message.includes("asiento ya está ocupado")) {
               this.error = "El asiento seleccionado ya ha sido reservado por otro usuario";
               throw new Error(this.error);
             }
-            
+
             this.error = errorResponse.message || "Error en la compra del ticket";
           } else {
             this.error = fetchError.message || "No se pudo completar la solicitud";
           }
-          
+
           throw fetchError; // Re-lanzar para manejo externo
         }
       } catch (error) {
@@ -237,7 +237,32 @@ export const useTicketStore = defineStore("ticket", {
         localStorage.removeItem("pendingPurchase");
       }
     },
+    // Añadir esta nueva función a las acciones
+    async getTicketQR(ticketId) {
+      const authStore = useAuthStore();
+      if (!authStore.token) return null;
 
+      try {
+        // Esta URL debe coincidir con la ruta que configuraste en el backend
+        return `http://localhost:8000/api/tickets/${ticketId}/qr`;
+      } catch (error) {
+        console.error("Error al construir URL del QR:", error);
+        return null;
+      }
+    },
+    // Añadir a las acciones del ticketStore
+    downloadTicketPdf(ticketId) {
+      const authStore = useAuthStore();
+      if (!authStore.token) return null;
+
+      // Construir URL para la descarga
+      const downloadUrl = `http://localhost:8000/api/tickets/${ticketId}/pdf`;
+
+      // Abrir en una nueva ventana/pestaña para iniciar la descarga
+      window.open(downloadUrl, '_blank');
+
+      return downloadUrl;
+    },
     // Limpiar los datos de tickets (útil al cerrar sesión)
     clearTickets() {
       this.tickets = [];
@@ -256,6 +281,10 @@ export const useTicketStore = defineStore("ticket", {
         // Asumiendo que tienes acceso a la fecha de proyección a través de la relación
         return new Date(a.screening.date) - new Date(b.screening.date);
       });
+    },
+    // Añade este getter
+    ticketNumber: (state) => {
+      return state.currentTicket?.ticket_number || null;
     },
 
     // Puedes agregar más getters según necesites

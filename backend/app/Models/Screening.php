@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Screening extends Model
 {
-    protected $fillable = ['movie_id', 'room_id', 'start_time', 'end_time'];
+    protected $fillable = ['movie_id', 'start_time', 'end_time'];
 
     public function movie()
     {

@@ -16,6 +16,8 @@ use App\Http\Controllers\AuthController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('/tickets', TicketController::class);
+    Route::get('tickets/{id}/qr', [TicketController::class, 'showQrCode']);
+    Route::get('tickets/{id}/pdf', [TicketController::class, 'downloadTicketPdf']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

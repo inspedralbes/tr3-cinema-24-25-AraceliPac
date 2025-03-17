@@ -106,6 +106,60 @@
               </div>
             </div>
 
+            <!-- NUEVO: Bloque de descarga de entradas -->
+            <div v-if="purchasedTickets.length > 0" class="mt-6 mb-6 border-2 border-[#800040] rounded-lg p-4">
+              <h3 class="text-[#800040] font-semibold text-center mb-3">Descarrega les teves entrades</h3>
+              
+              <div class="space-y-3">
+                <!-- Botón para descargar todas las entradas en un solo PDF -->
+                <button
+                  v-if="purchasedTickets.length > 1"
+                  @click="downloadAllTickets"
+                  class="w-full py-3 px-4 bg-[#D4AF37] text-white font-semibold rounded-lg hover:bg-opacity-90 transition-all flex items-center justify-center"
+                >
+                  <Icon name="mdi:file-pdf-box" class="mr-2 text-xl" />
+                  Descarregar totes les entrades
+                </button>
+                
+                <!-- Lista de tickets individuales -->
+                <div class="space-y-2">
+                  <div
+                    v-for="ticket in purchasedTickets"
+                    :key="ticket.id"
+                    class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200"
+                  >
+                    <div class="flex items-center">
+                      <div
+                        :class="{
+                          'w-8 h-8 rounded-full flex items-center justify-center mr-3': true,
+                          'bg-[#D4AF37] bg-opacity-20 text-[#D4AF37]': ticket.seat?.is_vip,
+                          'bg-blue-100 text-blue-700': !ticket.seat?.is_vip,
+                        }"
+                      >
+                        <span class="text-xs font-medium">{{ ticket.seat?.row }}{{ ticket.seat?.number }}</span>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium">Entrada {{ ticket.ticket_number }}</p>
+                        <p class="text-xs text-gray-500">
+                          {{ formatPrice(ticket.price) }} €
+                          <span v-if="ticket.seat?.is_vip" class="ml-1 text-[#D4AF37] font-medium">VIP</span>
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <button
+                      @click="downloadTicket(ticket.id)"
+                      class="text-[#800040] hover:text-opacity-80 transition-all flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg"
+                      title="Descarregar PDF"
+                    >
+                      <Icon name="mdi:file-pdf-box" class="text-xl" />
+                      <span class="text-sm font-medium">PDF</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Botones -->
             <div class="space-y-3 sm:space-y-0 sm:flex sm:space-x-3" ref="buttonsContainer">
               <NuxtLink
@@ -202,6 +256,24 @@ const formattedDate = computed(() => {
 const session = computed(() => {
   return sessionsStore.currentSession;
 });
+
+// NUEVAS FUNCIONES PARA DESCARGA DE PDF
+const downloadTicket = (ticketId) => {
+  ticketStore.downloadTicketPdf(ticketId);
+};
+const downloadAllTickets = () => {
+  // Descargamos cada entrada con un pequeño retraso para evitar bloqueos del navegador
+  purchasedTickets.value.forEach((ticket, index) => {
+    setTimeout(() => {
+      downloadTicket(ticket.id);
+    }, index * 500); // 500ms de retraso entre descargas
+  });
+};
+
+// Función para formatear precio
+const formatPrice = (price) => {
+  return Number(price).toFixed(2);
+};
 
 // Cargar datos de los tickets comprados
 const loadTicketData = async () => {

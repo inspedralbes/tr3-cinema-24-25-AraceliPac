@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->string('ticket_number')->unique();
+            $table->string('qr_code')->nullable(); 
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relació amb usuari
             $table->foreignId('screening_id')->constrained()->onDelete('cascade'); // Relació amb screenings
             $table->foreignId('seat_id')->constrained()->onDelete('cascade'); // Relació amb butaca

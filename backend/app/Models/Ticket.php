@@ -11,7 +11,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'screening_id', 'seat_id', 'price'];
+    protected $fillable = ['ticket_number','user_id', 'screening_id', 'seat_id', 'price'];
 
     public function user()
     {
