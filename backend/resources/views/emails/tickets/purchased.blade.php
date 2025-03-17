@@ -51,7 +51,7 @@
                 <h3>{{ $ticket->screening->movie->title }}</h3>
                 <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($ticket->screening->date)->format('d/m/Y') }}</p>
                 <p><strong>Hora:</strong> {{ substr($ticket->screening->time, 0, 5) }}</p>
-                <p><strong>Sala:</strong> Sala {{ $ticket->screening->id }}</p>
+                <p><strong>Sessio:</strong> Sala {{ $ticket->screening->id }}</p>
                 <p><strong>Butaca:</strong> {{ $ticket->seat->row }}{{ $ticket->seat->number }}
                     @if($ticket->seat->is_vip)
                         <span style="background-color:#D4AF37; color:white; padding:2px 5px; border-radius:3px; font-size:12px;">VIP</span>
