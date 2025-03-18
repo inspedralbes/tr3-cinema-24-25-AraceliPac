@@ -163,7 +163,7 @@ onMounted(async () => {
   
   // Si no tenemos datos, los obtenemos de la API
   try {
-    const response = await fetch('http://localhost:8000/api/user', {
+    const response = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/user', {
       headers: {
         'Authorization': `Bearer ${authStore.token}`,
         'Accept': 'application/json'

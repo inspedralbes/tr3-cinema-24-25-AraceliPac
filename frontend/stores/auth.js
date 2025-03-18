@@ -1,27 +1,27 @@
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
-  state: () => {    
+  state: () => {
     return {
       token: null,
-      user:  null,
+      user: null,
       isAuthenticated: false,
     };
   },
-  
+
   actions: {
     // Inicialización del store
     initialize() {
       if (this.token) this.checkAuth();
     },
-    
+
     // Verificar autenticación
     async checkAuth() {
       try {
-        const response = await $fetch('http://localhost:8000/api/user', {
+        const response = await $fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/user', {
           headers: { Authorization: `Bearer ${this.token}` }
         });
-        
+
         if (response.user) {
           this.user = response.user;
         }
@@ -29,20 +29,20 @@ export const useAuthStore = defineStore("auth", {
         this.logout();
       }
     },
-    
+
     // Establecer autenticación
     setAuth(token, user) {
       console.log('Setting auth - Token:', token);
       console.log('Setting auth - User:', user);
-      
+
       this.token = token;
       this.user = user;
       this.isAuthenticated = true;
-      
+
       // Guardar en localStorage solo si estamos en el navegador
       // if (typeof localStorage !== 'undefined') {
       //   localStorage.setItem("token", token);
-        
+
       //   // Asegurarnos de que user sea una cadena JSON válida antes de guardar
       //   if (user) {
       //     try {
@@ -57,12 +57,12 @@ export const useAuthStore = defineStore("auth", {
       //   }
       // }
     },
-    
+
     // Cerrar sesión
     async logout() {
       try {
         if (this.token) {
-          await $fetch('http://localhost:8000/api/logout', {
+          await $fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/logout', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -76,7 +76,7 @@ export const useAuthStore = defineStore("auth", {
         this.token = null;
         this.user = null;
         this.isAuthenticated = false;
-        
+
         navigateTo('/perfil');
       }
     },

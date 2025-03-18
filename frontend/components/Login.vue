@@ -217,7 +217,7 @@ async function iniciarSessio() {
   
   try {
     // Fem la petició a l'API
-    const response = await fetch('http://localhost:8000/api/login', {
+    const response = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

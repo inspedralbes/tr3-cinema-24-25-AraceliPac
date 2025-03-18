@@ -434,7 +434,7 @@ async function registrarUsuari() {
   
   try {
     // Enviar les dades a l'API
-    const response = await fetch('http://localhost:8000/api/register', {
+    const response = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -470,7 +470,7 @@ async function registrarUsuari() {
       } else {
         try {
           // Intentar obtener los datos del usuario con el token recibido
-          const userResponse = await fetch('http://localhost:8000/api/user', {
+          const userResponse = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/user', {
             headers: {
               'Authorization': `Bearer ${data.token}`,
               'Accept': 'application/json'
