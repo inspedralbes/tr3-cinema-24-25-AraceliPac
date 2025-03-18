@@ -56,9 +56,14 @@
 
             <div class="ticket-info">
                 <h3>{{ $ticket->screening->movie->title }}</h3>
-                <p><strong>Data:</strong> {{ \Carbon\Carbon::parse($ticket->screening->date)->format('d/m/Y') }}</p>
-                <p><strong>Hora:</strong> {{ \Carbon\Carbon::parse($ticket->screening->time)->format('H:i') }}</p>
-                <p><strong>Sessio:</strong> {{ $ticket->screening->id }}</p>
+
+                <!-- Fecha y hora de la compra (cuando se creó el ticket) -->
+                <p><strong>Data comanda:</strong> {{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y') }}</p>
+                <p><strong>Hora comanda:</strong> {{ \Carbon\Carbon::parse($ticket->created_at)->format('H:i') }}</p>
+
+                <!-- Fecha y hora de la sesión de cine (screening) -->
+                <p><strong>Sessió:</strong> {{ \Carbon\Carbon::parse($ticket->screening->screening_date)->format('d/m/Y') }} a les {{ \Carbon\Carbon::parse($ticket->screening->screening_time)->format('H:i') }}</p>
+
                 <p><strong>Butaca:</strong> {{ $ticket->seat->row }}{{ $ticket->seat->number }}
                     @if($ticket->seat->is_vip)
                     <span style="background-color:#D4AF37; color:white; padding:2px 5px; border-radius:3px; font-size:12px;">VIP</span>

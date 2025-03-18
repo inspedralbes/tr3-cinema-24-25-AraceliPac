@@ -146,12 +146,12 @@
             <div class="ticket-details">
                 <div class="detail-row">
                     <div class="detail-label">Data:</div>
-                    <div class="detail-value">{{ \Carbon\Carbon::parse($ticket->screening->date)->format('d/m/Y') }}</div>
+                    <div class="detail-value">{{ \Carbon\Carbon::parse($ticket->screening->screening_date)->format('d/m/Y') }} </div>
                 </div>
 
                 <div class="detail-row">
                     <div class="detail-label">Hora:</div>
-                    <div class="detail-value">{{ \Carbon\Carbon::parse($ticket->screening->time)->format('H:i') }}</div>
+                    <div class="detail-value">{{ \Carbon\Carbon::parse($ticket->screening->screening_time)->format('H:i') }}</div>
                 </div>
 
                 <div class="detail-row">
@@ -178,7 +178,7 @@
 
         <div class="ticket-footer">
             <p>Gràcies per la seva compra. Conservi aquesta entrada fins al final de la projecció.</p>
-            <p>Cinema Pedralbes - Tel: 93 XXX XX XX - www.cinemapedralbes.com</p>
+            <p>Cinema Pedralbes - Tel: 93 121 12 12 - cinema.daw.inspedralbes.cat</p>
         </div>
     </div>
 </body>

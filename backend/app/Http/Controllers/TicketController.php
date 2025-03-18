@@ -120,8 +120,8 @@ class TicketController extends Controller
                 'ticket_number' => $ticketNumber,
                 'screening_id' => $screening->id,
                 'movie' => $screening->movie->title,
-                'date' => $screening->date, // Fecha de la sesión
-                'time' => $screening->time, // Hora de la sesión
+                'date' => $screening->screening_date, // Nombre correcto del campo de fecha
+                'time' => $screening->screening_time, // Nombre correcto del campo de hora
                 'seat' => $seat->row . $seat->number
             ]);
 
@@ -139,13 +139,11 @@ class TicketController extends Controller
             // Convertir el QR a base64 para incrustarlo en el PDF
             $qrCodeBase64 = $result->getDataUri();
 
-            // Guardar el QR en el sistema de archivos (opcional)
-            $qrImagePath = 'qrcodes/ticket_' . $ticket->id . '.png';
-            $result->saveToFile(public_path($qrImagePath));
-
-            // Guardar la ruta del QR en la base de datos
-            $ticket->qr_code = $qrImagePath;
-            $ticket->save();
+            // NO guardar el QR en el sistema de archivos - solo lo usar para el PDF
+            // $qrImagePath = 'qrcodes/ticket_' . $ticket->id . '.png';
+            // $result->saveToFile(public_path($qrImagePath));
+            // $ticket->qr_code = $qrImagePath;
+            // $ticket->save();
 
             // Marcar la butaca como ocupada
             $seat->is_occupied = true;
@@ -153,37 +151,62 @@ class TicketController extends Controller
 
             // Cargar relaciones para el PDF
             $ticket->load(['screening.movie', 'seat', 'user']);
+            $screeningDate = \Carbon\Carbon::parse($ticket->screening->date)->format('d/m/Y');
 
+            // Asegurarnos que la hora se formatea correctamente estableciendo la zona horaria
+            $screeningTime = \Carbon\Carbon::parse($ticket->screening->time)
+                ->setTimezone('Europe/Madrid') // Ajusta esto a tu zona horaria
+                ->format('H:i');
             // Generar el PDF con el QR
             $pdf = PDF::loadView('tickets.pdf', [
                 'ticket' => $ticket,
                 'qrCode' => $qrCodeBase64 // Pasar el QR en base64
             ]);
 
-            // Guardar el PDF temporalmente
-            $pdfPath = storage_path('app/public/tickets/ticket_' . $ticket->id . '.pdf');
+            // Configurar opciones para solucionar problemas de formato
+            $pdf->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isPhpEnabled' => true
+            ]);
+
+            // Guardar el PDF temporalmente con codificación binaria
+            $pdfPath = storage_path('tickets/ticket_' . $ticket->ticket_number . '.pdf');
             $pdfDirectory = dirname($pdfPath);
 
             if (!file_exists($pdfDirectory)) {
                 mkdir($pdfDirectory, 0755, true);
             }
 
+            // Guardar directamente como binario
             $pdf->save($pdfPath);
 
             // Enviar el PDF por correo
             try {
-                Mail::send('emails.tickets.purchased', ['ticket' => $ticket], function ($message) use ($ticket, $pdfPath, $user) {
-                    $message->to($user->email, $user->name)
-                        ->subject('Tu Entrada para ' . $ticket->screening->movie->title);
+                Mail::send(
+                    'emails.tickets.purchased', 
+                    [
+                        'ticket' => $ticket,
+                        'screeningDate' => $screeningDate,
+                        'screeningTime' => $screeningTime
+                    ], 
+                    function ($message) use ($ticket, $pdfPath, $user) {
+                        $message->to($user->email, $user->name)
+                            ->subject('La teva Entrada per ' . $ticket->screening->movie->title);
+            
+                        // Adjuntar el PDF al correo
+                        $message->attach($pdfPath, [
+                            'as' => 'Entrada_' . $ticket->ticket_number . '.pdf',
+                            'mime' => 'application/pdf',
+                        ]);
+                    } 
+                );
 
-                    // Adjuntar el PDF al correo
-                    $message->attach($pdfPath, [
-                        'as' => 'Entrada_' . $ticket->ticket_number . '.pdf',
-                        'mime' => 'application/pdf',
-                    ]);
-                });
+                Log::info('Correo enviat correctament a: ' . $user->email);
 
-                Log::info('Correo enviado correctamente a: ' . $user->email);
+                $ticket->save();
             } catch (\Exception $e) {
                 Log::error('Error al enviar correo: ' . $e->getMessage());
             }
