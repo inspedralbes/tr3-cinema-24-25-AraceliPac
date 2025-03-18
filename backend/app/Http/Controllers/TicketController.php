@@ -38,9 +38,13 @@ class TicketController extends Controller
             return response()->json(['message' => 'Aquesta butaca ja està ocupada'], 400);
         }
 
+        // Generar un número de ticket único
         $ticketNumber = 'TK' . $screening->id . now()->format('Ymd') . rand(1000, 9999);
+
+        // Calcular el precio del ticket
         $price = $this->calculateTicketPrice($seat, $screening);
 
+        // Crear el ticket
         $ticket = Ticket::create([
             'user_id' => Auth::id(),
             'screening_id' => $request->screening_id,
@@ -50,14 +54,14 @@ class TicketController extends Controller
         ]);
 
         try {
-            // Datos para el QR
+            // Datos para el QR (usar la fecha y hora de la sesión, no de la compra)
             $qrData = json_encode([
                 'id' => $ticket->id,
                 'ticket_number' => $ticketNumber,
                 'screening_id' => $screening->id,
                 'movie' => $screening->movie->title,
-                'date' => $screening->date,
-                'time' => $screening->time,
+                'date' => $screening->date, // Fecha de la sesión
+                'time' => $screening->time, // Hora de la sesión
                 'seat' => $seat->row . $seat->number
             ]);
 

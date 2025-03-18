@@ -151,7 +151,7 @@
 
                 <div class="detail-row">
                     <div class="detail-label">Hora:</div>
-                    <div class="detail-value">{{ substr($ticket->screening->time, 0, 5) }}</div>
+                    <div class="detail-value">{{ \Carbon\Carbon::parse($ticket->screening->time)->format('H:i') }}</div>
                 </div>
 
                 <div class="detail-row">
