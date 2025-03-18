@@ -22,6 +22,66 @@ class TicketController extends Controller
     /**
      * Crea una nova entrada.
      */
+    public function index()
+    {
+        $tickets = Ticket::with(['user', 'screening', 'seat'])->get(); // Obté totes les entrades amb les relacions
+        return response()->json($tickets); // Retorna la llista d'entrades en format JSON
+    }
+
+    /**
+     * Mostra una entrada específica.
+     */
+    public function show($id)
+    {
+        $ticket = Ticket::with(['user', 'screening', 'seat'])->find($id); // Busca l'entrada per ID amb les relacions
+        if (!$ticket) {
+            return response()->json(['message' => 'Entrada no trobada'], 404); // Retorna error si no es troba
+        }
+        return response()->json($ticket); // Retorna l'entrada en format JSON
+    }
+    public function destroy($id)
+    {
+        $ticket = Ticket::find($id); // Busca l'entrada per ID
+        if (!$ticket) {
+            return response()->json(['message' => 'Entrada no trobada'], 404); // Retorna error si no es troba
+        }
+
+        // Marca la butaca com a disponible
+        $seat = Seat::find($ticket->seat_id);
+        $seat->is_occupied = false;
+        $seat->save();
+
+        $ticket->delete(); // Elimina l'entrada
+        return response()->json(['message' => 'Entrada eliminada correctament']); // Retorna missatge d'èxit
+    }
+    public function update(Request $request, $id)
+    {
+        $ticket = Ticket::find($id); // Busca l'entrada per ID
+        if (!$ticket) {
+            return response()->json(['message' => 'Entrada no trobada'], 404); // Retorna error si no es troba
+        }
+
+        // Valida les dades de la sol·licitud
+        $request->validate([
+            'user_id' => 'sometimes|exists:users,id',
+            'screening_id' => 'sometimes|exists:screenings,id',
+            'seat_id' => 'sometimes|exists:seats,id',
+        ]);
+
+        // Actualitza l'entrada
+        if ($request->has('user_id')) {
+            $ticket->user_id = $request->user_id;
+        }
+        if ($request->has('screening_id')) {
+            $ticket->screening_id = $request->screening_id;
+        }
+        if ($request->has('seat_id')) {
+            $ticket->seat_id = $request->seat_id;
+        }
+        $ticket->save();
+
+        return response()->json($ticket); // Retorna l'entrada actualitzada en format JSON
+    }
     public function store(Request $request)
     {
         $request->validate([
