@@ -11,12 +11,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   // Configuración SSR global
-  ssr: true,
+  ssr: false,
 
-  routeRules: {
-    "/home": { ssr: true }, //  SSR
-    "/**": { ssr: false }, //  (SPA)
-  },
+  // routeRules: {
+  //   "/home": { ssr: true }, //  SSR
+  //   "/**": { ssr: false }, //  (SPA)
+  // },
 
   vite: {
     define: {
