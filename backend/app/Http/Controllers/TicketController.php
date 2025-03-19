@@ -186,22 +186,22 @@ class TicketController extends Controller
             // Enviar el PDF por correo
             try {
                 Mail::send(
-                    'emails.tickets.purchased', 
+                    'emails.tickets.purchased',
                     [
                         'ticket' => $ticket,
                         'screeningDate' => $screeningDate,
                         'screeningTime' => $screeningTime
-                    ], 
+                    ],
                     function ($message) use ($ticket, $pdfPath, $user) {
                         $message->to($user->email, $user->name)
                             ->subject('La teva Entrada per ' . $ticket->screening->movie->title);
-            
+
                         // Adjuntar el PDF al correo
                         $message->attach($pdfPath, [
                             'as' => 'Entrada_' . $ticket->ticket_number . '.pdf',
                             'mime' => 'application/pdf',
                         ]);
-                    } 
+                    }
                 );
 
                 Log::info('Correo enviat correctament a: ' . $user->email);
@@ -228,5 +228,16 @@ class TicketController extends Controller
             return $seat->is_vip ? 6.00 : 4.00;
         }
         return $basePrice;
+    }
+    public function downloadPdf($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $path = storage_path('tickets/ticket_' . $ticket->ticket_number . '.pdf');
+
+        if (file_exists($path)) {
+            return response()->file($path);
+        }
+
+        return response()->json(['message' => 'PDF no encontrado'], 404);
     }
 }

@@ -13,6 +13,7 @@ export const useTicketStore = defineStore("ticket", {
 
   actions: {
     // Obtener tickets del usuario actual
+    // Modificación de la función fetchUserTickets en ticketStore.js
     async fetchUserTickets() {
       const authStore = useAuthStore();
       if (!authStore.token) return;
@@ -28,7 +29,24 @@ export const useTicketStore = defineStore("ticket", {
           },
         });
 
-        this.tickets = response.tickets || [];
+        console.log("Token:", authStore.token);
+        console.log("Respuesta completa:", response);
+
+        // Verificar la estructura de la respuesta
+        if (Array.isArray(response)) {
+          // Si la respuesta es directamente un array de tickets
+          this.tickets = response;
+        } else if (response && response.tickets && Array.isArray(response.tickets)) {
+          // Si la respuesta tiene una propiedad tickets que es un array
+          this.tickets = response.tickets;
+        } else {
+          // Si la estructura es diferente, establecer un array vacío y loguear el error
+          console.error("Estructura de respuesta inesperada:", response);
+          this.tickets = [];
+          this.error = "Formato de respuesta inesperado";
+        }
+
+        console.log("Tickets cargados:", this.tickets);
       } catch (error) {
         console.error("Error al obtener tickets:", error);
         this.error = "No se pudieron cargar los tickets";
@@ -237,32 +255,7 @@ export const useTicketStore = defineStore("ticket", {
         localStorage.removeItem("pendingPurchase");
       }
     },
-    // Añadir esta nueva función a las acciones
-    async getTicketQR(ticketId) {
-      const authStore = useAuthStore();
-      if (!authStore.token) return null;
 
-      try {
-        // Esta URL debe coincidir con la ruta que configuraste en el backend
-        return `http://localhost:8000/api/tickets/${ticketId}/qr`;
-      } catch (error) {
-        console.error("Error al construir URL del QR:", error);
-        return null;
-      }
-    },
-    // Añadir a las acciones del ticketStore
-    downloadTicketPdf(ticketId) {
-      const authStore = useAuthStore();
-      if (!authStore.token) return null;
-
-      // Construir URL para la descarga
-      const downloadUrl = `http://localhost:8000/api/tickets/${ticketId}/pdf`;
-
-      // Abrir en una nueva ventana/pestaña para iniciar la descarga
-      window.open(downloadUrl, '_blank');
-
-      return downloadUrl;
-    },
     // Limpiar los datos de tickets (útil al cerrar sesión)
     clearTickets() {
       this.tickets = [];
@@ -271,6 +264,73 @@ export const useTicketStore = defineStore("ticket", {
       // Opcional: también podrías limpiar la compra pendiente
       // this.clearPendingPurchase();
     },
+  },
+  // Función para descargar el PDF de un ticket
+  async downloadTicketPdf(ticketId, ticketNumber) {
+    const authStore = useAuthStore();
+    if (!authStore.token) return false;
+
+    this.loading = true;
+    this.error = null;
+
+    try {
+      // Si no se proporciona ticketNumber, intentar obtenerlo del ticket
+      if (!ticketNumber) {
+        // Buscar el ticket en la lista de tickets actual
+        const ticket = this.tickets.find(t => t.id === ticketId);
+        if (ticket) {
+          ticketNumber = ticket.ticket_number;
+        } else {
+          // Si no está en la lista, intentar obtener los detalles del ticket
+          const ticketDetails = await this.getTicketDetails(ticketId);
+          ticketNumber = ticketDetails?.ticket_number;
+        }
+      }
+
+      if (!ticketNumber) {
+        throw new Error('No se pudo obtener el número de ticket');
+      }
+
+      // Construir la URL para descargar el PDF
+      const downloadUrl = `http://localhost:8000/api/tickets/${ticketId}/download`;
+
+      // Realizar la solicitud para descargar el PDF
+      const response = await fetch(downloadUrl, {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          Accept: 'application/pdf',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al descargar el PDF: ${response.status} ${response.statusText}`);
+      }
+
+      // Convertir la respuesta a un blob
+      const blob = await response.blob();
+
+      // Crear un URL para el blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Crear un elemento <a> para descargar el archivo
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ticket_${ticketNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+
+      // Limpiar
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      return true;
+    } catch (error) {
+      console.error('Error al descargar el PDF del ticket:', error);
+      this.error = 'No se pudo descargar el PDF del ticket';
+      return false;
+    } finally {
+      this.loading = false;
+    }
   },
 
   // Getters para acceder a los datos de forma organizada

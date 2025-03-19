@@ -52,7 +52,7 @@
                 </ClientOnly>
                 <span>Informació</span>
               </a>
-              <a href="/historial" 
+              <a href="/usuari/historial" 
                  class="px-4 py-2 rounded-md flex items-center text-[#800040] hover:bg-[#D4AF37]/10">
                 <ClientOnly>
                   <Icon name="mdi:history" class="w-5 h-5 mr-2 text-[#D4AF37]" />
