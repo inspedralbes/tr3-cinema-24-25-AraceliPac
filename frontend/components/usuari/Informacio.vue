@@ -114,18 +114,6 @@
           </ClientOnly>
           Tancar Sessió
         </button>
-        <button class="bg-[#800040] text-white px-4 py-2 rounded flex items-center justify-center hover:opacity-90 transition-opacity">
-          <ClientOnly>
-            <Icon name="mdi:pencil" class="mr-2" />
-          </ClientOnly>
-          Editar Perfil
-        </button>
-        <button class="bg-[#D4AF37] text-white px-4 py-2 rounded flex items-center justify-center hover:opacity-90 transition-opacity">
-          <ClientOnly>
-            <Icon name="mdi:lock-reset" class="mr-2" />
-          </ClientOnly>
-          Canviar Contrasenya
-        </button>
       </div>
     </div>
   </div>
