@@ -85,7 +85,7 @@
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
-    overflow: hidden;
+   
     border-radius: 8px;
   }
   
@@ -109,7 +109,7 @@
   /* Poster container con proporción 2:3 */
   .poster-container {
     position: relative;
-    overflow: hidden;
+    
     line-height: 0; /* Elimina espacio extra bajo la imagen */
     aspect-ratio: 2/3;
     width: 100%;
@@ -133,7 +133,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+
     margin-bottom: 0.25rem;
     width: 100%;
   }

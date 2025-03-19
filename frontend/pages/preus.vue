@@ -4,7 +4,7 @@
 
     <!-- Capçalera amb imatge -->
     <div class="relative bg-[#800040]">
-      <div class="max-w-4xl md:max-w-3xl mx-auto h-28 sm:h-32 md:h-40 overflow-hidden">
+      <div class="max-w-4xl md:max-w-3xl mx-auto h-28 sm:h-32 md:h-40 ">
         <img
           src="/public/images/serveis/servei1.webp"
           alt="Serveis de Cinema Pedralbes"

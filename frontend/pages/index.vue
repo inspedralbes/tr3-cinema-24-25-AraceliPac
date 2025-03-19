@@ -81,7 +81,7 @@ body {
   position: relative;
   width: 100%;
   max-height: 70vh;
-  overflow: hidden;
+ 
 }
 
 .hero-image-container {

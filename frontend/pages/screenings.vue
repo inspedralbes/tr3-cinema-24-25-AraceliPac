@@ -427,7 +427,7 @@
   .movie-card {
     background-color: white;
     border-radius: 8px;
-    overflow: hidden;
+  
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     height: 100%;
@@ -510,7 +510,6 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
   
   /* Horarios agrupados */
@@ -719,7 +718,6 @@
     position: relative;
     padding-bottom: 56.25%; /* Ratio 16:9 */
     height: 0;
-    overflow: hidden;
     border-radius: 8px;
   }
   

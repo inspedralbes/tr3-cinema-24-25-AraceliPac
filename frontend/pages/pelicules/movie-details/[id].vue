@@ -286,7 +286,6 @@
     width: 100%;
     height: 0;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    overflow: hidden;
     border-radius: 0.5rem;
   }
   

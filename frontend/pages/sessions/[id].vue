@@ -90,11 +90,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useSessionsStore } from "~/stores/sessions";
 import { useAuthStore } from "~/stores/auth";
 import { useTicketStore } from "~/stores/ticketStore";
+import { onBeforeRouteLeave } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
@@ -110,6 +111,13 @@ const seatsLoaded = ref(false);
 const selectedSeats = ref([]);
 const totalPrice = ref(0);
 
+// Función para asegurarse de que el body no tenga overflow: hidden
+const resetBodyStyles = () => {
+  if (document && document.body) {
+    document.body.style.overflow = '';
+  }
+};
+
 // Session ID de la ruta
 const sessionId = computed(() => route.params.id);
 
@@ -120,6 +128,9 @@ const loadSessionData = async () => {
   seatsLoaded.value = false;
 
   try {
+    // Asegurarse de que el body no tenga overflow hidden al cargar datos
+    resetBodyStyles();
+    
     // Cargar datos de la sesión
     await sessionsStore.fetchSessionById(sessionId.value);
 
@@ -195,7 +206,6 @@ const handleSeatSelection = (seat) => {
 };
 
 // Función para comprar entradas
-// Función para comprar entradas (solución temporal)
 const buyTickets = () => {
   if (selectedSeats.value.length === 0 || selectedSeats.value.length > 10) return;
 
@@ -258,9 +268,25 @@ const recoverPendingPurchase = () => {
   }
 };
 
-// Y añade esta llamada al final de la función onMounted
+// Asegurarse de que el body no tenga overflow hidden al salir de la ruta
+onBeforeRouteLeave((to, from, next) => {
+  resetBodyStyles();
+  next();
+});
+
+// Garantizar que el overflow se resetea al desmontar el componente
+onUnmounted(() => {
+  resetBodyStyles();
+});
+
+// Inicialización al montar el componente
 onMounted(() => {
+  // Asegurarse de que el body no tenga overflow hidden al inicio
+  resetBodyStyles();
+  
+  // Cargar datos de la sesión
   loadSessionData();
+  
   // Si el usuario está autenticado, verificar si hay una compra pendiente
   if (authStore.isAuthenticated) {
     recoverPendingPurchase();
@@ -331,7 +357,7 @@ onMounted(() => {
 }
 
 .session-info {
-  flex: a 1;
+  flex: 1;
 }
 
 .session-metadata {
