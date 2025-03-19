@@ -1,6 +1,6 @@
 <template>
     <div 
-      class="movie-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+      class="movie-card bg-white rounded-lg  shadow-md hover:shadow-xl transition-all duration-300"
       @click="goToMovieDetail"
     >
       <!-- Contenedor de la imagen -->

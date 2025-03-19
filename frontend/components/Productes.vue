@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 h-full">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 h-full">
       <!-- Capçalera del component -->
       <div class="p-4 md:p-6 bg-[#800040] text-white">
         <div class="flex items-center">
