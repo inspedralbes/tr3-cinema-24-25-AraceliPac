@@ -67,7 +67,7 @@ export const useAuthStore = defineStore("auth", {
       }
 
       try {
-        const response = await $fetch(`http://localhost:8000/api/users/${this.user.id}`, {
+        const response = await $fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/users/${this.user.id}`, {
           method: 'PUT',
           body: profileData,
           headers: {
@@ -97,7 +97,7 @@ export const useAuthStore = defineStore("auth", {
       }
 
       try {
-        const response = await $fetch(`http://localhost:8000/api/users/${this.user.id}`, {
+        const response = await $fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/users/${this.user.id}`, {
           method: 'PUT',
           body: passwordData,
           headers: {
@@ -122,7 +122,7 @@ export const useAuthStore = defineStore("auth", {
 
       try {
         // Para FormData necesitamos usar fetch en lugar de $fetch
-        const url = `http://localhost:8000/api/users/${this.user.id}`;
+        const url = `http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/users/${this.user.id}`;
         const fetchOptions = {
           method: 'PUT',
           body: formData,
@@ -157,7 +157,7 @@ export const useAuthStore = defineStore("auth", {
       }
 
       try {
-        const response = await $fetch(`http://localhost:8000/api/users/${this.user.id}`, {
+        const response = await $fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/users/${this.user.id}`, {
           headers: {
             Authorization: `Bearer ${this.token}`,
             Accept: 'application/json'
@@ -181,7 +181,7 @@ export const useAuthStore = defineStore("auth", {
       }
 
       try {
-        await $fetch(`http://localhost:8000/api/users/${this.user.id}`, {
+        await $fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/users/${this.user.id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${this.token}`,

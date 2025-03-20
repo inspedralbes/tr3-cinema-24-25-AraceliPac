@@ -438,7 +438,7 @@ const fetchMoviesData = async () => {
     // Para cada película, obtener sus datos completos
     for (const movieId of movieIds) {
       try {
-        const response = await fetch(`http://localhost:8000/api/movies/${movieId}`);
+        const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/movies/${movieId}`);
         if (response.ok) {
           const movieData = await response.json();
           // Guardar en caché

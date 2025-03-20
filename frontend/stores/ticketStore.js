@@ -22,7 +22,7 @@ export const useTicketStore = defineStore("ticket", {
       this.error = null;
 
       try {
-        const response = await $fetch("http://localhost:8000/api/tickets", {
+        const response = await $fetch("http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/tickets", {
           headers: {
             Authorization: `Bearer ${authStore.token}`,
             Accept: "application/json",
@@ -80,7 +80,7 @@ export const useTicketStore = defineStore("ticket", {
 
         // Realizar la solicitud al backend
         try {
-          const response = await $fetch("http://localhost:8000/api/tickets", {
+          const response = await $fetch("http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/tickets", {
             method: "POST",
             body: ticketPayload,
             headers: {
@@ -161,7 +161,7 @@ export const useTicketStore = defineStore("ticket", {
       this.error = null;
 
       try {
-        const response = await $fetch(`http://localhost:8000/api/tickets/${ticketId}`, {
+        const response = await $fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/tickets/${ticketId}`, {
           headers: {
             Authorization: `Bearer ${authStore.token}`,
             Accept: "application/json",
@@ -188,7 +188,7 @@ export const useTicketStore = defineStore("ticket", {
       this.error = null;
 
       try {
-        await $fetch(`http://localhost:8000/api/tickets/${ticketId}`, {
+        await $fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/tickets/${ticketId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${authStore.token}`,
@@ -282,7 +282,7 @@ export const useTicketStore = defineStore("ticket", {
         }
 
         // Construir la URL para descargar el PDF
-        const downloadUrl = `http://localhost:8000/api/tickets/${ticketId}/download`;
+        const downloadUrl = `http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/tickets/${ticketId}/download`;
 
         // Realizar la solicitud para descargar el PDF
         const response = await fetch(downloadUrl, {
