@@ -5,16 +5,16 @@
     <title>Comprovant de Registre</title>
     <style>
         body { 
-            font-family: 'DejaVu Sans', sans-serif; 
-            background-color: #000000; 
-            color: #FFFFFF; 
+            font-family: Arial, sans-serif; 
             margin: 0;
             padding: 0;
+            color: #333;
+            background-color: #fff;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
-            border: 2px solid #D4AF37;
+            border: 2px solid #800040;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -22,75 +22,61 @@
             background-color: #800040; 
             text-align: center; 
             padding: 20px; 
-            border-bottom: 3px solid #D4AF37;
+            border-bottom: 2px solid #800040;
+            color: white;
         }
         .header h1 { 
-            color: #D4AF37; 
             margin: 0;
             font-size: 24px;
             letter-spacing: 1px;
         }
         .subheader {
-            background-color: #333333;
+            background-color: #f9f9f9;
             padding: 10px 20px;
-            color: #D4AF37;
+            color: #800040;
             font-style: italic;
             text-align: center;
+            border-bottom: 1px solid #eee;
         }
         .content { 
             padding: 30px; 
-            background-color: #000000;
+            background-color: #ffffff;
         }
         .info { 
             margin-bottom: 15px; 
             padding: 10px;
-            border-bottom: 1px solid #800040;
+            border-bottom: 1px solid #eee;
         }
         .info-label {
-            color: #D4AF37;
+            color: #800040;
             font-weight: bold;
             width: 180px;
             display: inline-block;
         }
         .info-value {
-            color: #FFFFFF;
-        }
-        .qr-section {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px dashed #D4AF37;
-        }
-        .qr-placeholder {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto;
-            background-color: #FFFFFF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000000;
-            font-size: 10px;
-            text-align: center;
+            color: #333;
         }
         .footer {
-            background-color: #800040;
+            background-color: #f9f9f9;
             padding: 15px;
             text-align: center;
-            color: #D4AF37;
+            color: #666;
             font-size: 12px;
-            border-top: 2px solid #D4AF37;
+            border-top: 1px solid #ddd;
         }
         .benefits {
             margin-top: 30px;
             padding: 15px;
-            background-color: #333333;
+            background-color: #f9f9f9;
             border-radius: 5px;
+            border: 1px solid #eee;
         }
         .benefits h3 {
-            color: #D4AF37;
+            color: #800040;
             margin-top: 0;
             text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
         .benefits ul {
             list-style-type: none;
@@ -122,7 +108,7 @@
         <div class="content">
             <div class="info">
                 <span class="info-label">Nom:</span>
-                <span class="info-value">{{ $user->name }} {{ $user->last_name }}  </span>
+                <span class="info-value">{{ $user->name }} {{ $user->last_name }}</span>
             </div>
             
             <div class="info">
@@ -144,7 +130,6 @@
                     <li>Accés al nostre programa de fidelització</li>
                 </ul>
             </div>
-            
         </div>
         
         <div class="footer">
@@ -153,4 +138,3 @@
         </div>
     </div>
 </body>
-</html>

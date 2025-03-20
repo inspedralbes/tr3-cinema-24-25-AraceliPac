@@ -233,7 +233,7 @@ onMounted(() => {
 .session-card {
   background-color: #ffffff;
   border-radius: 8px;
-  overflow: hidden;
+
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -326,7 +326,7 @@ onMounted(() => {
   line-height: 1.5;
   margin: 15px 0;
   max-height: 4.5em;
-  overflow: hidden;
+  
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3;

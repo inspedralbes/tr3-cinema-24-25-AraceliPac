@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-xl mx-auto">
-    <div class="bg-gradient-to-b from-gray-50 to-gray-100 shadow-2xl rounded-lg border-t-4 border-[#D4AF37] overflow-hidden">
+    <div class="bg-gradient-to-b from-gray-50 to-gray-100 shadow-2xl rounded-lg border-t-4 border-[#D4AF37] ">
       <!-- Cabecera con imagen de fondo -->
       <div class="relative py-8 px-6 bg-[#800040] bg-opacity-90 border-b-2 border-[#D4AF37]">
         <div class="absolute inset-0 opacity-10 "></div>
@@ -460,7 +460,7 @@ async function registrarUsuari() {
       return;
     }
     
-    console.log('Resposta registre:', data); // Log para depuración
+    // console.log('Resposta registre:', data); // Log para depuración
     
     // Si el registre és correcte i rebem token
     if (data.token) {

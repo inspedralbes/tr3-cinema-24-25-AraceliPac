@@ -14,14 +14,18 @@ use App\Http\Controllers\AuthController;
 
 // Ruta que requiere autenticación con Sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', [AuthController::class, 'user']);
+    Route::apiResource('users', UserController::class);
+    // Route::get('/user', [AuthController::class, 'user']);
+    Route::apiResource('/tickets', TicketController::class);
+    Route::get('/tickets/{id}/download', [TicketController::class, 'downloadPdf']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 
-Route::post('/login', [AuthController::class, 'login']);  
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-Route::apiResource('users', UserController::class); //temporal nomes fins posar el middleware
+
+// Route::apiResource('users', UserController::class); //temporal nomes fins posar el middleware
 //rutes
 Route::apiResource('genres', GenreController::class);
 Route::apiResource('directors', DirectorController::class);
@@ -43,5 +47,3 @@ Route::prefix('screenings/{screening}')->group(function () {
 
 // Rutes per a una butaca específica
 Route::apiResource('seats', SeatController::class)->except(['index', 'store']);
-Route::apiResource('tickets', TicketController::class);
-

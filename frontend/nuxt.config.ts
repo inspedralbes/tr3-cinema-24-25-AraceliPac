@@ -28,4 +28,9 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  //  Configuración Nitro con la fecha de compatibilidad
+  nitro: {
+    compatibilityDate: "2025-03-19",
+  },
 });

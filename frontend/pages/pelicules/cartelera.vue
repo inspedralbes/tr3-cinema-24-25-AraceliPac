@@ -245,7 +245,6 @@
 .movie-card {
   background-color: white;
   border-radius: 8px;
-  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
@@ -265,7 +264,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
   width: 100%;
   background-color: #f0f0f0;
 }
@@ -298,7 +296,6 @@
   margin: 0 0 10px;
   color: #333;
   height: 2.8em;
-  overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

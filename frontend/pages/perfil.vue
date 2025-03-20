@@ -52,21 +52,21 @@
                 </ClientOnly>
                 <span>Informació</span>
               </a>
-              <a href="/historial" 
+              <a href="/usuari/historial" 
                  class="px-4 py-2 rounded-md flex items-center text-[#800040] hover:bg-[#D4AF37]/10">
                 <ClientOnly>
                   <Icon name="mdi:history" class="w-5 h-5 mr-2 text-[#D4AF37]" />
                 </ClientOnly>
                 <span>Historial</span>
               </a>
-              <a href="/favorits" 
+              <!-- <a href="/usuari/favorits" 
                  class="px-4 py-2 rounded-md flex items-center text-[#800040] hover:bg-[#D4AF37]/10">
                 <ClientOnly>
                   <Icon name="mdi:heart" class="w-5 h-5 mr-2 text-[#D4AF37]" />
                 </ClientOnly>
                 <span>Favorits</span>
-              </a>
-              <a href="/ajustos" 
+              </a> -->
+              <a href="/usuari/ajustos" 
                  class="px-4 py-2 rounded-md flex items-center text-[#800040] hover:bg-[#D4AF37]/10">
                 <ClientOnly>
                   <Icon name="mdi:cog" class="w-5 h-5 mr-2 text-[#D4AF37]" />

@@ -59,7 +59,7 @@
   </template>
   
   <script setup>
-  import { computed, defineProps, defineEmits } from 'vue';
+  import { computed, defineProps } from 'vue';
   
   const props = defineProps({
     seatsMap: {
