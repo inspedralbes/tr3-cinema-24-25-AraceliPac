@@ -18,6 +18,8 @@ use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 
 class TicketController extends Controller
 {
