@@ -1,4 +1,4 @@
-name: Preparant per producció Cinema 
+name: Preparant per producció cinema
 run-name: ${{ github.actor }} està pujant l'aplicació a PROD 🚀
 on:
   push:
@@ -23,7 +23,21 @@ jobs:
         
       - name: Pujar carpeta output a producció
         run: |
-          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./frontend/.output/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+          # Primero, listar la estructura de directorios para depuración
+          ls -la
+          
+          # Intentar encontrar la carpeta .output/public
+          find . -path "*/.output/public" -type d || echo "No se encontró carpeta .output/public"
+          
+          # Usar la ruta correcta dependiendo de la estructura
+          if [ -d "./frontend/.output/public" ]; then
+            scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./frontend/.output/public/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+          elif [ -d "./.output/public" ]; then
+            scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./.output/public/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+          else
+            echo "Error: No se pudo encontrar la carpeta .output/public"
+            exit 1
+          fi
         
       - name: Finalizació
         run: echo "🍏 This job's status is ${{ job.status }}."
