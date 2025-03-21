@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200">
+  <!-- Fondo del logo con una forma elegante -->
+  <rect width="500" height="200" fill="#FFFFFF" rx="10" ry="10"/>
+  
+  <!-- Círculo burdeos principal -->
+  <circle cx="100" cy="100" r="80" fill="#800040"/>
+  
+  <!-- Cámara de cine retro con trípode, rectangular, con discos de cintas y foco hacia la derecha -->
+  <g transform="translate(55, 65) scale(0.8)">
+    <!-- Trípode -->
+    <path d="M60,80 L35,125" stroke="#333333" stroke-width="3" fill="none"/>
+    <path d="M60,80 L85,125" stroke="#333333" stroke-width="3" fill="none"/>
+    <path d="M60,80 L60,125" stroke="#333333" stroke-width="3" fill="none"/>
+    
+    <!-- Base del trípode -->
+    <path d="M33,125 L37,125" stroke="#333333" stroke-width="3" fill="none"/>
+    <path d="M58,125 L62,125" stroke="#333333" stroke-width="3" fill="none"/>
+    <path d="M83,125 L87,125" stroke="#333333" stroke-width="3" fill="none"/>
+    
+    <!-- Conector central del trípode -->
+    <circle cx="60" cy="80" r="5" fill="#444444" stroke="#333333" stroke-width="1"/>
+    
+    <!-- Cuerpo principal de la cámara (rectangular) -->
+    <rect x="25" y="20" width="70" height="50" rx="3" ry="3" fill="#D4AF37" stroke="#B89030" stroke-width="2"/>
+    
+    <!-- Lente apuntando hacia la derecha -->
+    <rect x="95" y="35" width="20" height="20" rx="3" ry="3" fill="#333333" stroke="#B89030" stroke-width="2"/>
+    <circle cx="105" cy="45" r="6" fill="#222222" stroke="#B89030" stroke-width="1"/>
+    <circle cx="105" cy="45" r="3" fill="#111111"/>
+    
+    <!-- Discos de cintas (uno más grande que el otro) -->
+    <circle cx="40" cy="10" r="15" fill="#D4AF37" stroke="#B89030" stroke-width="1"/>
+    <circle cx="40" cy="10" r="10" fill="#333333" stroke="#222222" stroke-width="1"/>
+    <circle cx="40" cy="10" r="3" fill="#D4AF37"/>
+    <path d="M40,10 L40,0" stroke="#D4AF37" stroke-width="1"/>
+    <path d="M40,10 L47,17" stroke="#D4AF37" stroke-width="1"/>
+    
+    <circle cx="75" cy="5" r="10" fill="#D4AF37" stroke="#B89030" stroke-width="1"/>
+    <circle cx="75" cy="5" r="7" fill="#333333" stroke="#222222" stroke-width="1"/>
+    <circle cx="75" cy="5" r="2" fill="#D4AF37"/>
+    <path d="M75,5 L75,-1" stroke="#D4AF37" stroke-width="1"/>
+    <path d="M75,5 L80,10" stroke="#D4AF37" stroke-width="1"/>
+    
+    <!-- Detalles de la cámara -->
+    <rect x="25" y="45" width="15" height="8" rx="1" ry="1" fill="#444444" stroke="#333333" stroke-width="1"/>
+    <rect x="45" y="45" width="15" height="8" rx="1" ry="1" fill="#444444" stroke="#333333" stroke-width="1"/>
+    
+    <!-- Manivela lateral -->
+    <circle cx="25" cy="35" r="6" fill="#D4AF37" stroke="#B89030" stroke-width="1"/>
+    <rect x="10" y="33" width="15" height="4" rx="2" ry="2" fill="#D4AF37" stroke="#B89030" stroke-width="1"/>
+    
+    <!-- Visor superior -->
+    <rect x="45" y="10" width="20" height="10" rx="1" ry="1" fill="#444444" stroke="#333333" stroke-width="1"/>
+  </g>
+  
+  <!-- Nombre del cine al lado del círculo, con C y P destacadas y espaciado ajustado -->
+  <!-- CINEMA con C e I más juntas -->
+  <text x="200" y="80" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-weight="bold" fill="#800040">
+    <tspan fill="#D4AF37" font-size="50">C</tspan>
+    <tspan dx="-5" font-size="38">I</tspan>
+    <tspan font-size="38">NEMA</tspan>
+  </text>
+  
+  <!-- PEDRALBES con P y E más juntas -->
+  <text x="200" y="130" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-weight="bold" fill="#800040">
+    <tspan fill="#D4AF37" font-size="50">P</tspan>
+    <tspan dx="-5" font-size="38">E</tspan>
+    <tspan font-size="38">DRALBES</tspan>
+  </text>
+  
+  <!-- Línea decorativa -->
+  <line x1="200" y1="150" x2="450" y2="150" stroke="#800040" stroke-width="2"/>
+  
+  <!-- Eslogan pequeño -->
+  <text x="325" y="175" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-size="14" font-style="italic" fill="#333333" text-anchor="middle">Una experiència cinematogràfica única</text>
+</svg>

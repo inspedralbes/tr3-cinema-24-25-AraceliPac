@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Fondo cuadriculado (opcional) -->
+  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ccc" stroke-width="0.5"/>
+  </pattern>
+  <rect width="300" height="300" fill="url(#grid)" />
+
+  <!-- Círculo amarillo de fondo -->
+  <circle cx="150" cy="150" r="120" fill="#FFDD33" />
+  
+  <!-- Rayos de luz -->
+  <g transform="translate(215, 145)">
+    <path d="M 0 -5 L 70 -35" stroke="white" stroke-width="3" stroke-linecap="round" />
+    <path d="M 0 0 L 70 0" stroke="white" stroke-width="3" stroke-linecap="round" />
+    <path d="M 0 5 L 70 35" stroke="white" stroke-width="3" stroke-linecap="round" />
+    <path d="M 0 -15 L 60 -55" stroke="white" stroke-width="3" stroke-linecap="round" />
+    <path d="M 0 15 L 60 55" stroke="white" stroke-width="3" stroke-linecap="round" />
+  </g>
+  
+  <!-- Cuerpo principal de la cámara -->
+  <rect x="110" y="130" width="70" height="50" fill="#333" rx="2" ry="2" />
+  
+  <!-- Lente -->
+  <rect x="60" y="140" width="50" height="30" fill="#444" />
+  
+  <!-- Altavoces/Contadores lado derecho -->
+  <rect x="180" y="135" width="10" height="40" fill="#222" />
+  <rect x="190" y="140" width="5" height="30" fill="#333" />
+  <rect x="195" y="135" width="15" height="40" fill="#222" />
+  
+  <!-- Bobinas superiores -->
+  <g transform="translate(100, 110)">
+    <!-- Bobina izquierda -->
+    <circle cx="0" cy="0" r="20" fill="#6B5B00" />
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="0" cy="0" r="4" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="0" cy="0" r="2" fill="#6B5B00" />
+    
+    <!-- Soporte entre bobinas -->
+    <rect x="20" y="-5" width="20" height="10" fill="#6B5B00" />
+    
+    <!-- Bobina derecha -->
+    <circle cx="60" cy="0" r="20" fill="#6B5B00" />
+    <circle cx="60" cy="0" r="16" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="60" cy="0" r="12" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="60" cy="0" r="8" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="60" cy="0" r="4" fill="none" stroke="#6B5B00" stroke-width="2" />
+    <circle cx="60" cy="0" r="2" fill="#6B5B00" />
+  </g>
+  
+  <!-- Pequeño panel de control -->
+  <rect x="118" y="155" width="15" height="15" fill="#555" rx="1" ry="1" />
+  <rect x="120" y="158" width="10" height="4" fill="#333" />
+  <rect x="120" y="164" width="2" height="2" fill="#888" />
+  <rect x="124" y="164" width="2" height="2" fill="#888" />
+  <rect x="128" y="164" width="2" height="2" fill="#888" />
+  
+  <!-- Cable en la parte inferior -->
+  <path d="M 110 180 C 90 200, 70 190, 60 210 C 50 230, 80 240, 60 250" 
+        fill="none" stroke="#333" stroke-width="5" stroke-linecap="round" />
+</svg>

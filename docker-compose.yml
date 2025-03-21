@@ -1,0 +1,104 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.2.0
+    command: --default-authentication-plugin=caching_sha2_password
+    restart: always
+    container_name: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cinema
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=root"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer
+    restart: always
+    container_name: adminer
+    depends_on:
+      - db
+    ports:
+      - "9090:8080"
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: laravel
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/
+    working_dir: /var/www/
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: cinema
+      DB_USERNAME: user
+      DB_PASSWORD: user
+    networks:
+      - app-network
+    command: bash -c "chmod +x entrypoint.sh && ./entrypoint.sh"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 10s
+      timeout: 10s
+      start_period: 350s
+      retries: 5
+
+  nodejs:
+    image: node:18
+    container_name: nodejs-service
+    working_dir: /usr/src/app
+    volumes:
+      - ./backend/node-app:/usr/src/app
+    ports:
+      - "3000:3000"
+    command: bash -c "npm install && node index.js"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nuxt
+    ports:
+      - "3001:3000" # Canvia el port per evitar conflictes amb Node.js
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    command: sh -c "npm install && npm run dev -- --host"
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
