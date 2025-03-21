@@ -16,7 +16,7 @@ Cineteca és una plataforma web per a la gestió de sessions de cinema, permeten
 [Penpot - Disseny del projecte](https://design.penpot.app/#/view?file-id=15f52329-dbfe-804d-8005-d5deb6269682&page-id=15f52329-dbfe-804d-8005-d5deb6269683&section=interactions&index=0&share-id=7e5a2fce-ccc0-804a-8005-d5ea89add55e)  
 
 ## URL de producció  
-[Produccio - URL](http://cinema.daw.inspedralbes.cat/)  
+[Produccio - URL](http://cine.daw.inspedralbes.cat/)  
 
 ## Estat del projecte  
 Actualment en fase de desenvolupament. S'han definit els requisits i el disseny de la interfície gràfica, i s'està començant a implementar la funcionalitat principal.  

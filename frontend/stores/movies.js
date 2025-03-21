@@ -89,7 +89,7 @@ export const useMoviesStore = defineStore('movies', {
             this.error = null;
 
             try {
-                const response = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/movies');
+                const response = await fetch('http://cinema.daw.inspedralbes.cat/api/movies');
 
                 if (response.status === 200) {
                     const data = await response.json();
@@ -114,7 +114,7 @@ export const useMoviesStore = defineStore('movies', {
             this.error = null;
 
             try {
-                const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/movies/${movieId}`);
+                const response = await fetch(`http://cinema.daw.inspedralbes.cat/api/movies/${movieId}`);
 
                 if (response.status === 200) {
                     const data = await response.json();
@@ -145,7 +145,7 @@ export const useMoviesStore = defineStore('movies', {
             this.isLoading = true;
 
             try {
-                const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/movies/${movieId}/actors`);
+                const response = await fetch(`http://cinema.daw.inspedralbes.cat/api/movies/${movieId}/actors`);
 
                 if (response.status === 200) {
                     const data = await response.json();
@@ -188,7 +188,7 @@ export const useMoviesStore = defineStore('movies', {
                 }
 
                 // Si no tenemos las películas o el término está vacío, hacemos una búsqueda general
-                const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/movies`);
+                const response = await fetch(`http://cinema.daw.inspedralbes.cat/api/movies`);
 
                 if (response.status === 200) {
                     const data = await response.json();
@@ -218,7 +218,7 @@ export const useMoviesStore = defineStore('movies', {
             try {
                 // Como no tienes un endpoint específico para filtrar por género,
                 // obtenemos todas y filtramos en el frontend
-                const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/movies`);
+                const response = await fetch(`http://cinema.daw.inspedralbes.cat/api/movies`);
 
                 if (response.status === 200) {
                     const data = await response.json();

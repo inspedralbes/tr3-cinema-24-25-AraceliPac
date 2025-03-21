@@ -110,7 +110,7 @@ export const useSessionsStore = defineStore('sessions', {
       this.error = null;
 
       try {
-        const response = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/screenings');
+        const response = await fetch('http://cinema.daw.inspedralbes.cat/api/screenings');
         if (response.status === 200) {
           const data = await response.json();
           this.upcomingSessions = data;
@@ -132,12 +132,12 @@ export const useSessionsStore = defineStore('sessions', {
       this.error = null;
 
       try {
-        const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/screenings/${sessionId}`);
+        const response = await fetch(`http://cinema.daw.inspedralbes.cat/api/screenings/${sessionId}`);
 
         if (response.status === 200) {
           const data = await response.json();
           // console.log("Session API response:", data);
-          
+
           // La API devuelve directamente el objeto de sesión
           this.currentSession = data;
         } else {
@@ -157,7 +157,7 @@ export const useSessionsStore = defineStore('sessions', {
       this.error = null;
 
       try {
-        const response = await fetch(`http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/screenings/${sessionId}/seats`);
+        const response = await fetch(`http://cinema.daw.inspedralbes.cat/api/screenings/${sessionId}/seats`);
         if (response.status === 200) {
           // Asegurémonos de que los datos se procesen correctamente
           const data = await response.json();
@@ -211,7 +211,7 @@ export const useSessionsStore = defineStore('sessions', {
           userData,
         };
 
-        const response = await fetch('http://cinema.daw.inspedralbes.cat/tr3-cinema-24-25-AraceliPac/backend/public/api/bookings', {
+        const response = await fetch('http://cinema.daw.inspedralbes.cat/api/bookings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

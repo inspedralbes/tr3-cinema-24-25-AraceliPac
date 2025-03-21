@@ -99,7 +99,7 @@
             <p>Pots començar a explorar la nostra cartellera actual i comprar entrades online:</p>
             
             <div style="text-align: center;">
-                <a href="http://cinema.daw.inspedralbes.cat/pelicules/cartelera" class="button">VISITAR LA CARTELLERA</a>
+                <a href="http://cine.daw.inspedralbes.cat/pelicules/cartelera" class="button">VISITAR LA CARTELLERA</a>
             </div>
         </div>
         
