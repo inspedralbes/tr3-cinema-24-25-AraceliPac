@@ -23,7 +23,7 @@ jobs:
         
       - name: Pujar carpeta output a producció
         run: |
-          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ../../frontend/.output/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+          scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem ./frontend/.output/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
         
       - name: Finalizació
         run: echo "🍏 This job's status is ${{ job.status }}."
