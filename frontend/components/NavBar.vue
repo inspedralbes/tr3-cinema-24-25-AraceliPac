@@ -7,7 +7,7 @@
           <NuxtLink to="/" class="flex items-center">
             <div class="rounded-full border-2 border-[#D4AF37] p-1 overflow-hidden">
               <nuxt-img
-                src="../public/images/cinema2.png"
+                src="http://cine.daw.inspedralbes.cat/images/cinema2.png"
                 alt="Cine Pedralbes"
                 class="h-20 md:h-24 rounded-full"
               />
