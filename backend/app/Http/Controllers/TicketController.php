@@ -28,7 +28,8 @@ class TicketController extends Controller
      */
     public function index()
     {
-        $tickets = Ticket::with(['user', 'screening', 'seat'])->get(); // Obté totes les entrades amb les relacions
+        $userId = Auth::id();
+        $tickets = Ticket::with(['user', 'screening', 'seat'])->where('user_id', $userId)->get(); // Obté totes les entrades amb les relacions
         return response()->json($tickets); // Retorna la llista d'entrades en format JSON
     }
 
