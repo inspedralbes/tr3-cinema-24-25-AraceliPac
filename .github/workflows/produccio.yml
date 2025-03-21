@@ -6,7 +6,7 @@ on:
       - main  # Solo se ejecutará cuando hagas push a main
 
 jobs:
-  Pujar-a-produccio-amb-SCP:
+  Pujar-a-produccio-amb-GITHUB-ACTIONS:
     runs-on: ubuntu-latest
     steps:
       - name: Obtenint el codi del respositori
