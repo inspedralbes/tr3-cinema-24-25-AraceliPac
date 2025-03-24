@@ -34,6 +34,12 @@ Route::prefix('admin')
         // Proyecciones
         Route::get('/screenings', [AdminController::class, 'screenings'])->name('admin.screenings');
         Route::get('/screenings/create', [AdminController::class, 'createScreening'])->name('admin.screenings.create');
+        Route::post('/screenings', [AdminController::class, 'storeScreening'])->name('admin.screenings.store');
+        Route::get('/screenings/{id}', [AdminController::class, 'showScreening'])->name('admin.screenings.show');
+        Route::get('/screenings/{id}/edit', [AdminController::class, 'editScreening'])->name('admin.screenings.edit');
+        Route::put('/screenings/{id}', [AdminController::class, 'updateScreening'])->name('admin.screenings.update');
+        Route::delete('/screenings/{id}', [AdminController::class, 'destroyScreening'])->name('admin.screenings.destroy'); // Nueva ruta para eliminar
+        
 
         // Entradas
         Route::get('/tickets', [AdminController::class, 'tickets'])->name('admin.tickets');

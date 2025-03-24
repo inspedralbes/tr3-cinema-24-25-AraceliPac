@@ -12,6 +12,7 @@ use App\Models\Movie;
 use App\Models\Genre;
 use App\Models\Director;
 use App\Models\Actor;
+use App\Models\Screening;
 
 class AdminController extends Controller
 {
@@ -100,81 +101,173 @@ class AdminController extends Controller
         return view('admin.home');
     }
 
-    // Els altres mètodes romanen iguals...
+    // CRUD SCREENINGS
     /**
-     * Mostra la pàgina de gestió de pel·lícules
-     */
-    public function movies(Request $request)
-    {
-        // Obtener los géneros para el selector de filtro
-        $genres = Genre::all();
-
-        // Comenzar la consulta
-        $query = Movie::with(['genre', 'director']);
-
-        // Aplicar filtros si se proporcionan
-        if ($request->filled('title')) {
-            $query->where('title', 'like', '%' . $request->title . '%');
-        }
-
-        if ($request->filled('genre_id')) {
-            $query->where('genre_id', $request->genre_id);
-        }
-
-        if ($request->filled('year')) {
-            $query->where('release_year', $request->year);
-        }
-
-        // Obtener los resultados paginados
-        $movies = $query->orderBy('title')->paginate(10);
-
-        // Mantener los parámetros de filtro en la paginación
-        $movies->appends($request->all());
-
-        return view('admin.movies.index', compact('movies', 'genres'));
-    }
-
-    /**
-     * Mostra el formulari per crear una nova pel·lícula
-     */
-    public function createMovie(Request $request)
-    {
-        $checkResult = $this->checkAdminAccess($request);
-        if ($checkResult) {
-            return $checkResult;
-        }
-
-
-        $genres = Genre::all();
-        $directors = Director::all();
-        $actors = Actor::all();
-        return view('admin.movies.create', compact('genres', 'directors', 'actors'));
-    }
-
-    /**
-     * Mostra la pàgina de gestió de projeccions
+     * Mostrar la página de proyecciones con filtros
      */
     public function screenings(Request $request)
     {
-        $checkResult = $this->checkAdminAccess($request);
-        if ($checkResult) {
-            return $checkResult;
+        // Obtener películas para el selector de filtro
+        $movies = Movie::orderBy('title')->get();
+
+        // Comenzar la consulta
+        $query = Screening::with('movie');
+
+        // Aplicar filtros si se proporcionan
+        if ($request->filled('movie_id')) {
+            $query->where('movie_id', $request->movie_id);
         }
 
-        return view('admin.screenings.index');
+        if ($request->filled('date')) {
+            $query->whereDate('screening_date', $request->date);
+        }
+
+        // Obtener los resultados paginados
+        $screenings = $query->orderBy('screening_date')->orderBy('screening_time')->paginate(10);
+
+        // Mantener los parámetros de filtro en la paginación
+        $screenings->appends($request->all());
+
+        return view('admin.screenings.index', compact('screenings', 'movies'));
     }
 
     /**
-     * Mostra el formulari per crear una nova projecció
+     * Mostrar formulario para crear una nueva proyección
      */
-    public function createScreening(Request $request)
+    public function createScreening()
     {
-        $checkResult = $this->checkAdminAccess($request);
-        if ($checkResult) {
-            return $checkResult;
-        }
+        $movies = Movie::orderBy('title')->get();
 
-        return view('admin.screenings.create');
+        return view('admin.screenings.create', compact('movies'));
+    }
+
+    /**
+     * Almacenar una nueva proyección
+     */
+    public function storeScreening(Request $request)
+    {
+        // Validar los datos de la solicitud
+        $validated = $request->validate([
+            'movie_id' => 'required|exists:movies,id',
+            'screening_date' => 'required|date',
+            'screening_time' => 'required',
+        ]);
+
+        try {
+            // Verificar disponibilidad de horario (simplificado)
+            $existingScreening = Screening::where('movie_id', $request->movie_id)
+                ->whereDate('screening_date', $request->screening_date)
+                ->whereTime('screening_time', $request->screening_time)
+                ->first();
+
+            if ($existingScreening) {
+                return redirect()->back()
+                    ->with('error', 'Ja existeix una projecció d\'aquesta pel·lícula en aquesta data i hora.')
+                    ->withInput();
+            }
+
+            // Crear la proyección
+            $screening = Screening::create([
+                'movie_id' => $request->movie_id,
+                'screening_date' => $request->screening_date,
+                'screening_time' => $request->screening_time,
+                'is_special_day' => $request->has('is_special_day'),
+                'is_full' => $request->has('is_full'),
+            ]);
+
+            return redirect()->route('admin.screenings')
+                ->with('success', 'Projecció creada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Ha ocorregut un error: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Mostrar detalles de una proyección
+     */
+    public function showScreening($id)
+    {
+        $screening = Screening::with('movie')->findOrFail($id);
+
+        return view('admin.screenings.show', compact('screening'));
+    }
+
+    /**
+     * Mostrar formulario para editar una proyección
+     */
+    public function editScreening($id)
+    {
+        $screening = Screening::findOrFail($id);
+        $movies = Movie::orderBy('title')->get();
+
+        return view('admin.screenings.edit', compact('screening', 'movies'));
+    }
+
+    /**
+     * Actualizar una proyección existente
+     */
+    public function updateScreening(Request $request, $id)
+    {
+        $screening = Screening::findOrFail($id);
+
+        // Validar los datos de la solicitud
+        $validated = $request->validate([
+            'movie_id' => 'required|exists:movies,id',
+            'screening_date' => 'required|date',
+            'screening_time' => 'required',
+        ]);
+
+        try {
+            // Verificar disponibilidad si cambió la fecha/hora
+            if ($request->screening_date != $screening->screening_date || $request->screening_time != $screening->screening_time) {
+                $existingScreening = Screening::where('movie_id', $request->movie_id)
+                    ->whereDate('screening_date', $request->screening_date)
+                    ->whereTime('screening_time', $request->screening_time)
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($existingScreening) {
+                    return redirect()->back()
+                        ->with('error', 'Ja existeix una projecció d\'aquesta pel·lícula en aquesta data i hora.')
+                        ->withInput();
+                }
+            }
+
+            // Actualizar la proyección
+            $screening->update([
+                'movie_id' => $request->movie_id,
+                'screening_date' => $request->screening_date,
+                'screening_time' => $request->screening_time,
+                'is_special_day' => $request->has('is_special_day'),
+                'is_full' => $request->has('is_full'),
+            ]);
+
+            return redirect()->route('admin.screenings')
+                ->with('success', 'Projecció actualitzada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Ha ocorregut un error: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Eliminar una proyección
+     */
+    public function destroyScreening($id)
+    {
+        try {
+            $screening = Screening::findOrFail($id);
+            $screening->delete();
+
+            return redirect()->route('admin.screenings')
+                ->with('success', 'Projecció eliminada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.screenings')
+                ->with('error', 'No s\'ha pogut eliminar la projecció: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -227,6 +320,55 @@ class AdminController extends Controller
         }
 
         return view('admin.settings.index');
+    }
+    /**
+     * Mostra la pàgina de gestió de pel·lícules
+     */
+    public function movies(Request $request)
+    {
+        // Obtener los géneros para el selector de filtro
+        $genres = Genre::all();
+
+        // Comenzar la consulta
+        $query = Movie::with(['genre', 'director']);
+
+        // Aplicar filtros si se proporcionan
+        if ($request->filled('title')) {
+            $query->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        if ($request->filled('genre_id')) {
+            $query->where('genre_id', $request->genre_id);
+        }
+
+        if ($request->filled('year')) {
+            $query->where('release_year', $request->year);
+        }
+
+        // Obtener los resultados paginados
+        $movies = $query->orderBy('title')->paginate(10);
+
+        // Mantener los parámetros de filtro en la paginación
+        $movies->appends($request->all());
+
+        return view('admin.movies.index', compact('movies', 'genres'));
+    }
+
+    /**
+     * Mostra el formulari per crear una nova pel·lícula
+     */
+    public function createMovie(Request $request)
+    {
+        $checkResult = $this->checkAdminAccess($request);
+        if ($checkResult) {
+            return $checkResult;
+        }
+
+
+        $genres = Genre::all();
+        $directors = Director::all();
+        $actors = Actor::all();
+        return view('admin.movies.create', compact('genres', 'directors', 'actors'));
     }
     public function storeMovie(Request $request)
     {
