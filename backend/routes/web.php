@@ -5,10 +5,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 
 // Ruta d'inici
-
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -25,7 +25,11 @@ Route::prefix('admin')
         // Películas
         Route::get('/movies', [AdminController::class, 'movies'])->name('admin.movies.index');
         Route::get('/movies/create', [AdminController::class, 'createMovie'])->name('admin.movies.create');
-        Route::post('/movies', [AdminController::class, 'storeMovie'])->name('admin.movies.store'); // Nueva ruta para almacenar
+        Route::post('/movies', [AdminController::class, 'storeMovie'])->name('admin.movies.store');
+        Route::get('/movies/{id}', [AdminController::class, 'showMovie'])->name('admin.movies.show');
+        Route::get('/movies/{id}/edit', [AdminController::class, 'editMovie'])->name('admin.movies.edit');
+        Route::put('/movies/{id}', [AdminController::class, 'updateMovie'])->name('admin.movies.update');
+        Route::delete('/movies/{id}', [AdminController::class, 'destroyMovie'])->name('admin.movies.destroy'); // Nueva ruta para eliminar
 
         // Proyecciones
         Route::get('/screenings', [AdminController::class, 'screenings'])->name('admin.screenings');

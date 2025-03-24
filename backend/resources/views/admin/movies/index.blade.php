@@ -9,7 +9,7 @@
             <h2>Llistat de Pel·lícules</h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ url('admin/movies/create') }}" class="btn" style="background-color: #800040; color: #FFFFFF;">
+            <a href="{{ url('admin/movies/create') }}" class="btn" style="background-color: #800040; margin-left: 10px; border-radius: 8px; padding: 10px 16px;color: #FFFFFF;">
                 Nova Pel·lícula
             </a>
         </div>
@@ -19,7 +19,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="dashboard-card">
-                <h5 style="color: #800040;">Filtres</h5>
+                <h5 style="color: #800040;">FILTRES</h5>
                 <form action="{{ url('admin/movies') }}" method="GET" class="row g-3">
                     <div class="col-md-4">
                         <label for="title" class="form-label">Títol</label>
@@ -41,7 +41,7 @@
                         <input type="number" class="form-control" id="year" name="year" value="{{ request('year') }}">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn" style="background-color: #800040; color: #FFFFFF;">Filtrar</button>
+                        <button type="submit" class="btn" style="background-color: #800040;border-radius: 8px; padding: 10px 16px; color: #FFFFFF;">Filtrar</button>
                     </div>
                 </form>
             </div>
@@ -85,23 +85,29 @@
                                 <td>{{ $movie->release_year }}</td>
                                 <td>{{ $movie->duration }} min</td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ url('admin/movies/' . $movie->id) }}" class="btn btn-sm" style="background-color: #D4AF37; color: #FFFFFF;" title="Veure">
-                                            Veure
-                                        </a>
-                                        <a href="{{ url('admin/movies/' . $movie->id . '/edit') }}" class="btn btn-sm" style="background-color: #800040; color: #FFFFFF;" title="Editar">
-                                            Editar
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger" title="Eliminar"
-                                            onclick="if(confirm('Estàs segur que vols eliminar aquesta pel·lícula?')) { 
-                                                        document.getElementById('delete-form-{{ $movie->id }}').submit(); 
-                                                    }">
-                                            Eliminar
-                                        </button>
-                                        <form id="delete-form-{{ $movie->id }}" action="{{ url('admin/movies/' . $movie->id) }}" method="POST" style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                    <div class="d-flex gap-2">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url('admin/movies/' . $movie->id) }}" class="btn btn-sm" style="background-color: #D4AF37; border-radius: 8px; padding: 10px 16px;" title="Editar">
+                                                Veure
+                                            </a>
+                                            <a href="{{ url('admin/movies/' . $movie->id . '/edit') }}" class="btn btn-sm" style="background-color: #800040; color: #FFFFFF;border-radius: 8px; padding: 10px 16px;" title="Editar">
+                                                Editar
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-danger" style="background-color: #990000; border-radius: 8px; padding: 10px 16px;" title="Eliminar"
+                                                onclick="if(confirm('Estàs segur que vols eliminar aquesta pel·lícula?')) { 
+                document.getElementById('delete-form-{{ $movie->id }}').submit(); 
+            }">
+                                                Eliminar
+                                            </button>
+                                            <form id="delete-form-{{ $movie->id }}" action="{{ url('admin/movies/' . $movie->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                            <form id="delete-form-{{ $movie->id }}" action="{{ url('admin/movies/' . $movie->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -113,10 +119,22 @@
                         </tbody>
                     </table>
                 </div>
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
 
+                @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                @endif
                 <!-- Paginación (si la necesitas) -->
                 @if(isset($movies) && method_exists($movies, 'links'))
-                <div class="d-flex justify-content-center mt-4">
+                <div class="d-flex  justify-content-center mt-4">
                     {{ $movies->links() }}
                 </div>
                 @endif
