@@ -19,16 +19,23 @@ Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.lo
 Route::prefix('admin')
     ->middleware(['auth']) // Autenticació web estàndard
     ->group(function () {
-        Route::get('/', [AdminController::class, 'index']);
-        Route::get('/home', [AdminController::class, 'index']);
-        Route::get('/movies', [AdminController::class, 'movies']);
-        Route::get('/screenings', [AdminController::class, 'screenings']);
-        Route::get('/tickets', [AdminController::class, 'tickets']);
-        Route::get('/users', [AdminController::class, 'users']);
-        Route::get('/settings', [AdminController::class, 'settings']);
+        Route::get('/', [AdminController::class, 'index'])->name('admin.home');
+        Route::get('/home', [AdminController::class, 'index'])->name('admin.home');
 
-        // Rutes per a la creació
-        Route::get('/movies/create', [AdminController::class, 'createMovie']);
-        Route::get('/screenings/create', [AdminController::class, 'createScreening']);
-        Route::get('/tickets/create', [AdminController::class, 'createTicket']);
+        // Películas
+        Route::get('/movies', [AdminController::class, 'movies'])->name('admin.movies.index');
+        Route::get('/movies/create', [AdminController::class, 'createMovie'])->name('admin.movies.create');
+        Route::post('/movies', [AdminController::class, 'storeMovie'])->name('admin.movies.store'); // Nueva ruta para almacenar
+
+        // Proyecciones
+        Route::get('/screenings', [AdminController::class, 'screenings'])->name('admin.screenings');
+        Route::get('/screenings/create', [AdminController::class, 'createScreening'])->name('admin.screenings.create');
+
+        // Entradas
+        Route::get('/tickets', [AdminController::class, 'tickets'])->name('admin.tickets');
+        Route::get('/tickets/create', [AdminController::class, 'createTicket'])->name('admin.tickets.create');
+
+        // Usuarios y Configuración
+        Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+        Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
     });

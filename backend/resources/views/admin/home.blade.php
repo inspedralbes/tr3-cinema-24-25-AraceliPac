@@ -11,7 +11,7 @@
                     <h2>Pel·lícules Actives</h2>
                 </div>
                 <div class="card-body">
-                    <p>8 pel·lícules en cartellera</p>
+                    <p>5 pel·lícules en cartellera</p>
                 </div>
             </div>
         </div>
@@ -58,8 +58,8 @@
                 </div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="/admin/pelicules/crear">Nova pel·lícula</a></li>
-                        <li><a href="/admin/pelicules">Llistat de pel·lícules</a></li>
+                        <li><a href="/admin/movies/create">Nova pel·lícula</a></li>
+                        <li><a href="/admin/movies">Llistat de pel·lícules</a></li>
                     </ul>
                 </div>
             </div>
@@ -68,12 +68,12 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h2>Projeccions i Sales</h2>
+                    <h2>Projeccions</h2>
                 </div>
                 <div class="card-body">
                     <ul>
-                        <li><a href="/admin/projeccions/crear">Nova projecció</a></li>
-                        <li><a href="/admin/projeccions">Llistat de projeccions</a></li>
+                        <li><a href="/admin/screenings/create">Nova projecció</a></li>
+                        <li><a href="/admin/screenings">Llistat de projeccions</a></li>
                     </ul>
                 </div>
             </div>

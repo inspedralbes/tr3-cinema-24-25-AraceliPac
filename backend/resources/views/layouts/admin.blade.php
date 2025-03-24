@@ -150,22 +150,19 @@
                         <a href="/admin" class="active">Inici</a>
                     </li>
                     <li>
-                        <a href="/admin/pelicules">Pel·lícules</a>
+                        <a href="/admin/movies">Pel·lícules</a>
                     </li>
                     <li>
-                        <a href="/admin/projeccions">Projeccions</a>
+                        <a href="/admin/screenings">Projeccions</a>
                     </li>
                     <li>
-                        <a href="/admin/sales">Sales</a>
+                        <a href="/admin/tickets">Entrades</a>
                     </li>
                     <li>
-                        <a href="/admin/entrades">Entrades</a>
+                        <a href="/admin/users">Usuaris</a>
                     </li>
                     <li>
-                        <a href="/admin/usuaris">Usuaris</a>
-                    </li>
-                    <li>
-                        <a href="/admin/configuracio">Configuració</a>
+                        <a href="/admin/settings">Configuració</a>
                     </li>
                 </ul>
             </div>

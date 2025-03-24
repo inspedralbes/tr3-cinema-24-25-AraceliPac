@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Movie;
+use App\Models\Genre;
+use App\Models\Director;
+use App\Models\Actor;
 
 class AdminController extends Controller
 {
@@ -107,7 +111,8 @@ class AdminController extends Controller
             return $checkResult;
         }
 
-        return view('admin.movies.index');
+        $movies = Movie::with(['genre', 'director'])->get();
+        return view('admin.movies.index', compact('movies'));
     }
 
     /**
@@ -121,7 +126,10 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.movies.create');
+        $genres = Genre::all();
+        $directors = Director::all();
+        $actors = Actor::all();
+        return view('admin.movies.create', compact('genres', 'directors', 'actors'));
     }
 
     /**
@@ -200,5 +208,43 @@ class AdminController extends Controller
         }
 
         return view('admin.settings.index');
+    }
+    public function storeMovie(Request $request)
+    {
+        // Validar los datos de la solicitud
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'release_year' => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
+            'rating' => 'nullable|string|max:10',
+            'duration' => 'nullable|integer|min:1',
+            'image' => 'nullable|string',
+            'trailer' => 'nullable|string',
+            'genre_id' => 'required|exists:genres,id',
+            'director_id' => 'required|exists:directors,id',
+            'actor_ids' => 'nullable|array',
+            'actor_ids.*' => 'exists:actors,id',
+        ]);
+
+        // Crear la película
+        $movie = Movie::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'release_year' => $request->release_year,
+            'rating' => $request->rating,
+            'duration' => $request->duration,
+            'image' => $request->image,
+            'trailer' => $request->trailer,
+            'genre_id' => $request->genre_id,
+            'director_id' => $request->director_id,
+        ]);
+
+        // Asociar los actores a la película
+        if ($request->has('actor_ids')) {
+            $movie->actors()->attach($request->actor_ids);
+        }
+
+        return redirect()->route('admin.movies.index')
+            ->with('success', 'Pel·lícula creada amb èxit.');
     }
 }
