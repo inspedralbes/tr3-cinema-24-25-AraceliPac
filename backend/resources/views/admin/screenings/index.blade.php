@@ -9,7 +9,7 @@
             <h2>Llistat de Projeccions</h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ url('admin/screenings/create') }}" style="display: inline-block; background-color: #800040; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-size: 14px;">
+            <a href="{{ url('admin/screenings/create') }}" style="display: inline-block; background-color: #800040; color: #FFFFFF; padding: 10px 16px; margin-left: 50px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-size: 14px;">
                 Nova Projecció
             </a>
         </div>
@@ -31,7 +31,7 @@
     @endif
 
     <!-- Filtros mejorados -->
-    <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div style="background-color: #fff;margin-top: 50px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         <h5 style="color: #800040; margin-bottom: 15px; font-weight: bold;">Filtres</h5>
         <form action="{{ url('admin/screenings') }}" method="GET">
             <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">

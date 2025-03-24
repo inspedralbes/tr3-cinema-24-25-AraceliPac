@@ -9,7 +9,7 @@
             <h2>Detall de Projecció</h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ url('admin/screenings/' . $screening->id . '/edit') }}" style="display: inline-block; background-color: #800040; color: #FFFFFF; margin-right: 10px; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; font-size: 14px;">
+            <a href="{{ url('admin/screenings/' . $screening->id . '/edit') }}" style="display: inline-block; margin-left: 50px;  background-color: #800040; color: #FFFFFF; margin-right: 10px; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; font-size: 14px;">
                 Editar Projecció
             </a>
             <a href="{{ url('admin/screenings') }}" style="display: inline-block; background-color: #6c757d; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; font-size: 14px;">
@@ -20,7 +20,7 @@
 
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="background-color: #fff; margin-top: 50px; border: 1px solid #ddd; border-radius: 8px; padding: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #800040; margin-bottom: 10px;">{{ $screening->movie->title ?? 'Pel·lícula no disponible' }}</h3>
                     <hr style="border: none; height: 2px; background-color: #D4AF37; margin: 15px 0;">

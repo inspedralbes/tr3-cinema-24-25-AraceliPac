@@ -21,7 +21,7 @@
     <div class="row">
         <!-- Sección de imagen y detalles generales -->
         <div class="col-md-4">
-            <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 100%;">
+            <div style="background-color: #fff; border: 1px solid #ddd;margin-top: 50px; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); height: 100%;">
                 @if($movie->image)
                 <div style="text-align: center; margin-bottom: 15px;">
                     <img src="{{ $movie->image }}" alt="{{ $movie->title }}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;">
@@ -66,7 +66,7 @@
 
         <!-- Sección de descripción y actores -->
         <div class="col-md-8">
-            <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
+            <div style="background-color: #fff;margin-top: 50px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px;">
                 <h5 style="color: #800040; margin-bottom: 15px; font-weight: bold;">Descripció</h5>
                 <p style="line-height: 1.6;">{{ $movie->description ?? 'Sense descripció' }}</p>
             </div>
