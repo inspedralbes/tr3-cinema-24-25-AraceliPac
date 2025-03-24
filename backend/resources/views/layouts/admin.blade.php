@@ -4,167 +4,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panell d'Administració - Cinema</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>Administració de Cinema</title>
+    <!-- Estilos básicos sin CDN -->
     <style>
-        body {
-            background-color: #f3f4f6;
-            min-height: 100vh;
+        /* Reset básico */
+        * {
             margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .sidebar {
-            background-color: #800040;
-            color: white;
-            width: 250px;
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            display: none;
-        }
-
-        .sidebar h2 {
-            padding: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .sidebar nav ul {
-            list-style: none;
             padding: 0;
-        }
-
-        .sidebar nav ul li {
-            margin: 0;
-        }
-
-        .sidebar nav ul li a,
-        .sidebar nav ul li button {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: white;
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            font-size: 1rem;
-            /* Tamaño de fuente uniforme */
             box-sizing: border-box;
         }
 
-        .sidebar nav ul li a:hover,
-        .sidebar nav ul li button:hover {
-            background-color: #600030;
-            border-radius: 4px;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
         }
 
-        .sidebar nav ul li svg {
-            margin-right: 10px;
-            width: 20px;
-            height: 20px;
+        /* Layout principal */
+        .container-fluid {
+            width: 100%;
         }
 
-        .seccion {
-            margin-top: 20px;
+        .row {
+            display: flex;
+            flex-wrap: wrap;
         }
 
-        /* Styles for mobile */
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #800040;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .sidebar h4 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar a {
+            color: #f8f9fa;
+            text-decoration: none;
+            display: block;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #D4AF37;
+        }
+
+        .sidebar .active {
+            background-color: #540b03;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .main-header {
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tarjetas para los paneles */
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            color: white;
+            padding: 10px 15px;
+            background-color: #800040;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        /* Columnas responsivas */
+        .col-md-4 {
+            width: 33.333%;
+            padding: 0 15px;
+        }
+
+        .col-md-3 {
+            width: 25%;
+            padding: 0 15px;
+        }
+
+        /* Estilo para móviles */
         @media (max-width: 768px) {
             .sidebar {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: -250px;
-                transition: left 0.3s;
+                width: 100%;
+                min-height: auto;
+                margin-bottom: 20px;
             }
 
-            .sidebar.show {
-                display: block;
-                left: 0;
-            }
-
-            .container {
+            .row {
                 flex-direction: column;
             }
 
-            .menu-toggle {
-                display: block;
-                background-color: #800040;
-                color: white;
-                padding: 15px;
-                cursor: pointer;
-                text-align: center;
-                font-size: 18px;
+            .col-md-4,
+            .col-md-3 {
                 width: 100%;
-            }
-        }
-
-        /* Styles for desktop */
-        @media (min-width: 769px) {
-            .sidebar {
-                display: block;
-                position: fixed;
-                top: 0;
-                left: 0;
-            }
-
-            .menu-toggle {
-                display: none;
+                padding: 0 10px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- Button to toggle sidebar on mobile -->
-        <div class="menu-toggle" id="menu-toggle">☰ Menu</div>
-
-        <div class="sidebar" id="sidebar">
-            <h2>Cinema Admin</h2>
-            <nav>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h4>Cinema Pedralbes</h4>
                 <ul>
-                    <li class="seccion">
-                        <a href="{{ url('/admin') }}" class="{{ request()->is('admin') ? 'active' : '' }}">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            Dashboard
-                        </a>
+                    <li>
+                        <a href="/admin" class="active">Inici</a>
                     </li>
-                    <li class="seccion">
-                        <form action="{{ route('admin.logout') }}" method="POST" id="logout-form">
-                            @csrf
-                            <button type="submit" id="logout-btn">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                Tancar sessió
-                            </button>
-                        </form>
+                    <li>
+                        <a href="/admin/pelicules">Pel·lícules</a>
+                    </li>
+                    <li>
+                        <a href="/admin/projeccions">Projeccions</a>
+                    </li>
+                    <li>
+                        <a href="/admin/sales">Sales</a>
+                    </li>
+                    <li>
+                        <a href="/admin/entrades">Entrades</a>
+                    </li>
+                    <li>
+                        <a href="/admin/usuaris">Usuaris</a>
+                    </li>
+                    <li>
+                        <a href="/admin/configuracio">Configuració</a>
                     </li>
                 </ul>
-            </nav>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <div class="main-header">
+                    <h1>@yield('title', 'Panell d\'Administració')</h1>
+                </div>
+
+                <!-- Content -->
+                @yield('content')
+            </main>
         </div>
     </div>
-
-    <script>
-        // Toggle sidebar visibility on mobile
-        document.getElementById("menu-toggle").addEventListener("click", function() {
-            document.getElementById("sidebar").classList.toggle("show");
-        });
-    </script>
 </body>
 
 </html>
