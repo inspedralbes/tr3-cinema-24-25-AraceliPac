@@ -38,12 +38,17 @@ Route::prefix('admin')
         Route::get('/screenings/{id}', [AdminController::class, 'showScreening'])->name('admin.screenings.show');
         Route::get('/screenings/{id}/edit', [AdminController::class, 'editScreening'])->name('admin.screenings.edit');
         Route::put('/screenings/{id}', [AdminController::class, 'updateScreening'])->name('admin.screenings.update');
-        Route::delete('/screenings/{id}', [AdminController::class, 'destroyScreening'])->name('admin.screenings.destroy'); // Nueva ruta para eliminar
-        
+
 
         // Entradas
+        // Rutas para tickets
         Route::get('/tickets', [AdminController::class, 'tickets'])->name('admin.tickets');
         Route::get('/tickets/create', [AdminController::class, 'createTicket'])->name('admin.tickets.create');
+        Route::post('/tickets', [AdminController::class, 'storeTicket'])->name('admin.tickets.store');
+        Route::get('/tickets/{id}', [AdminController::class, 'showTicket'])->name('admin.tickets.show');
+        Route::get('/tickets/{id}/edit', [AdminController::class, 'editTicket'])->name('admin.tickets.edit');
+        Route::put('/tickets/{id}', [AdminController::class, 'updateTicket'])->name('admin.tickets.update');
+        Route::delete('/tickets/{id}', [AdminController::class, 'destroyTicket'])->name('admin.tickets.destroy');
 
         // Usuarios y Configuración
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users');

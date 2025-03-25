@@ -13,6 +13,9 @@ use App\Models\Genre;
 use App\Models\Director;
 use App\Models\Actor;
 use App\Models\Screening;
+use App\Models\User;
+use App\Models\Ticket;
+use App\Models\Seat;
 
 class AdminController extends Controller
 {
@@ -154,7 +157,7 @@ class AdminController extends Controller
         ]);
 
         try {
-            // Verificar disponibilidad de horario (simplificado)
+            // Verificar disponibilidad de horario
             $existingScreening = Screening::where('movie_id', $request->movie_id)
                 ->whereDate('screening_date', $request->screening_date)
                 ->whereTime('screening_time', $request->screening_time)
@@ -171,8 +174,8 @@ class AdminController extends Controller
                 'movie_id' => $request->movie_id,
                 'screening_date' => $request->screening_date,
                 'screening_time' => $request->screening_time,
-                'is_special_day' => $request->has('is_special_day'),
-                'is_full' => $request->has('is_full'),
+                'is_special_day' => $request->has('is_special_day') ? 1 : 0,
+                'is_full' => $request->has('is_full') ? 1 : 0,
             ]);
 
             return redirect()->route('admin.screenings')
@@ -270,31 +273,7 @@ class AdminController extends Controller
         }
     }
 
-    /**
-     * Mostra la pàgina de gestió d'entrades
-     */
-    public function tickets(Request $request)
-    {
-        $checkResult = $this->checkAdminAccess($request);
-        if ($checkResult) {
-            return $checkResult;
-        }
 
-        return view('admin.tickets.index');
-    }
-
-    /**
-     * Mostra el formulari per crear una nova entrada
-     */
-    public function createTicket(Request $request)
-    {
-        $checkResult = $this->checkAdminAccess($request);
-        if ($checkResult) {
-            return $checkResult;
-        }
-
-        return view('admin.tickets.create');
-    }
 
     /**
      * Mostra la pàgina de gestió d'usuaris
@@ -321,6 +300,7 @@ class AdminController extends Controller
 
         return view('admin.settings.index');
     }
+    // CRUD MOVIES
     /**
      * Mostra la pàgina de gestió de pel·lícules
      */
@@ -509,5 +489,196 @@ class AdminController extends Controller
         $movie = Movie::with(['genre', 'director', 'actors'])->findOrFail($id);
 
         return view('admin.movies.show', compact('movie'));
+    }
+    // CRUD TICKETS
+    // CRUD TICKETS
+
+    /**
+     * Mostrar el listado de entradas
+     */
+    public function tickets(Request $request)
+    {
+        // Cargar datos para filtros
+        $users = User::orderBy('name')->get();
+        $movies = Movie::orderBy('title')->get();
+
+        // Comenzar la consulta
+        $query = Ticket::with(['user', 'screening.movie', 'seat']);
+
+        // Aplicar filtros si se proporcionan
+        if ($request->filled('ticket_number')) {
+            $query->where('ticket_number', 'like', '%' . $request->ticket_number . '%');
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('movie_id')) {
+            $query->whereHas('screening', function ($q) use ($request) {
+                $q->whereHas('movie', function ($q) use ($request) {
+                    $q->where('id', $request->movie_id);
+                });
+            });
+        }
+
+        // Obtener los resultados paginados
+        $tickets = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Mantener los parámetros de filtro en la paginación
+        $tickets->appends($request->all());
+
+        return view('admin.tickets.index', compact('tickets', 'users', 'movies'));
+    }
+
+    /**
+     * Mostrar el formulario para crear una nueva entrada
+     */
+    public function createTicket()
+    {
+        $users = User::orderBy('name')->get();
+        $screenings = Screening::with('movie')
+            ->where('screening_date', '>=', now()->format('Y-m-d'))
+            ->orderBy('screening_date')
+            ->orderBy('screening_time')
+            ->get();
+        $seats = Seat::orderBy('row')->orderBy('column')->get();
+
+        return view('admin.tickets.create', compact('users', 'screenings', 'seats'));
+    }
+
+    /**
+     * Almacenar una nueva entrada
+     */
+    public function storeTicket(Request $request)
+    {
+        // Validar los datos de la solicitud
+        $validated = $request->validate([
+            'ticket_number' => 'required|string|max:20|unique:tickets',
+            'user_id' => 'required|exists:users,id',
+            'screening_id' => 'required|exists:screenings,id',
+            'seat_id' => 'required|exists:seats,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            // Verificar que el asiento no esté ya ocupado para esta proyección
+            $existingTicket = Ticket::where('screening_id', $request->screening_id)
+                ->where('seat_id', $request->seat_id)
+                ->first();
+
+            if ($existingTicket) {
+                return redirect()->back()
+                    ->with('error', 'Aquest seient ja està ocupat per a aquesta projecció.')
+                    ->withInput();
+            }
+
+            // Crear la entrada con un QR code simple (se podría mejorar con una librería real de QR)
+            $qrCode = null; // Aquí se generaría un QR real
+
+            $ticket = Ticket::create([
+                'ticket_number' => $request->ticket_number,
+                'qr_code' => $qrCode,
+                'user_id' => $request->user_id,
+                'screening_id' => $request->screening_id,
+                'seat_id' => $request->seat_id,
+                'price' => $request->price,
+            ]);
+
+            return redirect()->route('admin.tickets')
+                ->with('success', 'Entrada creada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Ha ocorregut un error: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Mostrar detalles de una entrada
+     */
+    public function showTicket($id)
+    {
+        $ticket = Ticket::with(['user', 'screening.movie', 'seat'])->findOrFail($id);
+        return view('admin.tickets.show', compact('ticket'));
+    }
+
+    /**
+     * Mostrar formulario para editar una entrada
+     */
+    public function editTicket($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $users = User::orderBy('name')->get();
+        $screenings = Screening::with('movie')->orderBy('screening_date')->orderBy('screening_time')->get();
+        $seats = Seat::orderBy('row')->orderBy('column')->get();
+
+        return view('admin.tickets.edit', compact('ticket', 'users', 'screenings', 'seats'));
+    }
+
+    /**
+     * Actualizar una entrada existente
+     */
+    public function updateTicket(Request $request, $id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        // Validar los datos de la solicitud
+        $validated = $request->validate([
+            'ticket_number' => 'required|string|max:20|unique:tickets,ticket_number,' . $id,
+            'user_id' => 'required|exists:users,id',
+            'screening_id' => 'required|exists:screenings,id',
+            'seat_id' => 'required|exists:seats,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            // Verificar que el asiento no esté ya ocupado para esta proyección (si es diferente al actual)
+            if ($request->seat_id != $ticket->seat_id || $request->screening_id != $ticket->screening_id) {
+                $existingTicket = Ticket::where('screening_id', $request->screening_id)
+                    ->where('seat_id', $request->seat_id)
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($existingTicket) {
+                    return redirect()->back()
+                        ->with('error', 'Aquest seient ja està ocupat per a aquesta projecció.')
+                        ->withInput();
+                }
+            }
+
+            // Actualizar la entrada
+            $ticket->update([
+                'ticket_number' => $request->ticket_number,
+                'user_id' => $request->user_id,
+                'screening_id' => $request->screening_id,
+                'seat_id' => $request->seat_id,
+                'price' => $request->price,
+            ]);
+
+            return redirect()->route('admin.tickets')
+                ->with('success', 'Entrada actualitzada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Ha ocorregut un error: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Eliminar una entrada
+     */
+    public function destroyTicket($id)
+    {
+        try {
+            $ticket = Ticket::findOrFail($id);
+            $ticket->delete();
+
+            return redirect()->route('admin.tickets')
+                ->with('success', 'Entrada eliminada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.tickets')
+                ->with('error', 'No s\'ha pogut eliminar l\'entrada: ' . $e->getMessage());
+        }
     }
 }

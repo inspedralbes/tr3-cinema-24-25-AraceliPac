@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-12">
             <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <form action="{{ url('admin/screenings') }}" method="POST">
+                <form action="{{ route('admin.screenings.store') }}"  method="POST">
                     @csrf
 
                     <div style="margin-bottom: 20px;">
