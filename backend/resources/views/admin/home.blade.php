@@ -157,7 +157,7 @@
             <div style="padding: 20px;">
                 <ul style="list-style: none; padding: 0; margin: 0;">
                     <li>
-                        <a href="/admin/configuracio" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
+                        <a href="/admin/settings" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
                             <span style="margin-right: 10px; font-size: 20px;">⚙️</span> Paràmetres generals
                         </a>
                     </li>
