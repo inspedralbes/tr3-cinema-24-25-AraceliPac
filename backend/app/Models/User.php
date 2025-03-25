@@ -51,9 +51,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function roles()
+    // En el modelo User.php
+    public function role()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsTo(Role::class);
     }
 
     // Relació un-a-molts amb tickets (un usuari pot tenir molts tickets)

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-50 min-h-screen flex flex-col">
+  <div class="bg-gray-50 min-h-screen flex flex-col"style="min-height: 100vh;">
     <!-- Navbar importado directamente -->
     <NavBar />
     
@@ -88,7 +88,7 @@
     </main>
     
     <!-- Footer importado directamente -->
-    <Footer />
+    <Footer class="mt-auto"/>
   </div>
 </template>
 
