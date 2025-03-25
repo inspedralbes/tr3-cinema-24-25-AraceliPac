@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Movie;
+use App\Models\Ticket;
+use App\Models\Screening;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -53,8 +57,11 @@ class DashboardController extends Controller
         if (!$this->checkAdminAccess()) {
             return redirect('/login');
         }
-
-        return view('admin.home');
+        $movieCount = Movie::count();
+        $salesDaily = Ticket::whereDate('created_at', now())->count();
+        $screeningCount = Screening::count();
+        $usersCount = User::count();
+        return view('admin.home', compact('movieCount', 'salesDaily', 'screeningCount', 'usersCount'));
     }
 
     /**

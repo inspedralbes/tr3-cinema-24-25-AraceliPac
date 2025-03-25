@@ -13,7 +13,7 @@
             </div>
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <span style="font-size: 32px; font-weight: bold; color: #333;">5</span>
+                    <span style="font-size: 32px; font-weight: bold; color: #333;">{{ $movieCount }}</span>
                     <p style="margin: 5px 0 0; color: #666;">pel·lícules en cartellera</p>
                 </div>
                 <div style="font-size: 36px; color: #D4AF37;">🎬</div>
@@ -27,7 +27,7 @@
             </div>
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <span style="font-size: 32px; font-weight: bold; color: #333;">42</span>
+                    <span style="font-size: 32px; font-weight: bold; color: #333;">{{ $salesDaily }}</span>
                     <p style="margin: 5px 0 0; color: #666;">entrades</p>
                 </div>
                 <div style="font-size: 36px; color: #28a745;">🎟️</div>
@@ -41,7 +41,7 @@
             </div>
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <span style="font-size: 32px; font-weight: bold; color: #333;">15</span>
+                    <span style="font-size: 32px; font-weight: bold; color: #333;">{{ $screeningCount }}</span>
                     <p style="margin: 5px 0 0; color: #666;">projeccions</p>
                 </div>
                 <div style="font-size: 36px; color: #17a2b8;">📽️</div>
@@ -55,7 +55,7 @@
             </div>
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <span style="font-size: 32px; font-weight: bold; color: #333;">124</span>
+                    <span style="font-size: 32px; font-weight: bold; color: #333;">{{ $usersCount }}</span>
                     <p style="margin: 5px 0 0; color: #666;">usuaris</p>
                 </div>
                 <div style="font-size: 36px; color: #6c757d;">👥</div>
