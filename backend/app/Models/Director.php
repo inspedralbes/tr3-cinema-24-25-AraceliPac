@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Director extends Model
 {
-    protected $fillable = ['first_name', 'last_name', 'rating', 'favorite_movie_id'];
+    protected $fillable = ['name', 'lastname', 'birth_date', 'nationality', 'bio'];
 
     public function movies()
     {

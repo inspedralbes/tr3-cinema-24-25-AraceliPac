@@ -1,0 +1,78 @@
+@extends('layouts.admin')
+
+@section('title', 'Editar Director')
+
+@section('content')
+<div style="margin: 20px;">
+    <div style="margin-bottom: 20px;">
+        <h1 style="color: #800040; font-size: 24px; margin-bottom: 5px;">Editar Director</h1>
+        <p style="color: #555; margin: 0;">Modifica la informació del director {{ $director->name }} {{ $director->lastname }}.</p>
+    </div>
+
+    <!-- Formulario de edición -->
+    <div style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px;">
+        <form action="{{ route('admin.settings.directors.update', $director->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <!-- Nombre -->
+            <div style="margin-bottom: 20px;">
+                <label for="name" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">Nom*</label>
+                <input type="text" id="name" name="name" value="{{ old('name', $director->name) }}" required
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; @error('name') border-color: #dc3545; @enderror">
+                @error('name')
+                <div style="color: #dc3545; font-size: 0.875em; margin-top: 5px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Apellido -->
+            <div style="margin-bottom: 20px;">
+                <label for="lastname" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">Cognom</label>
+                <input type="text" id="lastname" name="lastname" value="{{ old('lastname', $director->lastname) }}"
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; @error('lastname') border-color: #dc3545; @enderror">
+                @error('lastname')
+                <div style="color: #dc3545; font-size: 0.875em; margin-top: 5px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Fecha de nacimiento -->
+            <div style="margin-bottom: 20px;">
+                <label for="birth_date" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">Data de Naixement</label>
+                <input type="date" id="birth_date" name="birth_date" value="{{ old('birth_date', $director->birth_date) }}"
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; @error('birth_date') border-color: #dc3545; @enderror">
+                @error('birth_date')
+                <div style="color: #dc3545; font-size: 0.875em; margin-top: 5px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Nacionalidad -->
+            <div style="margin-bottom: 20px;">
+                <label for="nationality" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">Nacionalitat</label>
+                <input type="text" id="nationality" name="nationality" value="{{ old('nationality', $director->nationality) }}"
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; @error('nationality') border-color: #dc3545; @enderror">
+                @error('nationality')
+                <div style="color: #dc3545; font-size: 0.875em; margin-top: 5px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Biografía -->
+            <div style="margin-bottom: 20px;">
+                <label for="bio" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">Biografia</label>
+                <textarea id="bio" name="bio" rows="5"
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; @error('bio') border-color: #dc3545; @enderror">{{ old('bio', $director->bio) }}</textarea>
+                @error('bio')
+                <div style="color: #dc3545; font-size: 0.875em; margin-top: 5px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Botones -->
+            <div style="display: flex; justify-content: flex-start; padding-top: 15px; border-top: 1px solid #eee; margin-top: 30px;">
+                <button type="submit" style="background-color: #800040; color: #FFFFFF; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 14px;">
+                    Actualitzar Director
+                </button>
+                <a href="{{ route('admin.settings.directors.index') }}" style="background-color: #6c757d; color: #FFFFFF; border: none; padding: 10px 16px; border-radius: 8px; text-decoration: none; display: inline-block; font-size: 14px;">Cancel·lar</a>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection

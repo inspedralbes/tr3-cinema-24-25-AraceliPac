@@ -152,13 +152,24 @@
         <!-- Configuración -->
         <div style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
             <div style="background-color: #800040; color: white; padding: 15px 20px;">
-                <h3 style="font-size: 18px; margin: 0;">Configuració</h3>
+                <h3 style="font-size: 18px; margin: 0;">Configuracions Pel·lícules</h3>
             </div>
             <div style="padding: 20px;">
                 <ul style="list-style: none; padding: 0; margin: 0;">
+
+                    <li style="margin-bottom: 10px;">
+                        <a href="/admin/settings/genres" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
+                            <span style="margin-right: 10px; font-size: 20px;">🎭</span> Gèneres cinematogràfics
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <a href="/admin/settings/directors" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
+                            <span style="margin-right: 10px; font-size: 20px;">🎬</span> Directors
+                        </a>
+                    </li>
                     <li>
-                        <a href="/admin/settings" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
-                            <span style="margin-right: 10px; font-size: 20px;">⚙️</span> Paràmetres generals
+                        <a href="/admin/settings/actors" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
+                            <span style="margin-right: 10px; font-size: 20px;">🎭</span> Actors
                         </a>
                     </li>
                 </ul>
