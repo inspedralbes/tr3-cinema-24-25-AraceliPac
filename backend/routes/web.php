@@ -21,7 +21,9 @@ Route::prefix('admin')
     ->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.home');
         Route::get('/home', [AdminController::class, 'index'])->name('admin.home');
-
+        // Perfil d'usuari
+        Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+        Route::put('/profile/password', [AdminController::class, 'updatePassword'])->name('admin.profile.password');
         // Películas
         Route::get('/movies', [AdminController::class, 'movies'])->name('admin.movies.index');
         Route::get('/movies/create', [AdminController::class, 'createMovie'])->name('admin.movies.create');
@@ -40,7 +42,6 @@ Route::prefix('admin')
         Route::put('/screenings/{id}', [AdminController::class, 'updateScreening'])->name('admin.screenings.update');
 
 
-        // Entradas
         // Rutas para tickets
         Route::get('/tickets', [AdminController::class, 'tickets'])->name('admin.tickets');
         Route::get('/tickets/create', [AdminController::class, 'createTicket'])->name('admin.tickets.create');
@@ -50,7 +51,15 @@ Route::prefix('admin')
         Route::put('/tickets/{id}', [AdminController::class, 'updateTicket'])->name('admin.tickets.update');
         Route::delete('/tickets/{id}', [AdminController::class, 'destroyTicket'])->name('admin.tickets.destroy');
 
-        // Usuarios y Configuración
-        Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+        // Rutas CRUD para usuarios
+        Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
+        Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
+        Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+        Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('admin.users.show');
+        Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+        Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
+
+        // Rutas para configuracions
         Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
     });

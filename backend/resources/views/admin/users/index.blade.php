@@ -9,13 +9,13 @@
             <h2>Llistat d'Usuaris</h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ url('admin/users/create') }}" style="display: inline-block; background-color: #800040; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-size: 14px;">
-                Nou Usuari
+            <a href="{{ route('admin.users.create') }}" style="display: inline-block; background-color: #800040; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-size: 14px;">
+                <i class="fas fa-user-plus me-2"></i>Nou Usuari
             </a>
         </div>
     </div>
 
-    <!-- Mensajes de éxito o error -->
+    <!-- Missatges d'èxit o error -->
     @if(session('success'))
     <div style="background-color: #d4edda; color: #155724; padding: 12px 20px; border: 1px solid #c3e6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
         {{ session('success') }}
@@ -30,10 +30,10 @@
     </div>
     @endif
 
-    <!-- Filtros -->
+    <!-- Filtres -->
     <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         <h5 style="color: #800040; margin-bottom: 15px; font-weight: bold;">Filtres</h5>
-        <form action="{{ url('admin/users') }}" method="GET">
+        <form action="{{ route('admin.users.index') }}" method="GET">
             <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
                 <div style="flex: 1; min-width: 200px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: 500;">Nom</label>
@@ -56,13 +56,13 @@
                 </div>
                 <div style="flex: 0.5; min-width: 100px; display: flex; gap: 10px;">
                     <button type="submit" style="background-color: #800040; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px;">Filtrar</button>
-                    <a href="{{ url('admin/users') }}" style="background-color: #6c757d; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; display: inline-block; font-size: 14px;">Netejar</a>
+                    <a href="{{ route('admin.users.index') }}" style="background-color: #6c757d; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; display: inline-block; font-size: 14px;">Netejar</a>
                 </div>
             </div>
         </form>
     </div>
 
-    <!-- Tabla de usuarios -->
+    <!-- Taula d'usuaris -->
     <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         <div style="overflow-x: auto;">
             <table style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">
@@ -86,7 +86,7 @@
                             @if($user->image)
                             <img src="{{ $user->image }}" alt="{{ $user->name }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                             @else
-                            <div style="width: 40px; height: 40px; background-color: #e0e0e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 16px;">
+                            <div style="width: 40px; height: 40px; background-color: #800040; color: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 16px;">
                                 {{ substr($user->name, 0, 1) }}
                             </div>
                             @endif
@@ -97,16 +97,19 @@
                         <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">{{ $user->phone ?? 'N/A' }}</td>
                         <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">
                             @if($user->role)
-                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; 
-                                    @if($user->role->id == 1) 
-                                        background-color: #800040; color: white;
-                                    @elseif($user->role->id == 2)
-                                        background-color: #D4AF37; color: white;
-                                    @else
-                                        background-color: #6c757d; color: white;
-                                    @endif">
+                            @if($user->role->id == 1)
+                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; background-color: #800040; color: white;">
                                 {{ $user->role->name }}
                             </span>
+                            @elseif($user->role->id == 2)
+                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; background-color: #D4AF37; color: white;">
+                                {{ $user->role->name }}
+                            </span>
+                            @else
+                            <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; background-color: #6c757d; color: white;">
+                                {{ $user->role->name }}
+                            </span>
+                            @endif
                             @else
                             <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; background-color: #6c757d; color: white;">
                                 Sense rol
@@ -115,10 +118,10 @@
                         </td>
                         <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">
                             <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
-                                <a href="{{ url('admin/users/' . $user->id) }}" style="background-color: #D4AF37; color: #FFFFFF; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px; line-height: 1.5;" title="Veure">
+                                <a href="{{ route('admin.users.show', $user->id) }}" style="background-color: #D4AF37; color: #FFFFFF; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px; line-height: 1.5;" title="Veure">
                                     Veure
                                 </a>
-                                <a href="{{ url('admin/users/' . $user->id . '/edit') }}" style="background-color: #800040; color: #FFFFFF; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px; line-height: 1.5;" title="Editar">
+                                <a href="{{ route('admin.users.edit', $user->id) }}" style="background-color: #800040; color: #FFFFFF; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px; line-height: 1.5;" title="Editar">
                                     Editar
                                 </a>
                                 <button type="button" style="background-color: #dc3545; color: white; padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; line-height: 1.5;" title="Eliminar"
@@ -127,7 +130,7 @@
                                             }">
                                     Eliminar
                                 </button>
-                                <form id="delete-form-{{ $user->id }}" action="{{ url('admin/users/' . $user->id) }}" method="POST" style="display: none;">
+                                <form id="delete-form-{{ $user->id }}" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
                                 </form>
@@ -143,7 +146,7 @@
             </table>
         </div>
 
-        <!-- Paginación -->
+        <!-- Paginació -->
         @if(isset($users) && method_exists($users, 'links'))
         <div style="margin-top: 20px; text-align: center;">
             <div style="display: inline-flex; background-color: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">

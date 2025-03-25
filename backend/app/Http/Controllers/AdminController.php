@@ -16,6 +16,9 @@ use App\Models\Screening;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\Seat;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -278,6 +281,9 @@ class AdminController extends Controller
     /**
      * Mostra la pàgina de gestió d'usuaris
      */
+    /**
+     * Mostra la pàgina de gestió d'usuaris amb filtres
+     */
     public function users(Request $request)
     {
         $checkResult = $this->checkAdminAccess($request);
@@ -285,7 +291,178 @@ class AdminController extends Controller
             return $checkResult;
         }
 
-        return view('admin.users.index');
+        // Obtenir els rols per al selector de filtre
+        $roles = \App\Models\Role::all();
+
+        // Començar la consulta
+        $query = User::with('role');
+
+        // Aplicar filtres si es proporcionen
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->email . '%');
+        }
+
+        if ($request->filled('role_id')) {
+            $query->where('role_id', $request->role_id);
+        }
+
+        // Obtenir els resultats paginats
+        $users = $query->orderBy('name')->paginate(10);
+
+        // Mantenir els paràmetres de filtre en la paginació
+        $users->appends($request->all());
+
+        return view('admin.users.index', compact('users', 'roles'));
+    }
+
+    /**
+     * Mostra el formulari per crear un nou usuari
+     */
+    public function createUser(Request $request)
+    {
+        $checkResult = $this->checkAdminAccess($request);
+        if ($checkResult) {
+            return $checkResult;
+        }
+
+        $roles = \App\Models\Role::all();
+        return view('admin.users.create', compact('roles'));
+    }
+
+    /**
+     * Emmagatzema un nou usuari
+     */
+    public function storeUser(Request $request)
+    {
+        // Validar les dades de la sol·licitud
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'nullable|string|max:20',
+            'role_id' => 'required|exists:roles,id',
+            'image' => 'nullable|string',
+        ]);
+
+        try {
+            // Crear l'usuari
+            $user = User::create([
+                'name' => $request->name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'role_id' => $request->role_id,
+                'image' => $request->image,
+            ]);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Usuari creat amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'No s\'ha pogut crear l\'usuari: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Mostra els detalls d'un usuari
+     */
+    public function showUser($id)
+    {
+        $user = User::with('role')->findOrFail($id);
+        return view('admin.users.show', compact('user'));
+    }
+
+    /**
+     * Mostra el formulari per editar un usuari
+     */
+    public function editUser($id)
+    {
+        $user = User::findOrFail($id);
+        $roles = \App\Models\Role::all();
+        return view('admin.users.edit', compact('user', 'roles'));
+    }
+
+    /**
+     * Actualitza un usuari existent
+     */
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Validar les dades de la sol·licitud
+        $rules = [
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'phone' => 'nullable|string|max:20',
+            'role_id' => 'required|exists:roles,id',
+            'image' => 'nullable|string',
+        ];
+
+        // Afegir validació de contrasenya només si s'ha proporcionat
+        if ($request->filled('password')) {
+            $rules['password'] = 'string|min:8|confirmed';
+        }
+
+        $validated = $request->validate($rules);
+
+        try {
+            // Preparar les dades per actualitzar
+            $data = [
+                'name' => $request->name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'role_id' => $request->role_id,
+                'image' => $request->image,
+            ];
+
+            // Actualitzar la contrasenya només si s'ha proporcionat
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+
+            // Actualitzar l'usuari
+            $user->update($data);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Usuari actualitzat amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'No s\'ha pogut actualitzar l\'usuari: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    /**
+     * Elimina un usuari
+     */
+    public function destroyUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            // Verificar que no s'eliminin usuaris admin importants
+            if ($user->role_id == 1 && User::where('role_id', 1)->count() <= 1) {
+                return redirect()->route('admin.users.index')
+                    ->with('error', 'No es pot eliminar l\'últim usuari administrador del sistema.');
+            }
+
+            $user->delete();
+
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Usuari eliminat amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No s\'ha pogut eliminar l\'usuari: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -679,6 +856,66 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.tickets')
                 ->with('error', 'No s\'ha pogut eliminar l\'entrada: ' . $e->getMessage());
+        }
+    }
+    /**
+     * Mostra la pàgina de perfil de l'usuari actual
+     */
+    public function profile(Request $request)
+    {
+        $checkResult = $this->checkAdminAccess($request);
+        if ($checkResult) {
+            return $checkResult;
+        }
+
+        // L'usuari autenticat es recupera automàticament amb Auth::user()
+        // i s'enviarà a la vista
+
+        return view('admin.profile');
+    }
+
+    /**
+     * Actualitza la contrasenya de l'usuari actual
+     */
+    /**
+     * Actualitza la contrasenya de l'usuari actual
+     */
+    public function updatePassword(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            // Validar contraseña actual
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()
+                    ->with('error', 'La contrasenya actual és incorrecta.')
+                    ->withInput();
+            }
+
+            // Validar nueva contraseña
+            if ($request->password != $request->password_confirmation) {
+                return redirect()->back()
+                    ->with('error', 'Les contrasenyes no coincideixen.')
+                    ->withInput();
+            }
+
+            if (strlen($request->password) < 8) {
+                return redirect()->back()
+                    ->with('error', 'La contrasenya ha de tenir almenys 8 caràcters.')
+                    ->withInput();
+            }
+
+            // Actualizar directamente en la base de datos
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['password' => bcrypt($request->password)]);
+
+            return redirect()->route('admin.profile')
+                ->with('password_success', 'Contrasenya canviada amb èxit.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'No s\'ha pogut canviar la contrasenya: ' . $e->getMessage())
+                ->withInput();
         }
     }
 }

@@ -106,7 +106,26 @@
                 </ul>
             </div>
         </div>
-
+        <!-- Usuarios y roles -->
+        <div style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <div style="background-color: #800040; color: white; padding: 15px 20px;">
+                <h3 style="font-size: 18px; margin: 0;">Usuaris i Rols</h3>
+            </div>
+            <div style="padding: 20px;">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 12px;">
+                        <a href="/admin/users/create" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
+                            <span style="margin-right: 10px; font-size: 20px;">➕</span> Nou usuari
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 12px;">
+                        <a href="/admin/users" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
+                            <span style="margin-right: 10px; font-size: 20px;">👤</span> Gestió d'usuaris
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <!-- Entradas y ventas -->
         <div style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
             <div style="background-color: #800040; color: white; padding: 15px 20px;">
@@ -128,26 +147,7 @@
             </div>
         </div>
 
-        <!-- Usuarios y roles -->
-        <div style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <div style="background-color: #800040; color: white; padding: 15px 20px;">
-                <h3 style="font-size: 18px; margin: 0;">Usuaris i Rols</h3>
-            </div>
-            <div style="padding: 20px;">
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 12px;">
-                        <a href="/admin/usuaris" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
-                            <span style="margin-right: 10px; font-size: 20px;">👤</span> Gestió d'usuaris
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/admin/rols" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
-                            <span style="margin-right: 10px; font-size: 20px;">🔑</span> Gestió de rols
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+
 
         <!-- Configuración -->
         <div style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
