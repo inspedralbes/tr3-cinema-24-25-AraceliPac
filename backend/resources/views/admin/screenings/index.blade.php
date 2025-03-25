@@ -69,7 +69,7 @@
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Data</th>
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Hora</th>
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Dia especial</th>
-                        <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Complet</th>
+                        <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Estat</th>
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Accions</th>
                     </tr>
                 </thead>

@@ -86,7 +86,7 @@
                                 <option value="">Selecciona un seient</option>
                                 @foreach($seats ?? [] as $seat)
                                 <option value="{{ $seat->id }}" {{ old('seat_id', $ticket->seat_id) == $seat->id ? 'selected' : '' }}>
-                                    {{ $seat->seat_number }} (Fila: {{ $seat->row }}, Columna: {{ $seat->column }})
+                                    {{ $seat->seat_number }} (Fila: {{ $seat->row }}, Columna: {{ $seat->number }})
                                 </option>
                                 @endforeach
                             </select>

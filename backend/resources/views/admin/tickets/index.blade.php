@@ -99,7 +99,7 @@
                             @endif
                         </td>
                         <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">{{ $ticket->user->name ?? 'N/A' }}</td>
-                        <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">{{ $ticket->seat->seat_number ?? 'N/A' }}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">{{ $ticket->seat->row ?? 'N/A' }}{{ $ticket->seat->number ?? 'N/A' }}</td>
                         <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">{{ number_format($ticket->price, 2) }} €</td>
                         <td style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">
                             <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
