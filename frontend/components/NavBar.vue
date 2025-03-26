@@ -1,6 +1,6 @@
 <template>
   <nav class="bg-[#800040] shadow-md w-full">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-[5%]">
       <div class="flex justify-between items-center py-3">
         <!-- Logo y título como enlaces a la ruta principal -->
         <div class="flex items-center">
@@ -9,7 +9,7 @@
               <nuxt-img
                 src="../public/images/cinema2.png"
                 alt="Cine Pedralbes"
-                class="h-20 md:h-24 rounded-full"
+                class="h-16 sm:h-20 md:h-24 rounded-full"
               />
             </div>
             <h1 class="ml-2 text-[#D4AF37] text-xxxl md:text-3xl hidden sm:block retro-text">
