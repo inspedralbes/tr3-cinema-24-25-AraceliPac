@@ -13,7 +13,7 @@
                 <h3 style="font-size: 18px; margin: 0;">Gestió d'Actors</h3>
             </div>
             <div style="padding: 20px;">
-                <p style="color: #555; margin-bottom: 15px;">Administra els actors que apareixen a les pel·lícules.</p>
+                <p style="color: #555; margin-bottom: 15px;">Administra els actors de les pel·lícules.</p>
                 <ul style="list-style: none; padding: 0; margin: 0;">
                     <li style="margin-bottom: 12px;">
                         <a href="{{ route('admin.settings.actors.index') }}" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
