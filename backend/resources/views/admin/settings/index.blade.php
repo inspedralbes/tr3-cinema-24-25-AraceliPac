@@ -73,24 +73,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Configuración General -->
-    <div style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 30px;">
-        <div style="background-color: #800040; color: white; padding: 15px 20px;">
-            <h3 style="font-size: 18px; margin: 0;">Configuració General</h3>
-        </div>
-        <div style="padding: 20px;">
-            <p style="color: #555; margin-bottom: 15px;">Paràmetres generals de l'aplicació.</p>
-
-            <!-- Aquí podrías añadir otros ajustes generales como precios, horarios, etc. -->
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li>
-                    <a href="#" style="display: flex; align-items: center; text-decoration: none; color: #800040; font-weight: 500; padding: 10px; border-radius: 5px; background-color: rgba(128, 0, 64, 0.05);">
-                        <span style="margin-right: 10px; font-size: 20px;">⚙️</span> Preferències del sistema
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
 </div>
 @endsection

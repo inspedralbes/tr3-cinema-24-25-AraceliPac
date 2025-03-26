@@ -143,7 +143,7 @@
     </div>
 
     <div class="content container">
-        <h2>Benvingut a la Plataforma de Gestió de Cinema</h2>
+        <h2>Benvingut a la Plataforma de Gestió de Cinema Pedralbes</h2>
         <p>Una solució completa per administrar pel·lícules, projeccions, entrades i més.</p>
 
         <div class="buttons">

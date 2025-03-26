@@ -28,13 +28,13 @@ class DashboardController extends Controller
             // Verificar si es administrador
             if (Auth::user()->role_id != 1) {
                 Auth::logout();
-                return back()->withErrors(['email' => 'No tens permisos d\'administrador']);
+                return back()->with('error', 'No tens permisos d\'administrador.');
             }
 
-            return redirect()->intended('/admin');
+            return redirect()->intended('/admin')->with('success', 'Inici de sessió correcte!');
         }
 
-        return back()->withErrors(['email' => 'Credencials invàlides']);
+        return back()->with('error', 'Credencials invàlides. Si us plau, intenta de nou.');
     }
 
     /**
@@ -46,7 +46,7 @@ class DashboardController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with('success', 'Sessió tancada correctament.');
     }
 
     /**
@@ -55,12 +55,14 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         if (!$this->checkAdminAccess()) {
-            return redirect('/login');
+            return redirect('/login')->with('error', 'Accés denegat. Necessites permisos d\'administrador.');
         }
+
         $movieCount = Movie::count();
         $salesDaily = Ticket::whereDate('created_at', now())->count();
         $screeningCount = Screening::count();
         $usersCount = User::count();
+
         return view('admin.home', compact('movieCount', 'salesDaily', 'screeningCount', 'usersCount'));
     }
 

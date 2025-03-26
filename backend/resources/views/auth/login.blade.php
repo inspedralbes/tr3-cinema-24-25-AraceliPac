@@ -117,12 +117,23 @@
         }
 
         .alert {
-            background-color: #fee2e2;
-            border-left: 4px solid #ef4444;
-            color: #b91c1c;
             padding: 0.75rem;
             margin-bottom: 1.5rem;
             border-radius: 0.25rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
         }
 
         .footer {
@@ -155,8 +166,14 @@
                 <p class="login-subtitle">Inicia sessió per accedir al panell d'administració</p>
             </div>
 
+            @if(session('success'))
+            <div class="alert success">
+                <p>{{ session('success') }}</p>
+            </div>
+            @endif
+
             @if(session('error'))
-            <div class="alert" role="alert">
+            <div class="alert error">
                 <p>{{ session('error') }}</p>
             </div>
             @endif
@@ -171,7 +188,12 @@
                 <div class="input-group">
                     <label for="password" class="input-label">Contrasenya</label>
                     <input id="password" name="password" type="password" required class="input-field">
-                    <span class="password-toggle" onclick="togglePassword()">👁️</span>
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
                 </div>
                 <button type="submit" class="btn">Iniciar sessió</button>
             </form>
@@ -187,11 +209,7 @@
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
         }
     </script>
 </body>

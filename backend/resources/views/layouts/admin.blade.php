@@ -256,7 +256,7 @@
                     <ul>
                         <li>
                             <a href="{{ url('admin/settings') }}" class="sidebar-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
-                                <span class="sidebar-icon">⚙️</span> Configuració Pel·lícules
+                                <span class="sidebar-icon">⚙️</span> Configuracions
                             </a>
                         </li>
                         <li>
