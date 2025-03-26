@@ -86,8 +86,173 @@ El meu projecte té dos objectius principals:
    docker compose down
    ```
 
-## 🚀 Desplegament a Producció
-> *Aquesta secció s'ha de completar amb el procés específic de desplegament.*
+# 🚀 Desplegament a Producció
+
+## 🔄 Arquitectura del Desplegament
+
+<div align="center">
+
+| Entorn     | Domini                        | Directori Base                                                 |
+|------------|-------------------------------|----------------------------------------------------------------|
+| 🖥️ Backend  | cinema.daw.inspedralbes.cat   | /home/a23arapacmun/web/cinema.daw.inspedralbes.cat/public_html |
+| 🌐 Frontend | cine.daw.inspedralbes.cat     | /home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html   |
+
+</div>
+
+## 💻 Desplegament del Backend (Laravel)
+
+### 1. Clonar el repositori
+```bash
+cd /home/a23arapacmun/web/cinema.daw.inspedralbes.cat/public_html
+git clone https://github.com/inspedralbes/tr3-cinema-24-25-AraceliPac.git
+```
+
+### 2. Configurar Document Root en Hestia
+Modificar la configuració al panell de Hestia per apuntar a:
+```
+/home/a23arapacmun/web/cinema.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/backend/public
+```
+
+### 3. Configurar l'entorn
+Crear i configurar l'arxiu `.env` amb les dades de connexió a la base de dades de Hestia:
+```bash
+cd tr3-cinema-24-25-AraceliPac/backend
+cp .env.example .env
+# Editar .env amb les dades correctes de connexió
+```
+
+### 4. Instal·lar dependències i preparar l'aplicació
+```bash
+composer install
+php artisan key:generate
+php artisan migrate:refresh --seed
+php artisan storage:link
+```
+
+### 5. Configurar CORS per permetre peticions del frontend
+```bash
+php artisan make:middleware CorsMiddleware
+```
+
+Editar el fitxer creat a `app/Http/Middleware/CorsMiddleware.php` amb la configuració adequada:
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class CorsMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $response = $next($request);
+        
+        $response->headers->set('Access-Control-Allow-Origin', 'http://cine.daw.inspedralbes.cat');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        $response->headers->set('Access-Control-Allow-Credentials', 'true');
+        
+        return $response;
+    }
+}
+```
+
+Registrar el middleware a `app/Http/Kernel.php` en el grup `api`:
+```php
+protected $middlewareGroups = [
+    'api' => [
+        // ... altres middlewares
+        \App\Http\Middleware\CorsMiddleware::class,
+    ],
+];
+```
+
+## 🎨 Desplegament del Frontend (Nuxt.js)
+
+### 1. Clonar el repositori
+```bash
+cd /home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html
+git clone https://github.com/inspedralbes/tr3-cinema-24-25-AraceliPac.git
+```
+
+### 2. Configurar Document Root en Hestia
+Modificar la configuració al panell de Hestia per apuntar a:
+```
+/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+```
+
+### 3. Configurar GitHub Actions per automatitzar el desplegament
+Crear un fitxer `.github/workflows/deploy-frontend.yml`:
+
+```yaml
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+          
+      - name: Build & Generate
+        run: |
+          cd frontend
+          npm run build
+          npm run generate
+          
+      # Aquí s'afegirien els passos per desplegar a producció
+      # Normalment amb SSH o FTP per pujar el contingut de .output
+```
+
+### 4. Adaptar les rutes d'API al frontend
+
+Modificar la configuració de l'API al frontend per utilitzar les URL de producció:
+
+```js
+// frontend/nuxt.config.js o equivalent
+export default {
+  publicRuntimeConfig: {
+    apiBase: process.env.NODE_ENV === 'production' 
+      ? 'http://cinema.daw.inspedralbes.cat/api'
+      : 'http://localhost:8000/api'
+  }
+}
+```
+
+Exemple d'ús en els components:
+```js
+// En un component o servei
+const apiUrl = useRuntimeConfig().public.apiBase;
+const users = await fetch(`${apiUrl}/users`);
+```
+
+## ✅ Verificació del Desplegament
+
+1. Comprovar que el backend respon correctament: 
+   - [http://cinema.daw.inspedralbes.cat](http://cinema.daw.inspedralbes.cat)
+
+2. Comprovar que el frontend carrega i pot comunicar-se amb el backend:
+   - [http://cine.daw.inspedralbes.cat](http://cine.daw.inspedralbes.cat)
+
+3. Revisar els logs per detectar possibles errors:
+   - Backend: `/home/a23arapacmun/web/cinema.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/backend/storage/logs/laravel.log`
 
 ## 🔌 API Backend
 
