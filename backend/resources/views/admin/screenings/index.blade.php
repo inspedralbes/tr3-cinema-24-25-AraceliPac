@@ -17,14 +17,14 @@
 
     <!-- Mensajes de éxito o error -->
     @if(session('success'))
-    <div style="background-color: #d4edda; color: #155724; padding: 12px 20px; border: 1px solid #c3e6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
+    <div style="background-color: #d4edda;margin-top: 50px;  color: #155724; padding: 12px 20px; border: 1px solid #c3e6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
         {{ session('success') }}
         <button type="button" style="position: absolute; top: 0; right: 0; padding: 12px 20px; background: none; border: none; font-size: 20px; font-weight: bold; cursor: pointer; color: #155724;" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
     @endif
 
     @if(session('error'))
-    <div style="background-color: #f8d7da; color: #721c24; padding: 12px 20px; border: 1px solid #f5c6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
+    <div style="background-color: #f8d7da; margin-top: 50px; color: #721c24; padding: 12px 20px; border: 1px solid #f5c6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
         {{ session('error') }}
         <button type="button" style="position: absolute; top: 0; right: 0; padding: 12px 20px; background: none; border: none; font-size: 20px; font-weight: bold; cursor: pointer; color: #721c24;" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
@@ -69,7 +69,7 @@
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Data</th>
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Hora</th>
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Dia especial</th>
-                        <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Complet</th>
+                        <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Estat</th>
                         <th style="border: 1px solid #ddd; padding: 12px 8px; text-align: center;">Accions</th>
                     </tr>
                 </thead>

@@ -9,7 +9,7 @@
             <h2>Llistat d'Usuaris</h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ route('admin.users.create') }}" style="display: inline-block; background-color: #800040; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-size: 14px;">
+            <a href="{{ route('admin.users.create') }}" style="display: inline-block; margin-left: 50px; background-color: #800040; color: #FFFFFF; padding: 10px 16px; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-size: 14px;">
                 <i class="fas fa-user-plus me-2"></i>Nou Usuari
             </a>
         </div>
@@ -17,21 +17,21 @@
 
     <!-- Missatges d'èxit o error -->
     @if(session('success'))
-    <div style="background-color: #d4edda; color: #155724; padding: 12px 20px; border: 1px solid #c3e6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
+    <div style="background-color: #d4edda; margin-top: 50px; color: #155724; padding: 12px 20px; border: 1px solid #c3e6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
         {{ session('success') }}
         <button type="button" style="position: absolute; top: 0; right: 0; padding: 12px 20px; background: none; border: none; font-size: 20px; font-weight: bold; cursor: pointer; color: #155724;" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
     @endif
 
     @if(session('error'))
-    <div style="background-color: #f8d7da; color: #721c24; padding: 12px 20px; border: 1px solid #f5c6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
+    <div style="background-color: #f8d7da;margin-top: 50px;  color: #721c24; padding: 12px 20px; border: 1px solid #f5c6cb; border-radius: 8px; margin-bottom: 20px; position: relative;">
         {{ session('error') }}
         <button type="button" style="position: absolute; top: 0; right: 0; padding: 12px 20px; background: none; border: none; font-size: 20px; font-weight: bold; cursor: pointer; color: #721c24;" onclick="this.parentElement.style.display='none'">&times;</button>
     </div>
     @endif
 
     <!-- Filtres -->
-    <div style="background-color: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <div style="background-color: #fff;margin-top: 50px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
         <h5 style="color: #800040; margin-bottom: 15px; font-weight: bold;">Filtres</h5>
         <form action="{{ route('admin.users.index') }}" method="GET">
             <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">

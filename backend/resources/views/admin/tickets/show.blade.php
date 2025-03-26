@@ -82,7 +82,7 @@
                         </p>
                         <p style="margin-bottom: 10px;">
                             <strong style="font-weight: bold;">Columna:</strong>
-                            {{ $ticket->seat->column ?? 'N/A' }}
+                            {{ $ticket->seat->number ?? 'N/A' }}
                         </p>
                     </div>
 

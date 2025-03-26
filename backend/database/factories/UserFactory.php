@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'phone' => fake()->phoneNumber,
             'remember_token' => Str::random(10),
-            'role_id' => 1,
+            'role_id' => 3,
             'image' => 'https://robohash.org/' . fake()->uuid . '.png?size=640x480&set=set4',
         ];
     }
