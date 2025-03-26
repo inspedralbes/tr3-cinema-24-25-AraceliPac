@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     U[Usuari no registrat] --> B1[Consultar cartellera]
     U --> B2[Consultar preus]
