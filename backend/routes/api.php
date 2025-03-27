@@ -23,28 +23,28 @@ Route::middleware('cors')->group(function () {
     });
 
 
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
-
-    // Route::apiResource('users', UserController::class); //temporal nomes fins posar el middleware
-    //rutes
-    Route::apiResource('genres', GenreController::class);
-    Route::apiResource('directors', DirectorController::class);
-    // Route::apiResource('movies', MovieController::class);
-    Route::apiResource('screenings', ScreeningController::class);
-    Route::apiResource('actors', ActorController::class);
-    Route::get('/movies', [MovieController::class, 'index']);
-    Route::get('/movies/{id}', [MovieController::class, 'show']);
-    Route::get('/movies/{id}/actors', [MovieController::class, 'getActors']);
-    Route::post('/movies', [MovieController::class, 'store']);
-    Route::put('/movies/{id}', [MovieController::class, 'update']);
-    Route::delete('/movies/{id}', [MovieController::class, 'destroy']);
-    // Rutes per a les butaques d'una sessió
-    Route::prefix('screenings/{screening}')->group(function () {
-        Route::get('/seats', [SeatController::class, 'index']); // Llistar butaques
-        Route::post('/seats', [SeatController::class, 'store']); // Crear butaca
-    });
-    // routes/api.php
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/user', [AuthController::class, 'user']);
+// Route::apiResource('users', UserController::class); //temporal nomes fins posar el middleware
+//rutes
+Route::apiResource('genres', GenreController::class);
+Route::apiResource('directors', DirectorController::class);
+// Route::apiResource('movies', MovieController::class);
+Route::apiResource('screenings', ScreeningController::class);
+Route::apiResource('actors', ActorController::class);
+Route::get('/movies', [MovieController::class, 'index']);
+Route::get('/movies/{id}', [MovieController::class, 'show']);
+Route::get('/movies/{id}/actors', [MovieController::class, 'getActors']);
+Route::post('/movies', [MovieController::class, 'store']);
+Route::put('/movies/{id}', [MovieController::class, 'update']);
+Route::delete('/movies/{id}', [MovieController::class, 'destroy']);
+// Rutes per a les butaques d'una sessió
+Route::prefix('screenings/{screening}')->group(function () {
+    Route::get('/seats', [SeatController::class, 'index']); // Llistar butaques
+    Route::post('/seats', [SeatController::class, 'store']); // Crear butaca
+});
+// routes/api.php
 
     // Rutes per a una butaca específica
     Route::apiResource('seats', SeatController::class)->except(['index', 'store']);

@@ -86,7 +86,7 @@ class AuthController extends Controller
 
         // Respuesta exitosa - incluir los datos del usuario
         return response()->json([
-            'message' => 'Usuario registrado', 
+            'message' => 'Usuario registrado',
             'token' => $token,
             'user' => [
                 'id' => $user->id,
@@ -118,9 +118,9 @@ class AuthController extends Controller
         // Generar el token de autenticación
         $token = $user->createToken('authToken')->plainTextToken;
 
-        // Retornar el token, los datos del usuario y un mensaje de éxito
+
         return response()->json([
-            'message' => 'Login correcto', 
+            'message' => 'Login correcto',
             'token' => $token,
             'user' => [
                 'id' => $user->id,
@@ -136,7 +136,7 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = $request->user();
-        //rescatar datos del usuario logueado
+
         if ($user) {
             return response()->json([
                 'id' => $user->id,
