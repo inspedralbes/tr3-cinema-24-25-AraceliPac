@@ -13,7 +13,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         // Debug
         socket.on('connect', () => {
-            console.log('Conectado al servidor de sockets con ID:', socket.id);
+            // console.log('Conectado al servidor de sockets con ID:', socket.id);
         });
 
         socket.on('connect_error', (error) => {

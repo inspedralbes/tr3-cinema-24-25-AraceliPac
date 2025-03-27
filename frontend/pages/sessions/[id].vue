@@ -233,8 +233,8 @@ const buyTickets = () => {
   }
 
   // Si el usuario está autenticado, proceder a la confirmación
-  console.log("Asientos seleccionados:", selectedSeats.value);
-  console.log("Total a pagar:", totalPrice.value);
+  // console.log("Asientos seleccionados:", selectedSeats.value);
+  // console.log("Total a pagar:", totalPrice.value);
 
   // Establecer un temporizador para liberar las butacas después de 30 segundos
   if (process.client) {
@@ -258,7 +258,7 @@ const buyTickets = () => {
         const elapsed = Date.now() - parseInt(purchaseStarted);
         
         if (elapsed > 30000) { // 30 segundos
-          console.log('Han pasado 30 segundos, liberando butacas');
+          // console.log('Han pasado 30 segundos, liberando butacas');
           
           // Comprobar si todavía estamos en proceso de compra (no se ha completado)
           const currentPath = window.location.pathname;
@@ -267,7 +267,7 @@ const buyTickets = () => {
           if (isStillPurchasing) {
             // Si seguimos en la página de confirmación después de 30 segundos
             // podríamos mostrar un mensaje o redirigir, pero permitiremos que continúe
-            console.log('Usuario aún en proceso de compra, manteniendo butacas');
+            // console.log('Usuario aún en proceso de compra, manteniendo butacas');
           } else {
             // Liberar los asientos si han pasado más de 30 segundos y no estamos en confirmación
             try {
@@ -281,7 +281,7 @@ const buyTickets = () => {
                     seatId: parseInt(seatId, 10),
                     userId: userId
                   });
-                  console.log('Tiempo expirado: liberando butaca:', seatId);
+                  // console.log('Tiempo expirado: liberando butaca:', seatId);
                 });
               }
               
@@ -353,7 +353,7 @@ onBeforeRouteLeave((to, from, next) => {
             seatId: parseInt(seat.id, 10),
             userId: userId
           });
-          console.log('Liberando butaca al abandonar página:', seat.id);
+          // console.log('Liberando butaca al abandonar página:', seat.id);
         });
       }
     } catch (error) {
@@ -412,7 +412,7 @@ onMounted(() => {
                 seatId: parseInt(seatId, 10),
                 userId: userId
               });
-              console.log('Liberando butaca de compra abandonada:', seatId);
+              // console.log('Liberando butaca de compra abandonada:', seatId);
             });
           }
           

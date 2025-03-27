@@ -316,7 +316,7 @@ const enviament = ref({
 
 // Comprovar si els components de Navbar i Footer s'han carregat correctament
 onMounted(() => {
-  console.log("Pàgina de contacte carregada");
+  // console.log("Pàgina de contacte carregada");
 });
 
 // Funció per enviar el formulari

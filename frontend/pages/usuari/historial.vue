@@ -309,11 +309,11 @@ const isAuthenticated = computed(() => {
 // Agrupar tickets por fecha
 const groupedTickets = computed(() => {
   if (!tickets.value || !tickets.value.length) {
-    console.log("No hay tickets para agrupar");
+    // console.log("No hay tickets para agrupar");
     return [];
   }
 
-  console.log("Intentando agrupar", tickets.value.length, "tickets");
+  // console.log("Intentando agrupar", tickets.value.length, "tickets");
 
   // Organizar tickets por fecha
   const groups = {};
@@ -346,7 +346,7 @@ const groupedTickets = computed(() => {
     return new Date(b.date) - new Date(a.date);
   });
 
-  console.log("Grupos resultantes:", result);
+  // console.log("Grupos resultantes:", result);
   return result;
 });
 
@@ -420,7 +420,7 @@ const formatPrice = (price) => {
 // Función para descargar un ticket
 const downloadTicket = (ticketId, ticketNumber) => {
   // Utilizar la función del store para descargar el PDF
-  console.log("Descargando ticket ID:", ticketId, "Código:", ticketNumber);
+  // console.log("Descargando ticket ID:", ticketId, "Código:", ticketNumber);
   ticketStore.downloadTicketPdf(ticketId);
 };
 
@@ -464,7 +464,7 @@ const fetchTickets = async () => {
     await ticketStore.fetchUserTickets();
     tickets.value = ticketStore.tickets;
 
-    console.log("Tickets cargados:", tickets.value);
+    // console.log("Tickets cargados:", tickets.value);
 
     // Verificar si hay errores en el store
     if (ticketStore.error) {

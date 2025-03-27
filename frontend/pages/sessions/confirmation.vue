@@ -304,7 +304,7 @@ const confirmPurchase = async () => {
         // Calcular el precio según el tipo de asiento y día especial
         const price = session.value.isSpecialDay ? (seat.is_vip ? 6 : 4) : seat.is_vip ? 8 : 6;
 
-        console.log(`Procesando asiento ${seat.row}${seat.number}, precio: ${price}€`);
+        // console.log(`Procesando asiento ${seat.row}${seat.number}, precio: ${price}€`);
 
         // Llamar a la función del store para crear el ticket en el backend
         const ticketResult = await ticketStore.purchaseTicket({
@@ -316,7 +316,7 @@ const confirmPurchase = async () => {
 
         // Verificar si el resultado indica éxito
         if (ticketResult) {
-          console.log("Ticket creado exitosamente:", ticketResult);
+          // console.log("Ticket creado exitosamente:", ticketResult);
           purchasedTickets.push(ticketResult);
           purchaseSuccessful = true; // Marcar como éxito incluso si solo un ticket se crea
 
@@ -328,7 +328,7 @@ const confirmPurchase = async () => {
               seatId: seat.id,
               userId: authStore.user?.id,
             });
-            console.log(`Notificada compra de butaca ${seat.id} al servidor de sockets`);
+            // console.log(`Notificada compra de butaca ${seat.id} al servidor de sockets`);
           } catch (socketError) {
             // Si hay un error con el socket, lo registramos pero continuamos
             console.warn("Error al notificar al servidor de sockets:", socketError);
@@ -343,7 +343,7 @@ const confirmPurchase = async () => {
     }
 
     // Verificar el resultado general de la operación
-    console.log(`Resultado de la compra: ${purchasedTickets.length} tickets procesados`);
+    // console.log(`Resultado de la compra: ${purchasedTickets.length} tickets procesados`);
 
     if (purchaseSuccessful) {
       if (process.client) {
@@ -360,7 +360,7 @@ const confirmPurchase = async () => {
       localStorage.setItem("purchasedTickets", JSON.stringify(purchaseInfo));
 
       // Redirigir a la página de éxito
-      console.log("Redirigiendo a página de éxito...");
+      // console.log("Redirigiendo a página de éxito...");
       router.push(`/compra/exit?session=${sessionId.value}&tickets=${purchasedTickets.length}`);
     } else {
       // No se pudo comprar ningún ticket
@@ -386,7 +386,7 @@ onMounted(() => {
 
         // Asegurarse de que la selección corresponde a la sesión actual
         if (selection.screeningId == sessionId.value) {
-          console.log("Manteniendo selección de butacas guardada:", selection.seats.length);
+          // console.log("Manteniendo selección de butacas guardada:", selection.seats.length);
 
           // Opcionalmente: notificar al servidor de sockets que estas butacas siguen seleccionadas
           // (aunque esto no debería ser necesario si no las liberaste en primer lugar)

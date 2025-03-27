@@ -138,7 +138,7 @@ const getCurrentUserId = () => {
 const handleSeatClick = (seat) => {
   // No permitir seleccionar butacas ocupadas o bloqueadas temporalmente
   if (seat.is_occupied == 1 || isTempLocked(seat.id)) {
-    console.log('Butaca no disponible:', seat.id);
+    // console.log('Butaca no disponible:', seat.id);
     return;
   }
   
@@ -170,15 +170,15 @@ const handleSeatClick = (seat) => {
     // ya que ahora el estado podría haber cambiado
     const isNowSelected = isSelected(seat);
     
-    console.log(`Butaca ${seat.id}: wasSelected=${wasSelected}, isNowSelected=${isNowSelected}`);
+    // console.log(`Butaca ${seat.id}: wasSelected=${wasSelected}, isNowSelected=${isNowSelected}`);
     
     if (isNowSelected) {
       // La butaca ahora está seleccionada, enviar select-seat
-      console.log('Enviando evento select-seat para butaca:', seat.id);
+      // console.log('Enviando evento select-seat para butaca:', seat.id);
       $socket.emit('select-seat', eventData);
     } else {
       // La butaca ya no está seleccionada, enviar release-seat
-      console.log('Enviando evento release-seat para butaca:', seat.id);
+      // console.log('Enviando evento release-seat para butaca:', seat.id);
       $socket.emit('release-seat', eventData);
     }
   } catch (error) {
@@ -216,11 +216,11 @@ onMounted(() => {
     const { $socket } = useNuxtApp();
 
     // Estado de conexión
-    console.log("Socket conectado:", $socket.connected);
+    // console.log("Socket conectado:", $socket.connected);
 
     // Unirse a la sala de la sesión
     const screeningId = parseInt(route.params.id, 10);
-    console.log("Uniendo a la sala de proyección:", screeningId);
+    // console.log("Uniendo a la sala de proyección:", screeningId);
     
     // Solo unirse si el socket está conectado
     if ($socket.connected) {
@@ -228,14 +228,14 @@ onMounted(() => {
     } else {
       // Si no está conectado, esperar a que se conecte
       $socket.on('connect', () => {
-        console.log("Socket conectado, uniéndose a la sala:", screeningId);
+        // console.log("Socket conectado, uniéndose a la sala:", screeningId);
         $socket.emit("join-screening", screeningId);
       });
     }
     
     // Escuchar el estado actual de butacas
     $socket.on("current-seat-state", (data) => {
-      console.log("Estado actual de butacas recibido:", data);
+      // console.log("Estado actual de butacas recibido:", data);
 
       // Actualizar el estado local con las butacas seleccionadas
       if (data.screeningId == route.params.id) {
@@ -249,7 +249,7 @@ onMounted(() => {
             // Convertir a número el ID de la butaca
             const numericSeatId = parseInt(seatId, 10);
             tempLockedSeats.value[numericSeatId] = true;
-            console.log("Marcando butaca como bloqueada temporalmente:", numericSeatId);
+            // console.log("Marcando butaca como bloqueada temporalmente:", numericSeatId);
           }
         }
       }
@@ -257,7 +257,7 @@ onMounted(() => {
 
     // Escuchar eventos de actualización de butacas
     $socket.on("seat-status-changed", (data) => {
-      console.log("Evento de butaca recibido:", data);
+      // console.log("Evento de butaca recibido:", data);
 
       const { seatId, status, userId } = data;
       
@@ -269,7 +269,7 @@ onMounted(() => {
 
       // No procesar eventos iniciados por este mismo usuario
       if (userId === myUserId) {
-        console.log("Ignorando evento propio");
+        // console.log("Ignorando evento propio");
         return;
       }
 
@@ -277,15 +277,15 @@ onMounted(() => {
       if (status === "selected") {
         // Otro usuario seleccionó una butaca
         tempLockedSeats.value[numericSeatId] = true;
-        console.log("Butaca bloqueada temporalmente:", numericSeatId);
+        // console.log("Butaca bloqueada temporalmente:", numericSeatId);
       } else if (status === "released") {
         // Un usuario liberó una butaca
         delete tempLockedSeats.value[numericSeatId];
-        console.log("Butaca liberada:", numericSeatId);
+        // console.log("Butaca liberada:", numericSeatId);
       } else if (status === "purchased") {
         // Una butaca fue comprada, marcarla como ocupada
         updateSeatAsOccupied(numericSeatId);
-        console.log("Butaca marcada como ocupada:", numericSeatId);
+        // console.log("Butaca marcada como ocupada:", numericSeatId);
       }
     });
 
@@ -314,7 +314,7 @@ onBeforeUnmount(() => {
           seatId: parseInt(seat.id, 10),
           userId: userId
         });
-        console.log('Liberando butaca al desmontar:', seat.id);
+        // console.log('Liberando butaca al desmontar:', seat.id);
       });
     }
     

@@ -41,14 +41,14 @@ setInterval(() => {
 
       // Eliminar del almacenamiento
       delete selectedSeats[key];
-      console.log(`Auto-liberada butaca ${seatId} de la sesión ${screeningId} (tiempo expirado)`);
+      // console.log(`Auto-liberada butaca ${seatId} de la sesión ${screeningId} (tiempo expirado)`);
     }
   });
 }, 30000); // Revisar cada 30 segundos
 
 // Manejar conexiones de Socket.IO
 io.on('connection', (socket) => {
-  console.log('Nuevo cliente conectado con ID:', socket.id);
+  // console.log('Nuevo cliente conectado con ID:', socket.id);
 
   // Unirse a una sala para una proyección específica
   socket.on('join-screening', (screeningId) => {
@@ -208,7 +208,7 @@ io.on('connection', (socket) => {
 
   // Manejar desconexión
   socket.on('disconnect', (reason) => {
-    console.log(`Cliente ${socket.id} desconectado: ${reason}`);
+    // console.log(`Cliente ${socket.id} desconectado: ${reason}`);
 
     // Opcionalmente: liberar butacas seleccionadas por este socket
     // (Esto requeriría mantener un registro de qué socket seleccionó qué butacas)

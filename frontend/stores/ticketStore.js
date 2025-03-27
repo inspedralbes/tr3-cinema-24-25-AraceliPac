@@ -29,8 +29,8 @@ export const useTicketStore = defineStore("ticket", {
           },
         });
 
-        console.log("Token:", authStore.token);
-        console.log("Respuesta completa:", response);
+        // console.log("Token:", authStore.token);
+        // console.log("Respuesta completa:", response);
 
         // Verificar la estructura de la respuesta
         if (Array.isArray(response)) {
@@ -46,7 +46,7 @@ export const useTicketStore = defineStore("ticket", {
           this.error = "Formato de respuesta inesperado";
         }
 
-        console.log("Tickets cargados:", this.tickets);
+        // console.log("Tickets cargados:", this.tickets);
       } catch (error) {
         console.error("Error al obtener tickets:", error);
         this.error = "No se pudieron cargar los tickets";
@@ -76,7 +76,7 @@ export const useTicketStore = defineStore("ticket", {
           price: priceFormatted,
         };
 
-        console.log("Enviando datos de ticket:", ticketPayload);
+        // console.log("Enviando datos de ticket:", ticketPayload);
 
         // Realizar la solicitud al backend
         try {
@@ -90,7 +90,7 @@ export const useTicketStore = defineStore("ticket", {
             },
           });
 
-          console.log("Respuesta exitosa del servidor:", response);
+          // console.log("Respuesta exitosa del servidor:", response);
 
           // Agregar el nuevo ticket a la lista local si está disponible
           if (response.ticket) {

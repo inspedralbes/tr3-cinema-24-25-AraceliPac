@@ -52,7 +52,7 @@ export const useSeatStore = defineStore("seat", {
 
             // Escuchar actualizaciones de estado de butacas
             $socket.on('seat-status-changed', (data) => {
-                console.log('Evento de actualización de butaca recibido:', data);
+                // console.log('Evento de actualización de butaca recibido:', data);
 
                 // Actualizar el estado según el tipo de evento
                 switch (data.status) {
