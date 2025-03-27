@@ -12,7 +12,7 @@
           {{ item.name }}
         </NuxtLink>
         <a 
-          href="http://localhost:8000/"
+          href="http://cinema.daw.inspedralbes.cat/"
           class="text-white text-sm md:text-base hover:text-[#D4AF37] transition-colors duration-200 text-center"
         >
           Administrador
