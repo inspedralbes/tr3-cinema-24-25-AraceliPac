@@ -28,7 +28,10 @@ export default defineNuxtConfig({
       },
     },
   },
-
+  plugins: [
+    { src: '~/plugins/socket.js', mode: 'client' }
+  ],
+  // 
   //  Configuración Nitro con la fecha de compatibilidad
   nitro: {
     compatibilityDate: "2025-03-19",
