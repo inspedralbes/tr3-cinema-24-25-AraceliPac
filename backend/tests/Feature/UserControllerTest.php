@@ -32,7 +32,7 @@ class UserControllerTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /** @test */
+
     public function can_get_all_users()
     {
         // Crear algunos usuarios adicionales
@@ -48,7 +48,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(User::count(), count($response->json()));
     }
 
-    /** @test */
+   
     public function can_create_user()
     {
         $userData = [
@@ -65,7 +65,7 @@ class UserControllerTest extends TestCase
             ->assertJsonFragment(['name' => 'Test Name']);
     }
 
-    /** @test */
+   
     public function can_get_single_user()
     {
         $response = $this->getJson('/api/users/' . $this->user->id);
@@ -74,7 +74,7 @@ class UserControllerTest extends TestCase
             ->assertJson(['id' => $this->user->id]);
     }
 
-    /** @test */
+   
     public function can_update_user()
     {
         $response = $this->putJson('/api/users/' . $this->user->id, [
@@ -85,7 +85,7 @@ class UserControllerTest extends TestCase
             ->assertJsonFragment(['name' => 'Updated Name']);
     }
 
-    /** @test */
+  
     public function can_delete_user()
     {
         $userId = $this->user->id;
