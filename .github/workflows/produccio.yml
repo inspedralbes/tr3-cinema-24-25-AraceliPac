@@ -1,0 +1,58 @@
+name: Preparant per producció cinema
+run-name: ${{ github.actor }} està pujant l'aplicació a PROD 🚀
+on:
+  push:
+    branches:
+      - main  # Solo se ejecutará cuando hagas push a main
+
+jobs:
+  Pujar-a-produccio-amb-GITHUB-ACTIONS:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtenint el codi del respositori
+        uses: actions/checkout@v4
+        
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          
+      - name: Instalar dependencias y generar build
+        run: |
+          cd frontend
+          npm ci
+          npm run generate
+          
+      - name: Verificar estructura generada
+        run: |
+          ls -la frontend/.output || echo "No existe frontend/.output"
+          find frontend -path "frontend/.output" -type d || echo "No se encontró la carpeta .output mediante find"
+        
+      - name: Configurant SSH i comprovant connexió
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/prod_key.pem
+          chmod 600 ~/prod_key.pem
+          ssh -i ~/prod_key.pem -o StrictHostKeyChecking=no ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }} "echo 'Conexión SSH exitosa'"
+        
+      - name: Pujar carpeta output a producció
+        run: |
+          # Generar la carpeta .output si no existe
+          if [ ! -d "frontend/.output" ]; then
+            echo "La carpeta .output no existe, asegúrate de que el build se haya ejecutado correctamente"
+            exit 1
+          fi
+          
+          # Verificar si existe public dentro de .output
+          if [ -d "frontend/.output/public" ]; then
+            echo "Copiando contenido de frontend/.output/public"
+            scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem frontend/.output/public/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+          else
+            echo "Copiando contenido de frontend/.output"
+            scp -r -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/prod_key.pem frontend/.output/* ${{ secrets.PROD_USER }}@${{ secrets.SERVER_IP }}:/home/a23arapacmun/web/cine.daw.inspedralbes.cat/public_html/tr3-cinema-24-25-AraceliPac/frontend
+          fi
+        
+      - name: Finalización
+        run: echo "🍏 This job's status is ${{ job.status }}."
+        
+      - name: Finalización
+        run: echo "🍏 This job's status is ${{ job.status }}."
