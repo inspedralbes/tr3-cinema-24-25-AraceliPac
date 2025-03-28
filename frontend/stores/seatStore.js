@@ -19,7 +19,7 @@ export const useSeatStore = defineStore("seat", {
             this.error = null;
 
             try {
-                const response = await $fetch(`http://localhost:8000/api/screenings/${screeningId}/seats`, {
+                const response = await $fetch(`http://cinema.daw.inspedralbes.cat/api/screenings/${screeningId}/seats`, {
                     headers: {
                         Accept: "application/json",
                     },

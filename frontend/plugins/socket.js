@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 export default defineNuxtPlugin((nuxtApp) => {
     if (process.client) {
         // Inicializar socket.io - Usar la URL correcta según la configuración de Docker
-        const socket = io('http://localhost:3000', {
+        const socket = io('http://cinema.daw.inspedralbes.cat:3000', {
             transports: ['websocket', 'polling'],
             reconnection: true,
             reconnectionAttempts: 5,
