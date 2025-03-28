@@ -221,7 +221,7 @@ app.get('/', (req, res) => {
 });
 
 // Iniciar el servidor
-const PORT = process.env.PORT || 30.000;
+const PORT = process.env.PORT || 30000;
 server.listen(PORT, () => {
   console.log(`Servidor de sockets ejecutándose en el puerto ${PORT}`);
 });
