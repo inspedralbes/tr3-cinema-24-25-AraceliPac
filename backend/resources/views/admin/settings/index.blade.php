@@ -4,7 +4,7 @@
 
 @section('content')
 <div style="margin: 20px;">
-    <h1 style="color: #800040; margin-bottom: 20px; font-size: 24px; border-bottom: 2px solid #800040; padding-bottom: 10px;">Configuració del Sistema</h1>
+    <h1 style="color: #800040; margin-bottom: 20px; font-size: 24px; border-bottom: 2px solid #800040; padding-bottom: 10px;">Gestió de Pel·lícules</h1>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
         <!-- Gestión de Actores -->

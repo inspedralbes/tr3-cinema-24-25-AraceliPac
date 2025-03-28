@@ -164,6 +164,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useSessionsStore } from "~/stores/sessions";
 import { useAuthStore } from "~/stores/auth";
 import { useTicketStore } from "~/stores/ticketStore";
+import { useNuxtApp } from "#app"; // Añadir esta importación
 
 const route = useRoute();
 const router = useRouter();
@@ -291,34 +292,47 @@ const goBackToSession = () => {
 // Confirmar la compra
 const confirmPurchase = async () => {
   if (!selectedPaymentMethod.value || isProcessing.value) return;
-  
+
   isProcessing.value = true;
   let purchaseSuccessful = false;
   const purchasedTickets = [];
-  
+
   try {
     // Procesamos cada asiento seleccionado como un ticket separado
     for (const seat of selectedSeats.value) {
       try {
         // Calcular el precio según el tipo de asiento y día especial
-        const price = session.value.isSpecialDay ? 
-          (seat.is_vip ? 6 : 4) : 
-          (seat.is_vip ? 8 : 6);
-        
-        console.log(`Procesando asiento ${seat.row}${seat.number}, precio: ${price}€`);
-        
+        const price = session.value.isSpecialDay ? (seat.is_vip ? 6 : 4) : seat.is_vip ? 8 : 6;
+
+        // console.log(`Procesando asiento ${seat.row}${seat.number}, precio: ${price}€`);
+
         // Llamar a la función del store para crear el ticket en el backend
         const ticketResult = await ticketStore.purchaseTicket({
           screening_id: sessionId.value,
           seat_id: seat.id,
-          price: price
+          price: price,
+          user_id: authStore.user?.id,
         });
-        
+
         // Verificar si el resultado indica éxito
         if (ticketResult) {
-          console.log('Ticket creado exitosamente:', ticketResult);
+          // console.log("Ticket creado exitosamente:", ticketResult);
           purchasedTickets.push(ticketResult);
           purchaseSuccessful = true; // Marcar como éxito incluso si solo un ticket se crea
+
+          // NUEVO: Notificar al servidor de sockets que la butaca fue comprada
+          try {
+            const { $socket } = useNuxtApp();
+            $socket.emit("seat-purchased", {
+              screeningId: sessionId.value,
+              seatId: seat.id,
+              userId: authStore.user?.id,
+            });
+            // console.log(`Notificada compra de butaca ${seat.id} al servidor de sockets`);
+          } catch (socketError) {
+            // Si hay un error con el socket, lo registramos pero continuamos
+            console.warn("Error al notificar al servidor de sockets:", socketError);
+          }
         } else {
           console.warn(`No se pudo crear ticket para asiento ${seat.row}${seat.number}`);
         }
@@ -327,38 +341,60 @@ const confirmPurchase = async () => {
         // Continuamos con el siguiente asiento aunque este haya fallado
       }
     }
-    
+
     // Verificar el resultado general de la operación
-    console.log(`Resultado de la compra: ${purchasedTickets.length} tickets procesados`);
-    
+    // console.log(`Resultado de la compra: ${purchasedTickets.length} tickets procesados`);
+
     if (purchaseSuccessful) {
+      if (process.client) {
+        localStorage.removeItem("purchase_started");
+        localStorage.removeItem("purchase_seats");
+      }
       // Guardamos información sobre los tickets comprados para mostrarlos en la página de éxito
       const purchaseInfo = {
         count: purchasedTickets.length,
         totalAmount: totalPrice.value,
-        ticketIds: purchasedTickets.map(ticket => ticket.id || 'unknown')
+        ticketIds: purchasedTickets.map((ticket) => ticket.id || "unknown"),
       };
-      
-      localStorage.setItem('purchasedTickets', JSON.stringify(purchaseInfo));
-      
+
+      localStorage.setItem("purchasedTickets", JSON.stringify(purchaseInfo));
+
       // Redirigir a la página de éxito
-      console.log('Redirigiendo a página de éxito...');
+      // console.log("Redirigiendo a página de éxito...");
       router.push(`/compra/exit?session=${sessionId.value}&tickets=${purchasedTickets.length}`);
     } else {
       // No se pudo comprar ningún ticket
-      console.error('No se completó ninguna compra');
-      error.value = 'No s\'ha pogut completar la compra de cap entrada';
+      console.error("No se completó ninguna compra");
+      error.value = "No s'ha pogut completar la compra de cap entrada";
     }
   } catch (err) {
-    console.error('Error general en el proceso de compra:', err);
-    error.value = 'Error al processar la compra';
+    console.error("Error general en el proceso de compra:", err);
+    error.value = "Error al processar la compra";
   } finally {
     isProcessing.value = false;
   }
 };
-
 // Al montar el componente
 onMounted(() => {
   loadSessionData();
+  // Recuperar información de selección desde localStorage
+  if (process.client) {
+    const selectionInfo = localStorage.getItem("current_seat_selection");
+    if (selectionInfo) {
+      try {
+        const selection = JSON.parse(selectionInfo);
+
+        // Asegurarse de que la selección corresponde a la sesión actual
+        if (selection.screeningId == sessionId.value) {
+          // console.log("Manteniendo selección de butacas guardada:", selection.seats.length);
+
+          // Opcionalmente: notificar al servidor de sockets que estas butacas siguen seleccionadas
+          // (aunque esto no debería ser necesario si no las liberaste en primer lugar)
+        }
+      } catch (error) {
+        console.error("Error al recuperar selección de butacas:", error);
+      }
+    }
+  }
 });
 </script>

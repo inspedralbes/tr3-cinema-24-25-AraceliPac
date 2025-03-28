@@ -171,20 +171,20 @@ const fetchSessions = async () => {
 };
 
 const selectSession = (sessionId) => {
-  console.log('Sesión seleccionada:', sessionId);
+  // console.log('Sesión seleccionada:', sessionId);
   // Aquí puedes redirigir al usuario a la página de compra de entradas
   router.push(`/sessions/${sessionId}`);
 };
 
 const viewMovieDetails = (movieId) => {
-  console.log('Ver detalles de película:', movieId);
+  // console.log('Ver detalles de película:', movieId);
   // Redirigir a la página de detalles de la película
   router.push(`/pelicules/movie-details/${movieId}`);
 };
 
 const subscribeToNewsletter = () => {
   // Aquí iría la lógica para enviar la suscripción
-  console.log('Suscripción al boletín:', newsletterEmail.value, 'Info cultural:', culturalInfo.value);
+  // console.log('Suscripción al boletín:', newsletterEmail.value, 'Info cultural:', culturalInfo.value);
   // Implementación de la llamada a la API
   
   // Resetear el formulario después del envío

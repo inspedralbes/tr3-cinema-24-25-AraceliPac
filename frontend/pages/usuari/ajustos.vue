@@ -672,7 +672,7 @@ const updateUser = async (updateType) => {
         password: passwordData.new_password,
         password_confirmation: passwordData.new_password_confirmation,
       };
-      console.log(passwordPayload);
+      // console.log(passwordPayload);
 
       // Usar la función del AuthStore
       await authStore.updatePassword(passwordPayload);

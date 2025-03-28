@@ -479,7 +479,7 @@ async function registrarUsuari() {
           
           if (userResponse.ok) {
             const userData = await userResponse.json();
-            console.log('Datos de usuario obtenidos:', userData);
+            // console.log('Datos de usuario obtenidos:', userData);
             authStore.setAuth(data.token, userData);
           } else {
             // Si no podemos obtener el usuario, usamos los datos del formulario

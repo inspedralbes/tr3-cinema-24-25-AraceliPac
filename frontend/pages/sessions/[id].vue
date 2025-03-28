@@ -96,6 +96,7 @@ import { useSessionsStore } from "~/stores/sessions";
 import { useAuthStore } from "~/stores/auth";
 import { useTicketStore } from "~/stores/ticketStore";
 import { onBeforeRouteLeave } from 'vue-router';
+import { useNuxtApp } from '#app';
 
 const route = useRoute();
 const router = useRouter();
@@ -156,7 +157,6 @@ const loadSessionData = async () => {
     loadingSeats.value = true;
     await sessionsStore.fetchSessionSeats(sessionId.value);
     seatsLoaded.value = true;
-    // console.log("Butaques carregades:", sessionsStore.sessionSeats);
   } catch (err) {
     error.value = "Error al carregar les dades de la sessió";
     console.error("Error carregant dades de la sessió:", err);
@@ -169,7 +169,6 @@ const loadSessionData = async () => {
 // Mapa de asientos disponibles
 const seatsMap = computed(() => {
   const map = sessionsStore.availableSeatsMap;
-  // console.log("Mapa de butaques:", map);
   // Comprobar si tenemos datos válidos
   if (!map || typeof map !== "object") {
     console.warn("El mapa de butaques no és un objecte vàlid:", map);
@@ -183,6 +182,11 @@ const seatsMap = computed(() => {
   }
   return map;
 });
+
+// Función para obtener el ID del usuario actual (autenticado o temporal)
+const getCurrentUserId = () => {
+  return authStore.user?.id || (process.client ? sessionStorage.getItem('temp_user_id') : null);
+};
 
 // Manejar la selección de asientos
 const handleSeatSelection = (seat) => {
@@ -229,8 +233,70 @@ const buyTickets = () => {
   }
 
   // Si el usuario está autenticado, proceder a la confirmación
-  console.log("Asientos seleccionados:", selectedSeats.value);
-  console.log("Total a pagar:", totalPrice.value);
+  // console.log("Asientos seleccionados:", selectedSeats.value);
+  // console.log("Total a pagar:", totalPrice.value);
+
+  // Establecer un temporizador para liberar las butacas después de 30 segundos
+  if (process.client) {
+    // Guardar los IDs de los asientos seleccionados
+    const seatIds = selectedSeats.value.map(seat => seat.id);
+    
+    // Guardar timestamp de cuando se inició la compra
+    localStorage.setItem('purchase_started', Date.now().toString());
+    localStorage.setItem('purchase_seats', JSON.stringify(seatIds));
+    localStorage.setItem('purchase_screening', sessionId.value);
+    
+    // Configurar el timeout
+    setTimeout(() => {
+      // Verificar si ha pasado suficiente tiempo y si estamos en la página de confirmación
+      const purchaseStarted = localStorage.getItem('purchase_started');
+      const savedSeats = JSON.parse(localStorage.getItem('purchase_seats') || '[]');
+      const savedScreening = localStorage.getItem('purchase_screening');
+      
+      // Si han pasado más de 30 segundos y hay asientos guardados
+      if (purchaseStarted && savedSeats.length > 0 && savedScreening) {
+        const elapsed = Date.now() - parseInt(purchaseStarted);
+        
+        if (elapsed > 30000) { // 30 segundos
+          // console.log('Han pasado 30 segundos, liberando butacas');
+          
+          // Comprobar si todavía estamos en proceso de compra (no se ha completado)
+          const currentPath = window.location.pathname;
+          const isStillPurchasing = currentPath.includes('/sessions/confirmation');
+          
+          if (isStillPurchasing) {
+            // Si seguimos en la página de confirmación después de 30 segundos
+            // podríamos mostrar un mensaje o redirigir, pero permitiremos que continúe
+            // console.log('Usuario aún en proceso de compra, manteniendo butacas');
+          } else {
+            // Liberar los asientos si han pasado más de 30 segundos y no estamos en confirmación
+            try {
+              const { $socket } = useNuxtApp();
+              const userId = getCurrentUserId();
+              
+              if ($socket && $socket.connected && userId) {
+                savedSeats.forEach(seatId => {
+                  $socket.emit('release-seat', {
+                    screeningId: parseInt(savedScreening, 10),
+                    seatId: parseInt(seatId, 10),
+                    userId: userId
+                  });
+                  // console.log('Tiempo expirado: liberando butaca:', seatId);
+                });
+              }
+              
+              // Limpiar localStorage
+              localStorage.removeItem('purchase_started');
+              localStorage.removeItem('purchase_seats');
+              localStorage.removeItem('purchase_screening');
+            } catch (error) {
+              console.error('Error al liberar butacas después del timeout:', error);
+            }
+          }
+        }
+      }
+    }, 30000); // 30 segundos
+  }
 
   // Codificar la información para pasarla como parámetro de URL
   const encodedInfo = encodeURIComponent(JSON.stringify(purchaseInfo));
@@ -270,6 +336,32 @@ const recoverPendingPurchase = () => {
 
 // Asegurarse de que el body no tenga overflow hidden al salir de la ruta
 onBeforeRouteLeave((to, from, next) => {
+  // Si vamos a la página de confirmación, no liberamos las butacas
+  // ya que queremos mantenerlas seleccionadas durante el proceso de compra
+  const isGoingToConfirmation = to.path.includes('/sessions/confirmation');
+  
+  if (!isGoingToConfirmation && selectedSeats.value.length > 0) {
+    // Solo si NO vamos a confirmación, liberamos las butacas
+    try {
+      const { $socket } = useNuxtApp();
+      const userId = getCurrentUserId();
+      
+      if ($socket && $socket.connected && userId) {
+        selectedSeats.value.forEach(seat => {
+          $socket.emit('release-seat', {
+            screeningId: parseInt(sessionId.value, 10),
+            seatId: parseInt(seat.id, 10),
+            userId: userId
+          });
+          // console.log('Liberando butaca al abandonar página:', seat.id);
+        });
+      }
+    } catch (error) {
+      console.error('Error al liberar butacas:', error);
+    }
+  }
+  
+  // Resetear estilos del body
   resetBodyStyles();
   next();
 });
@@ -277,6 +369,12 @@ onBeforeRouteLeave((to, from, next) => {
 // Garantizar que el overflow se resetea al desmontar el componente
 onUnmounted(() => {
   resetBodyStyles();
+  
+  // Limpiar cualquier temporizador pendiente
+  if (process.client) {
+    // No necesitamos una limpieza específica aquí ya que los timeouts
+    // se gestionan con localStorage, pero podríamos añadir lógica adicional si fuera necesario
+  }
 });
 
 // Inicialización al montar el componente
@@ -290,6 +388,43 @@ onMounted(() => {
   // Si el usuario está autenticado, verificar si hay una compra pendiente
   if (authStore.isAuthenticated) {
     recoverPendingPurchase();
+  }
+  
+  // Verificar si tenemos butacas que deberían liberarse (compra no completada)
+  if (process.client) {
+    const purchaseStarted = localStorage.getItem('purchase_started');
+    const savedSeats = JSON.parse(localStorage.getItem('purchase_seats') || '[]');
+    const savedScreening = localStorage.getItem('purchase_screening');
+    
+    if (purchaseStarted && savedSeats.length > 0) {
+      const elapsed = Date.now() - parseInt(purchaseStarted);
+      
+      // Si han pasado más de 2 minutos, consideramos que la compra se abandonó
+      if (elapsed > 120000) { // 2 minutos
+        try {
+          const { $socket } = useNuxtApp();
+          const userId = getCurrentUserId();
+          
+          if ($socket && $socket.connected && userId && savedScreening) {
+            savedSeats.forEach(seatId => {
+              $socket.emit('release-seat', {
+                screeningId: parseInt(savedScreening, 10),
+                seatId: parseInt(seatId, 10),
+                userId: userId
+              });
+              // console.log('Liberando butaca de compra abandonada:', seatId);
+            });
+          }
+          
+          // Limpiar localStorage
+          localStorage.removeItem('purchase_started');
+          localStorage.removeItem('purchase_seats');
+          localStorage.removeItem('purchase_screening');
+        } catch (error) {
+          console.error('Error al liberar butacas de compra abandonada:', error);
+        }
+      }
+    }
   }
 });
 </script>
