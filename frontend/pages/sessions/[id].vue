@@ -55,7 +55,7 @@
                   <span class="availability-label">Total Disponibles</span>
                 </div>
               </div>
-
+              
               <!-- Información de asientos seleccionados y total a pagar -->
               <div class="selected-seats-info">
                 <h3>Butaques Seleccionades: {{ selectedSeats.length }}</h3>
@@ -516,6 +516,7 @@ onMounted(() => {
 
 .seat-availability {
   margin: 20px 0;
+  margin-top: 20px;
 }
 
 .availability-stats {
@@ -559,6 +560,9 @@ onMounted(() => {
   background-color: #f9f9f9;
   border-radius: 8px;
   text-align: center;
+  max-width: 100%; /* Limitar el ancho máximo para no expandirse demasiado */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .selected-seats-info h3 {
@@ -575,6 +579,8 @@ onMounted(() => {
 @media (max-width: 768px) {
   .movie-header {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .movie-image {
