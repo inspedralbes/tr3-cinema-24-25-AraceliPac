@@ -221,7 +221,11 @@ app.get('/', (req, res) => {
 });
 
 // Iniciar el servidor
-const PORT = process.env.PORT || 30000;
-server.listen(PORT, () => {
-  console.log(`Servidor de sockets ejecutándose en el puerto ${PORT}`);
+// const PORT = process.env.PORT || 30000;
+// server.listen(PORT, () => {
+//   console.log(`Servidor de sockets ejecutándose en el puerto ${PORT}`);
+// });
+const PORT = 30000; // Usar el límite superior del rango permitido
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor de sockets ejecutándose en http://cinema.daw.inspedralbes.cat:${PORT}`);
 });
