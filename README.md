@@ -21,7 +21,6 @@
 - [Estat del Projecte](#-estat-del-projecte)
 - [Enllaços](#-enllaços)
 - [Tecnologies](#-tecnologies)
-- [Captures de Pantalla](#-captures-de-pantalla)
 
 ## 📝 Descripció
 
