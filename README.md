@@ -61,9 +61,11 @@ Actualment el projecte es troba en fase de desenvolupament actiu. S'han completa
 - ✅ Arquitectura del sistema
 - ✅ Desenvolupament del frontend (Nuxt.js)
 - ✅ Desenvolupament del backend (Laravel)
+- ✅ Testing d´endpoints Laravel
 - ✅ Registre i autentificació clients
 - ✅ Compra d´ entrades i enviament de pdf amb QR entrada
 - ✅ CRUD Administrador
+- ✅ Sockets
 
 ## 🔗 Enllaços
 
