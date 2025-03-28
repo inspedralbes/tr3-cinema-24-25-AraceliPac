@@ -227,7 +227,7 @@
               <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                   type="submit"
-                  class="flex-1 bg-[#800040] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#9A0040] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] flex items-center justify-center"
+                  class="flex-1 bg-[#800040] text-white mt-4 px-4 py-2 rounded-md shadow-sm hover:bg-[#9A0040] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#800040] flex items-center justify-center"
                   :disabled="isSaving"
                 >
                   <ClientOnly>
@@ -239,7 +239,7 @@
                 <button
                   type="button"
                   @click="resetForm"
-                  class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center justify-center"
+                  class="flex-1 bg-gray-200 text-gray-800 mt-4 px-4 py-2 rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center justify-center"
                 >
                   <ClientOnly>
                     <Icon name="mdi:refresh" class="w-5 h-5 mr-2" />

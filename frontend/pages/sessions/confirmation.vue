@@ -107,7 +107,8 @@
               </div>
             </div>
           </div>
-
+          <div class="botones">
+            
           <div class="flex flex-col md:flex-row justify-between gap-4 mt-8">
             <button
               @click="goBackToSession"
@@ -150,6 +151,7 @@
               </span>
             </button>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -398,3 +400,9 @@ onMounted(() => {
   }
 });
 </script>
+<style scoped>
+.botones {
+  margin-top: 20px;
+}
+</style>
+  

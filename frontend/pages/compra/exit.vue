@@ -5,6 +5,7 @@
       <div class="max-w-lg mx-auto" ref="successContainer">
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
           <!-- Cabecera -->
+           <div class="cabecera">
           <div class="bg-[#800040] py-8 px-6 flex flex-col items-center relative">
             <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-pattern"></div>
 
@@ -23,6 +24,7 @@
               Les teves entrades ja estan disponibles al teu perfil
             </p>
           </div>
+        </div>
 
           <!-- Contenido -->
           <div class="px-6 py-8" ref="contentContainer">
@@ -118,6 +120,7 @@
         </div>
 
         <!-- Banner promocional -->
+        <div class="banner">
         <div
           class="mt-8 bg-gray-100 border border-gray-200 rounded-lg p-4 flex items-center"
           ref="promoContainer"
@@ -139,6 +142,7 @@
             </NuxtLink>
           </div>
         </div>
+      </div>
       </div>
     </div>
     <Footer />
@@ -248,3 +252,12 @@ onMounted(async () => {
   setTimeout(() => { elementVisible.value.promo = true }, 1200);
 });
 </script>
+<style scoped>
+.cabecera {
+  margin-top: 10px;
+}
+.banner {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+</style>
