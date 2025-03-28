@@ -120,6 +120,7 @@
         </div>
 
         <!-- Banner promocional -->
+        <div class="banner">
         <div
           class="mt-8 bg-gray-100 border border-gray-200 rounded-lg p-4 flex items-center"
           ref="promoContainer"
@@ -141,6 +142,7 @@
             </NuxtLink>
           </div>
         </div>
+      </div>
       </div>
     </div>
     <Footer />
@@ -253,5 +255,9 @@ onMounted(async () => {
 <style scoped>
 .cabecera {
   margin-top: 10px;
+}
+.banner {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>
