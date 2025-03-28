@@ -44,7 +44,7 @@ setInterval(() => {
       // console.log(`Auto-liberada butaca ${seatId} de la sesión ${screeningId} (tiempo expirado)`);
     }
   });
-}, 30000); // Revisar cada 30 segundos
+}, 29221); // Revisar cada 30 segundos
 
 // Manejar conexiones de Socket.IO
 io.on('connection', (socket) => {
@@ -221,11 +221,11 @@ app.get('/', (req, res) => {
 });
 
 // Iniciar el servidor
-// const PORT = process.env.PORT || 30000;
+// const PORT = process.env.PORT || 29221;
 // server.listen(PORT, () => {
 //   console.log(`Servidor de sockets ejecutándose en el puerto ${PORT}`);
 // });
-const PORT = 30000; // Usar el límite superior del rango permitido
+const PORT = 29221; // Usar el límite superior del rango permitido
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor de sockets ejecutándose en http://cinema.daw.inspedralbes.cat:${PORT}`);
 });
